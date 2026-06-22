@@ -109,14 +109,16 @@ export function SuggestedRulesPanel() {
                     dispatch({ type: 'SET_SUGGESTED_RULE_STATUS', id: r.id, status: 'approved' });
                     dispatch({ type: 'SHOW_TOAST', message: 'Rule approved' });
                   }}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'var(--action-primary-hover)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'var(--action-primary)')}
                   style={{
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: 500,
-                    padding: '5px 14px',
+                    padding: '8px 14px',
                     borderRadius: 6,
                     border: 'none',
                     cursor: 'pointer',
-                    background: 'var(--uw-primary, #5b6fd6)',
+                    background: 'var(--action-primary)',
                     color: '#fff',
                   }}
                 >
@@ -128,14 +130,14 @@ export function SuggestedRulesPanel() {
                     dispatch({ type: 'SHOW_TOAST', message: 'Suggestion dismissed' });
                   }}
                   style={{
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: 500,
-                    padding: '5px 14px',
+                    padding: '8px 14px',
                     borderRadius: 6,
-                    border: '1px solid var(--border-subtle)',
+                    border: '1px solid var(--border-primary)',
                     cursor: 'pointer',
                     background: 'transparent',
-                    color: 'var(--text-secondary)',
+                    color: 'var(--text-primary)',
                   }}
                 >
                   Dismiss

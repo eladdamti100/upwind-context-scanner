@@ -27,11 +27,11 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        fontSize: 12,
-        fontWeight: 600,
-        color: 'var(--text-secondary)',
+        fontSize: 10.5,
+        fontWeight: 700,
+        color: 'var(--text-tertiary)',
         textTransform: 'uppercase',
-        letterSpacing: '0.05em',
+        letterSpacing: '0.06em',
         marginBottom: 10,
       }}
     >
@@ -197,8 +197,8 @@ export function SettingsModal() {
           <div
             style={{
               display: 'flex',
-              background: 'var(--border-subtle)',
-              borderRadius: 8,
+              background: 'var(--bg-tertiary)',
+              borderRadius: 7,
               padding: 3,
               gap: 2,
             }}
@@ -324,14 +324,16 @@ export function SettingsModal() {
               dispatch({ type: 'CLOSE_SETTINGS' });
               dispatch({ type: 'SHOW_TOAST', message: 'Settings saved' });
             }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--action-primary-hover)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--action-primary)')}
             style={{
-              padding: '7px 20px',
+              padding: '8px 14px',
               borderRadius: 6,
               border: 'none',
               background: 'var(--action-primary)',
               color: '#ffffff',
               fontSize: 13,
-              fontWeight: 600,
+              fontWeight: 500,
               cursor: 'pointer',
               fontFamily: 'var(--font-default-family)',
             }}

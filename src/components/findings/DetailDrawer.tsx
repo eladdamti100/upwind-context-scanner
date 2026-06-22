@@ -259,7 +259,7 @@ export function DetailDrawer() {
             </div>
             <div
               style={{
-                fontSize: 13,
+                fontSize: 12.5,
                 color: 'var(--text-secondary)',
                 lineHeight: 1.5,
               }}
@@ -522,16 +522,18 @@ export function DetailDrawer() {
               <button
                 onClick={() => dispatch({ type: 'OPEN_VAL_MODAL', id: sel.id })}
                 style={{
-                  padding: '7px 14px',
+                  padding: '8px 14px',
                   borderRadius: 6,
-                  border: '1px solid var(--action-primary)',
+                  border: 'none',
                   background: 'var(--action-primary)',
                   color: '#fff',
                   fontSize: 13,
-                  fontWeight: 600,
+                  fontWeight: 500,
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
                 }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'var(--action-primary-hover)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'var(--action-primary)')}
               >
                 Validate
               </button>
@@ -540,7 +542,7 @@ export function DetailDrawer() {
             <button
               onClick={() => dispatch({ type: 'OPEN_LIFECYCLE', id: sel.id })}
               style={{
-                padding: '7px 14px',
+                padding: '8px 14px',
                 borderRadius: 6,
                 border: '1px solid var(--border-primary)',
                 background: 'transparent',
@@ -560,11 +562,11 @@ export function DetailDrawer() {
                 dispatch({ type: 'SHOW_TOAST', message: 'Marked as false positive' });
               }}
               style={{
-                padding: '7px 14px',
+                padding: '8px 14px',
                 borderRadius: 6,
-                border: '1px solid var(--border-subtle)',
+                border: '1px solid var(--border-primary)',
                 background: 'transparent',
-                color: 'var(--text-secondary)',
+                color: 'var(--text-primary)',
                 fontSize: 13,
                 fontWeight: 500,
                 cursor: 'pointer',
