@@ -1,0 +1,19 @@
+{
+  "description": "Placeholder manifest for SignalLens mock data",
+  "files": [
+    {
+      "file_path": "files/example.env",
+      "customer_vertical": "saas",
+      "environment": "production",
+      "storage_exposure": "private",
+      "asset_criticality": "high",
+      "expected_findings": [
+        {
+          "type": "api_key",
+          "expected_label": "true_secret",
+          "expected_priority": "high"
+        }
+      ]
+    }
+  ]
+}
