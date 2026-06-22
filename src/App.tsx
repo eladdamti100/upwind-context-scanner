@@ -3,12 +3,14 @@ import { TopBar } from './components/shell/TopBar';
 import { PageHeader } from './components/shell/PageHeader';
 import { Tabs } from './components/shell/Tabs';
 import { Toast } from './components/common/Toast';
+import { FindingsView } from './components/findings/FindingsView';
 
 function AppShell() {
   const { state } = useStore();
 
   return (
     <div
+      data-testid="app-root"
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -32,9 +34,7 @@ function AppShell() {
         <Tabs />
 
         {state.tab === 'findings' && (
-          <div data-testid="findings-view" style={{ padding: '18px 32px 60px' }}>
-            Findings view
-          </div>
+          <FindingsView />
         )}
         {state.tab === 'classifications' && (
           <div data-testid="classifications-view" style={{ padding: '18px 32px 60px' }}>
