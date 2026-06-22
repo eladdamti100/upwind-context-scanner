@@ -7,6 +7,7 @@ import { FindingsView } from './components/findings/FindingsView';
 import { DetailDrawer } from './components/findings/DetailDrawer';
 import { RiskPopover } from './components/findings/RiskPopover';
 import { ValidationModal } from './components/findings/ValidationModal';
+import { LifecycleDialog } from './components/findings/LifecycleDialog';
 import { SettingsModal } from './components/settings/SettingsModal';
 
 function AppShell() {
@@ -55,6 +56,7 @@ function AppShell() {
       <DetailDrawer />
       <RiskPopover />
       <ValidationModal />
+      <LifecycleDialog />
       <SettingsModal />
       <Toast message={state.toast} />
     </div>
