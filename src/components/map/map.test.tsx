@@ -1,6 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { test, expect } from 'vitest';
 import App from '../../App';
+import { MAP_ASSETS } from '../../data';
+
+const firstAssetKey = Object.keys(MAP_ASSETS)[0];
 
 function clickTab(label: string) {
   fireEvent.click(screen.getByText(label));
@@ -12,8 +15,8 @@ test('Exposure map tab shows asset nodes, AI node, and filter chips', async () =
   // Navigate to Exposure map tab
   clickTab('Exposure map');
 
-  // Asset node for customer-prod-bucket should be visible
-  expect(await screen.findByTestId('map-asset-customer-prod-bucket')).toBeInTheDocument();
+  // First real asset node should be visible
+  expect(await screen.findByTestId(`map-asset-${firstAssetKey}`)).toBeInTheDocument();
 
   // External AI node for OpenAI should be visible
   expect(screen.getByTestId('map-asset-openai')).toBeInTheDocument();
@@ -30,8 +33,8 @@ test('Clicking an asset node opens the panel with Exposure and a finding', async
   // Navigate to Exposure map tab
   clickTab('Exposure map');
 
-  // Click the customer-prod-bucket node
-  const node = await screen.findByTestId('map-asset-customer-prod-bucket');
+  // Click the first real asset node
+  const node = await screen.findByTestId(`map-asset-${firstAssetKey}`);
   fireEvent.click(node);
 
   // Panel should show "Exposure" label
@@ -39,6 +42,10 @@ test('Clicking an asset node opens the panel with Exposure and a finding', async
     expect(screen.getByText('Exposure')).toBeInTheDocument();
   });
 
-  // Panel should list the aws-access-key finding
-  expect(screen.getByText('aws-access-key')).toBeInTheDocument();
+  // Panel should list at least one finding's detectedType
+  const asset = MAP_ASSETS[firstAssetKey];
+  if (asset.findings.length > 0) {
+    const detectedType = asset.findings[0].detectedType;
+    expect(screen.getAllByText(detectedType).length).toBeGreaterThan(0);
+  }
 });

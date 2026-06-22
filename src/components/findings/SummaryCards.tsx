@@ -1,4 +1,4 @@
-import { FINDINGS } from '../../data/placeholder';
+import { FINDINGS } from '../../data';
 import { effPriority } from '../../lib/priority';
 import { useStore } from '../../state/StoreContext';
 

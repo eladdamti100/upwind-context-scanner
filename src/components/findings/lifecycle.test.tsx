@@ -4,14 +4,18 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { test, expect } from 'vitest';
 import App from '../../App';
 
+function getFirstDataRow(): HTMLElement {
+  const rows = document.querySelectorAll('tbody tr');
+  return rows[0] as HTMLElement;
+}
+
 test('opens LifecycleDialog from drawer and shows "Manage finding" with a "Resolved" option', async () => {
   render(<App />);
 
-  // Click the table row containing "AWS Access Key"
-  const awsRows = screen.getAllByText('AWS Access Key');
-  const row = awsRows[0].closest('tr');
+  // Click the first data row
+  const row = getFirstDataRow();
   expect(row).not.toBeNull();
-  fireEvent.click(row!);
+  fireEvent.click(row);
 
   // The drawer should be open; click "Manage status"
   const manageBtn = screen.getByRole('button', { name: /manage status/i });
@@ -28,9 +32,8 @@ test('clicking "Resolved" closes the LifecycleDialog', async () => {
   render(<App />);
 
   // Open the drawer
-  const awsRows = screen.getAllByText('AWS Access Key');
-  const row = awsRows[0].closest('tr');
-  fireEvent.click(row!);
+  const row = getFirstDataRow();
+  fireEvent.click(row);
 
   // Open the lifecycle dialog
   const manageBtn = screen.getByRole('button', { name: /manage status/i });

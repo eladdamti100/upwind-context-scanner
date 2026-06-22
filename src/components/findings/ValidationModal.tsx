@@ -2,7 +2,7 @@
 // Uses only inline styles + CSS vars (no external CSS classes).
 // INVARIANT: never logs or displays full secret values — only masked data.
 
-import { FINDINGS } from '../../data/placeholder';
+import { FINDINGS } from '../../data';
 import { mockValidate, VALIDATION_DELAY_MS } from '../../lib/validation';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';

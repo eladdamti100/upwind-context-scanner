@@ -2,7 +2,7 @@
 // Inline styles with CSS vars; no external CSS.
 
 import { useStore } from '../../state/StoreContext';
-import { CLASSIFICATIONS } from '../../data/placeholder';
+import { CLASSIFICATIONS } from '../../data';
 import { categoryStyle } from '../../lib/classify';
 import { Icon } from '../common/Icon';
 

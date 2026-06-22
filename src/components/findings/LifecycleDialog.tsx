@@ -3,7 +3,7 @@
 // INVARIANT: never logs or displays full secret values — only masked data.
 
 import { useState } from 'react';
-import { FINDINGS } from '../../data/placeholder';
+import { FINDINGS } from '../../data';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';
 import type { FindingStatus } from '../../types';

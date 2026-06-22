@@ -3,7 +3,7 @@
 // Does not expose or log any full secret values — only masked values are rendered.
 
 import React from 'react';
-import { FINDINGS } from '../../data/placeholder';
+import { FINDINGS } from '../../data';
 import { effPriority } from '../../lib/priority';
 import { priStyle, priLabel, valStyle } from '../../lib/classify';
 import { buildBreakdown } from '../../lib/scoring';

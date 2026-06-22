@@ -2,7 +2,7 @@
 // Resolves the selected key against MAP_ASSETS first, then EXTERNAL_AI_NODES.
 // Never displays full secrets — all findings use masked/structured values only.
 
-import { MAP_ASSETS, EXTERNAL_AI_NODES } from '../../data/placeholder';
+import { MAP_ASSETS, EXTERNAL_AI_NODES } from '../../data';
 import { priStyle, priLabel } from '../../lib/classify';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';

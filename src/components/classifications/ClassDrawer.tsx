@@ -2,7 +2,7 @@
 // Matches the DetailDrawer pattern: backdrop + panel, inline styles with CSS vars.
 
 import { useStore } from '../../state/StoreContext';
-import { CLASSIFICATIONS, classificationDetail } from '../../data/placeholder';
+import { CLASSIFICATIONS, classificationDetail } from '../../data';
 import { Icon } from '../common/Icon';
 
 // Inject keyframes once (same as DetailDrawer)

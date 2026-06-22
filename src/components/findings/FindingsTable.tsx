@@ -2,7 +2,7 @@
 // Uses only inline styles + CSS vars (no external CSS classes).
 
 import React from 'react';
-import { FINDINGS } from '../../data/placeholder';
+import { FINDINGS } from '../../data';
 import { rankFilter, sortRows } from '../../lib/query';
 import { effPriority, band } from '../../lib/priority';
 import {

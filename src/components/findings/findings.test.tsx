@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { test, expect } from 'vitest';
 import App from '../../App';
-import { FINDINGS } from '../../data/placeholder';
+import { FINDINGS } from '../../data';
 import { effPriority } from '../../lib/priority';
 
 function expectedCriticalCount() {
@@ -19,8 +19,8 @@ test('SummaryCards shows Critical findings label and correct count', () => {
 test('search box reflects typed value', async () => {
   render(<App />);
   const input = screen.getByPlaceholderText('Search findings…') as HTMLInputElement;
-  fireEvent.change(input, { target: { value: 'aws' } });
-  expect(input.value).toBe('aws');
+  fireEvent.change(input, { target: { value: 'phi' } });
+  expect(input.value).toBe('phi');
 });
 
 test('Add filters → Cloud: AWS creates chip', async () => {

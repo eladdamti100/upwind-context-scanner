@@ -2,7 +2,7 @@
 // All data is MASKED placeholder. No full secrets are ever rendered.
 
 import { useState } from 'react';
-import { MAP_ASSETS, MAP_FLOWS, EXTERNAL_AI_NODES } from '../../data/placeholder';
+import { MAP_ASSETS, MAP_FLOWS, EXTERNAL_AI_NODES } from '../../data';
 import { priStyle } from '../../lib/classify';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';

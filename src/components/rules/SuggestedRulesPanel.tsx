@@ -2,7 +2,7 @@
 
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';
-import { SUGGESTED_RULES } from '../../data/placeholder';
+import { SUGGESTED_RULES } from '../../data';
 import type { SuggestedRule } from '../../types';
 
 const RULE_TYPE_LABELS: Record<SuggestedRule['ruleType'], string> = {

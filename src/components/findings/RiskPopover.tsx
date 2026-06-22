@@ -2,7 +2,7 @@
 // Uses only inline styles + CSS vars (no external CSS classes).
 // Never logs or displays full secret values — only masked, structured data.
 
-import { FINDINGS } from '../../data/placeholder';
+import { FINDINGS } from '../../data';
 import { band } from '../../lib/priority';
 import { priStyle, priLabel } from '../../lib/classify';
 import { buildBreakdown } from '../../lib/scoring';
