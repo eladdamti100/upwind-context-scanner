@@ -123,7 +123,7 @@ function TableToolbar({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '10px 16px',
+        padding: '8px 14px',
         borderBottom: '1px solid var(--border-subtle)',
         flexWrap: 'wrap',
         gap: 8,
@@ -339,7 +339,7 @@ function Pagination({ filteredCount }: { filteredCount: number }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '8px 16px',
+        padding: '8px 14px',
         borderTop: '1px solid var(--border-subtle)',
         flexWrap: 'wrap',
         gap: 8,
@@ -434,13 +434,14 @@ export function FindingsTable() {
   // Shared TD style
   const tdStyle: React.CSSProperties = {
     padding: '0 12px',
-    height: 52,
+    height: 44,
     borderBottom: '1px solid var(--border-subtle)',
     fontSize: 13,
     color: 'var(--text-primary)',
     verticalAlign: 'middle',
     whiteSpace: 'nowrap',
   };
+
 
   // Sortable column header click
   function handleHeaderClick(colId: string) {
@@ -496,9 +497,9 @@ export function FindingsTable() {
                       onClick={sortable ? () => handleHeaderClick(col.id) : undefined}
                       style={{
                         padding: '0 12px',
-                        height: 38,
+                        height: 34,
                         textAlign: 'left',
-                        fontSize: 11.5,
+                        fontSize: 11,
                         fontWeight: 600,
                         textTransform: 'uppercase',
                         letterSpacing: '0.04em',
@@ -551,11 +552,19 @@ export function FindingsTable() {
                       (e.currentTarget as HTMLElement).style.background = 'transparent';
                     }}
                   >
-                    {visCols.map(col => {
+                    {visCols.map((col, colIdx) => {
+                      const isFirstCol = colIdx === 0;
+                      const railTdStyle: React.CSSProperties = isFirstCol
+                        ? {
+                            ...tdStyle,
+                            borderLeft: `3px solid ${priStyle(effPriority(f, sensitivity)).fg}`,
+                            paddingLeft: 9,
+                          }
+                        : tdStyle;
                       switch (col.id) {
                         case 'priority':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               <SeverityBadge priority={eff} />
                             </td>
                           );
@@ -563,7 +572,7 @@ export function FindingsTable() {
                         case 'classification': {
                           const cs = categoryStyle(f.category);
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               <Chip
                                 label={f.classification}
                                 fg={cs.fg}
@@ -576,7 +585,7 @@ export function FindingsTable() {
 
                         case 'secretType':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               <span
                                 style={{
                                   display: 'inline-flex',
@@ -617,14 +626,14 @@ export function FindingsTable() {
 
                         case 'technology':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               {techOf(f.detectedType)}
                             </td>
                           );
 
                         case 'file':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                                 <Icon
                                   name="file"
@@ -638,7 +647,7 @@ export function FindingsTable() {
                                       fontSize: 11,
                                       color: 'var(--text-tertiary)',
                                       fontFamily: 'var(--font-mono-family, monospace)',
-                                      maxWidth: 160,
+                                      maxWidth: 150,
                                       overflow: 'hidden',
                                       textOverflow: 'ellipsis',
                                       whiteSpace: 'nowrap',
@@ -654,7 +663,7 @@ export function FindingsTable() {
 
                         case 'owner':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}>
                                 <Avatar name={f.owner} />
                                 {f.owner}
@@ -664,35 +673,35 @@ export function FindingsTable() {
 
                         case 'line':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               {f.line}
                             </td>
                           );
 
                         case 'offset':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               {f.offset}
                             </td>
                           );
 
                         case 'exposure':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               {f.exposure}
                             </td>
                           );
 
                         case 'cloud':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               {f.cloud}
                             </td>
                           );
 
                         case 'createdAt':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               {f.createdAt}
                             </td>
                           );
@@ -700,7 +709,7 @@ export function FindingsTable() {
                         case 'environment': {
                           const es = envStyle(f.environment);
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               <Chip label={f.environment} fg={es.fg} bg={es.bg} />
                             </td>
                           );
@@ -710,7 +719,7 @@ export function FindingsTable() {
                           const b = band(f.risk);
                           const ps = priStyle(b);
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               <span
                                 style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
                                 onClick={e => e.stopPropagation()}
@@ -760,7 +769,7 @@ export function FindingsTable() {
                           return (
                             <td
                               key={col.id}
-                              style={tdStyle}
+                              style={railTdStyle}
                               onClick={e => e.stopPropagation()}
                             >
                               <span
@@ -812,7 +821,7 @@ export function FindingsTable() {
 
                         case 'explanation':
                           return (
-                            <td key={col.id} style={tdStyle}>
+                            <td key={col.id} style={railTdStyle}>
                               <span
                                 style={{
                                   display: 'block',
@@ -834,7 +843,7 @@ export function FindingsTable() {
                           return (
                             <td
                               key={col.id}
-                              style={tdStyle}
+                              style={railTdStyle}
                               onClick={e => e.stopPropagation()}
                             >
                               <span style={{ display: 'inline-flex', gap: 4 }}>
@@ -884,7 +893,7 @@ export function FindingsTable() {
                           );
 
                         default:
-                          return <td key={col.id} style={tdStyle} />;
+                          return <td key={col.id} style={railTdStyle} />;
                       }
                     })}
                   </tr>

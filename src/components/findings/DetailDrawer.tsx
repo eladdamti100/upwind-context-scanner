@@ -36,7 +36,7 @@ function Section({ children, style }: { children: React.ReactNode; style?: React
   return (
     <div
       style={{
-        padding: '16px 20px',
+        padding: '14px 16px',
         borderBottom: '1px solid var(--border-subtle)',
         ...style,
       }}
@@ -115,7 +115,7 @@ export function DetailDrawer() {
           top: 0,
           right: 0,
           height: '100vh',
-          width: 480,
+          width: 400,
           maxWidth: '92vw',
           zIndex: 51,
           background: 'var(--surface)',
@@ -130,80 +130,67 @@ export function DetailDrawer() {
         {/* ── 1. Header ─────────────────────────────────────────────────── */}
         <Section
           style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: 12,
-            padding: '16px 20px',
+            padding: '14px 16px',
           }}
         >
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 600,
-                color: 'var(--text-primary)',
-                lineHeight: 1.3,
-                marginBottom: 4,
-              }}
-            >
-              {sel.classification}
-            </div>
-            <div
-              style={{
-                fontSize: 12,
-                color: 'var(--text-tertiary)',
-                fontFamily: 'var(--font-mono-family, monospace)',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {sel.detectedType}
-            </div>
-          </div>
-          <button
-            aria-label="Close detail"
-            onClick={close}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 30,
-              height: 30,
-              borderRadius: 6,
-              border: '1px solid var(--border-subtle)',
-              background: 'transparent',
-              color: 'var(--text-secondary)',
-              cursor: 'pointer',
-              flexShrink: 0,
-            }}
-          >
-            <Icon name="x" size={14} />
-          </button>
-        </Section>
-
-        {/* ── 2. Masked value + badges ──────────────────────────────────── */}
-        <Section>
-          {/* Masked value box */}
+          {/* Title row: classification + close button */}
           <div
             style={{
-              fontFamily: 'var(--font-mono-family, monospace)',
-              fontSize: 14,
-              color: 'var(--text-primary)',
-              background: 'var(--bg-secondary)',
-              borderRadius: 6,
-              padding: '10px 12px',
-              marginBottom: 10,
-              overflowX: 'auto',
-              whiteSpace: 'nowrap',
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              gap: 10,
+              marginBottom: 8,
             }}
           >
-            {sel.maskedValue}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: 'var(--text-primary)',
+                  lineHeight: 1.3,
+                  marginBottom: 3,
+                }}
+              >
+                {sel.classification}
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: 'var(--text-tertiary)',
+                  fontFamily: 'var(--font-mono-family, monospace)',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {sel.detectedType}
+              </div>
+            </div>
+            <button
+              aria-label="Close detail"
+              onClick={close}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 28,
+                height: 28,
+                borderRadius: 6,
+                border: '1px solid var(--border-subtle)',
+                background: 'transparent',
+                color: 'var(--text-secondary)',
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+            >
+              <Icon name="x" size={13} />
+            </button>
           </div>
 
-          {/* Severity + validation row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          {/* Chips row: severity + validation + cloud */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
             <SeverityBadge priority={p} />
 
             {/* Validation chip */}
@@ -212,7 +199,7 @@ export function DetailDrawer() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 5,
-                height: 21,
+                height: 20,
                 padding: '0 7px',
                 borderRadius: 5,
                 background: vs.bg,
@@ -234,17 +221,93 @@ export function DetailDrawer() {
               />
               {isValidating ? 'Validating…' : vs.label}
             </span>
+
+            {/* Cloud chip (if present) */}
+            {sel.cloud && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  height: 20,
+                  padding: '0 7px',
+                  borderRadius: 5,
+                  background: 'var(--bg-secondary)',
+                  fontSize: 11,
+                  fontWeight: 500,
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {sel.cloud}
+              </span>
+            )}
           </div>
         </Section>
 
-        {/* ── 3. Explanation ────────────────────────────────────────────── */}
+        {/* ── 2. Prominent score band ───────────────────────────────────── */}
+        <Section style={{ padding: '14px 16px' }}>
+          {/* Score + label row */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: 8,
+              marginBottom: 10,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 28,
+                fontWeight: 700,
+                color: ps.fg,
+                lineHeight: 1,
+              }}
+            >
+              {sel.scores.remediationPriority}
+            </span>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                color: 'var(--text-tertiary)',
+                lineHeight: 1.2,
+              }}
+            >
+              Remediation priority
+            </span>
+          </div>
+
+          {/* Masked value box */}
+          <div
+            style={{
+              fontFamily: 'var(--font-mono-family, monospace)',
+              fontSize: 13,
+              color: 'var(--text-primary)',
+              background: 'var(--bg-secondary)',
+              borderRadius: 6,
+              padding: '8px 11px',
+              overflowX: 'auto',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {sel.maskedValue}
+          </div>
+        </Section>
+
+        {/* ── 3. Why this was flagged ───────────────────────────────────── */}
         <Section>
+          <SectionLabel>Why this was flagged</SectionLabel>
           <div
             style={{
               background: isFp ? 'var(--severity-safe-bg)' : ps.bg,
               borderLeft: `3px solid ${isFp ? 'var(--uw-green-04)' : ps.fg}`,
               borderRadius: '0 6px 6px 0',
-              padding: '10px 14px',
+              padding: '10px 12px',
+              marginBottom:
+                sel.riskUpReasons.length > 0 || sel.riskDownReasons.length > 0 ? 12 : 0,
             }}
           >
             <div
@@ -267,106 +330,87 @@ export function DetailDrawer() {
               {sel.explanation}
             </div>
           </div>
-        </Section>
 
-        {/* ── 4. Facts grid ─────────────────────────────────────────────── */}
-        <Section>
-          <SectionLabel>Details</SectionLabel>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '8px 12px',
-            }}
-          >
-            {(
-              [
-                ['Classification',    sel.classification],
-                ['Remediation priority', priLabel(p)],
-                ['Cloud',            sel.cloud],
-                ['Environment',      sel.environment],
-                ['Exposure',         sel.exposure],
-                ['Access scope',     sel.accessScope],
-                ['Activity',         sel.activity],
-                ['Asset criticality',sel.assetCriticality],
-                ['Asset / storage',  sel.asset],
-                ['Owner',            sel.owner],
-              ] as [string, string][]
-            ).map(([label, value]) => (
-              <div key={label}>
-                <div
+          {/* Risk-up reasons */}
+          {sel.riskUpReasons.length > 0 && (
+            <div style={{ marginBottom: sel.riskDownReasons.length > 0 ? 10 : 0 }}>
+              <ul
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  listStyle: 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 4,
+                }}
+              >
+                {sel.riskUpReasons.map((r, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: 6,
+                      fontSize: 12.5,
+                      color: 'var(--text-secondary)',
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: 'var(--severity-high)',
+                        flexShrink: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      ▲
+                    </span>
+                    {r}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Risk-down reasons */}
+          {sel.riskDownReasons.length > 0 && (
+            <ul
+              style={{
+                margin: 0,
+                padding: 0,
+                listStyle: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}
+            >
+              {sel.riskDownReasons.map((r, i) => (
+                <li
+                  key={i}
                   style={{
-                    fontSize: 10.5,
-                    fontWeight: 600,
-                    color: 'var(--text-tertiary)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.04em',
-                    marginBottom: 2,
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: 6,
+                    fontSize: 12.5,
+                    color: 'var(--text-secondary)',
                   }}
                 >
-                  {label}
-                </div>
-                <div style={{ fontSize: 12.5, color: 'var(--text-primary)' }}>
-                  {value}
-                </div>
-              </div>
-            ))}
-
-            {/* File path — mono, full width */}
-            <div style={{ gridColumn: '1 / -1' }}>
-              <div
-                style={{
-                  fontSize: 10.5,
-                  fontWeight: 600,
-                  color: 'var(--text-tertiary)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  marginBottom: 2,
-                }}
-              >
-                File path
-              </div>
-              <div
-                style={{
-                  fontSize: 12.5,
-                  color: 'var(--text-primary)',
-                  fontFamily: 'var(--font-mono-family, monospace)',
-                  overflowX: 'auto',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {sel.path}
-              </div>
-            </div>
-
-            {/* Line : offset — mono */}
-            <div>
-              <div
-                style={{
-                  fontSize: 10.5,
-                  fontWeight: 600,
-                  color: 'var(--text-tertiary)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  marginBottom: 2,
-                }}
-              >
-                Line : offset
-              </div>
-              <div
-                style={{
-                  fontSize: 12.5,
-                  color: 'var(--text-primary)',
-                  fontFamily: 'var(--font-mono-family, monospace)',
-                }}
-              >
-                {sel.line} : {sel.offset}
-              </div>
-            </div>
-          </div>
+                  <span
+                    style={{
+                      color: 'var(--severity-safe)',
+                      flexShrink: 0,
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    ▼
+                  </span>
+                  {r}
+                </li>
+              ))}
+            </ul>
+          )}
         </Section>
 
-        {/* ── 5. Score breakdown ────────────────────────────────────────── */}
+        {/* ── 4. Score breakdown ────────────────────────────────────────── */}
         <Section>
           <SectionLabel>Score breakdown</SectionLabel>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -415,66 +459,102 @@ export function DetailDrawer() {
           </div>
         </Section>
 
-        {/* ── 6. Risk factors ───────────────────────────────────────────── */}
-        {(sel.riskUpReasons.length > 0 || sel.riskDownReasons.length > 0) && (
-          <Section>
-            <SectionLabel>Risk factors</SectionLabel>
-
-            {sel.riskUpReasons.length > 0 && (
-              <div style={{ marginBottom: sel.riskDownReasons.length > 0 ? 12 : 0 }}>
+        {/* ── 5. Details grid ───────────────────────────────────────────── */}
+        <Section>
+          <SectionLabel>Details</SectionLabel>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '8px 12px',
+            }}
+          >
+            {(
+              [
+                ['Classification',     sel.classification],
+                ['Remediation priority', priLabel(p)],
+                ['Cloud',             sel.cloud],
+                ['Environment',       sel.environment],
+                ['Exposure',          sel.exposure],
+                ['Access scope',      sel.accessScope],
+                ['Activity',          sel.activity],
+                ['Asset criticality', sel.assetCriticality],
+                ['Asset / storage',   sel.asset],
+                ['Owner',             sel.owner],
+              ] as [string, string][]
+            ).map(([label, value]) => (
+              <div key={label}>
                 <div
                   style={{
                     fontSize: 11.5,
                     fontWeight: 600,
-                    color: 'var(--severity-high)',
-                    marginBottom: 6,
+                    color: 'var(--text-tertiary)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                    marginBottom: 2,
                   }}
                 >
-                  Increases risk
+                  {label}
                 </div>
-                <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  {sel.riskUpReasons.map((r, i) => (
-                    <li
-                      key={i}
-                      style={{ display: 'flex', alignItems: 'flex-start', gap: 6, fontSize: 12.5, color: 'var(--text-secondary)' }}
-                    >
-                      <span style={{ color: 'var(--severity-high)', flexShrink: 0, lineHeight: 1.5 }}>▲</span>
-                      {r}
-                    </li>
-                  ))}
-                </ul>
+                <div style={{ fontSize: 12.5, color: 'var(--text-primary)' }}>{value}</div>
               </div>
-            )}
+            ))}
 
-            {sel.riskDownReasons.length > 0 && (
-              <div>
-                <div
-                  style={{
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    color: 'var(--severity-safe)',
-                    marginBottom: 6,
-                  }}
-                >
-                  Reduces risk
-                </div>
-                <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  {sel.riskDownReasons.map((r, i) => (
-                    <li
-                      key={i}
-                      style={{ display: 'flex', alignItems: 'flex-start', gap: 6, fontSize: 12.5, color: 'var(--text-secondary)' }}
-                    >
-                      <span style={{ color: 'var(--severity-safe)', flexShrink: 0, lineHeight: 1.5 }}>▼</span>
-                      {r}
-                    </li>
-                  ))}
-                </ul>
+            {/* File path — mono, full width */}
+            <div style={{ gridColumn: '1 / -1' }}>
+              <div
+                style={{
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  color: 'var(--text-tertiary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  marginBottom: 2,
+                }}
+              >
+                File path
               </div>
-            )}
-          </Section>
-        )}
+              <div
+                style={{
+                  fontSize: 12.5,
+                  color: 'var(--text-primary)',
+                  fontFamily: 'var(--font-mono-family, monospace)',
+                  overflowX: 'auto',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {sel.path}
+              </div>
+            </div>
 
-        {/* ── 7. Recommended actions ────────────────────────────────────── */}
+            {/* Line : offset — mono */}
+            <div>
+              <div
+                style={{
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  color: 'var(--text-tertiary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  marginBottom: 2,
+                }}
+              >
+                Line : offset
+              </div>
+              <div
+                style={{
+                  fontSize: 12.5,
+                  color: 'var(--text-primary)',
+                  fontFamily: 'var(--font-mono-family, monospace)',
+                }}
+              >
+                {sel.line} : {sel.offset}
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        {/* ── 6. Recommended actions ────────────────────────────────────── */}
         <Section>
           <SectionLabel>Recommended actions</SectionLabel>
           <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -487,26 +567,31 @@ export function DetailDrawer() {
                     display: 'flex',
                     alignItems: 'flex-start',
                     gap: 8,
-                    fontSize: 13,
+                    fontSize: 12.5,
                     color: 'var(--text-primary)',
-                    padding: isEmphasized ? '8px 10px' : '4px 0',
-                    borderRadius: isEmphasized ? 6 : 0,
-                    background: isEmphasized ? ps.bg : 'transparent',
-                    border: isEmphasized ? `1px solid ${ps.fg}` : 'none',
-                    borderLeft: isEmphasized ? `3px solid ${ps.fg}` : 'none',
+                    padding: isEmphasized ? '8px 10px' : '4px 6px',
+                    borderRadius: isEmphasized ? 6 : 4,
+                    background: isEmphasized ? ps.bg : 'var(--bg-secondary)',
+                    borderLeft: isEmphasized ? `3px solid ${ps.fg}` : '3px solid transparent',
                   }}
                 >
                   <span
                     style={{
-                      fontSize: 11,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 18,
+                      height: 18,
+                      borderRadius: 4,
+                      background: isEmphasized ? ps.fg : 'var(--bg-tertiary)',
+                      color: isEmphasized ? '#fff' : 'var(--text-tertiary)',
+                      fontSize: 10,
                       fontWeight: 700,
-                      color: isEmphasized ? ps.fg : 'var(--text-tertiary)',
-                      minWidth: 18,
-                      lineHeight: 1.6,
                       flexShrink: 0,
+                      marginTop: 1,
                     }}
                   >
-                    {idx + 1}.
+                    {idx + 1}
                   </span>
                   {action}
                 </li>
@@ -515,7 +600,7 @@ export function DetailDrawer() {
           </ol>
         </Section>
 
-        {/* ── 8. Action buttons ─────────────────────────────────────────── */}
+        {/* ── 7. Action buttons ─────────────────────────────────────────── */}
         <Section style={{ borderBottom: 'none', paddingBottom: 24 }}>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {vs.canValidate && state.settings.validationEnabled && (

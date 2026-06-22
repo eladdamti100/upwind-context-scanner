@@ -6,8 +6,8 @@ import { useStore } from '../../state/StoreContext';
 function SignalGlyph() {
   return (
     <svg
-      width={17}
-      height={17}
+      width={15}
+      height={15}
       viewBox="0 0 24 24"
       fill="none"
       stroke="#ffffff"
@@ -24,26 +24,6 @@ function SignalGlyph() {
       <path d="M6 4.5a8.49 8.49 0 0 1 12 0" />
       {/* Downward stem */}
       <line x1="12" y1="11.5" x2="12" y2="16" />
-    </svg>
-  );
-}
-
-/** Small circle ring for the org chip */
-function OrgRing() {
-  return (
-    <svg
-      width={12}
-      height={12}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="9" />
-      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
@@ -66,24 +46,24 @@ export function TopBar() {
   return (
     <div
       style={{
-        height: 58,
+        height: 52,
         borderBottom: '1px solid var(--border-subtle)',
         background: 'var(--surface)',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        padding: '0 32px',
-        gap: 18,
+        padding: '0 20px',
+        gap: 16,
         flexShrink: 0,
       }}
     >
       {/* Brand */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
         <div
           style={{
-            width: 30,
-            height: 30,
-            borderRadius: 9,
+            width: 28,
+            height: 28,
+            borderRadius: 8,
             background: 'linear-gradient(135deg,#2C72DD,#553BF1)',
             display: 'flex',
             alignItems: 'center',
@@ -95,7 +75,7 @@ export function TopBar() {
         </div>
         <span
           style={{
-            fontSize: 18,
+            fontSize: 15,
             fontWeight: 600,
             letterSpacing: '-0.02em',
             color: 'var(--text-primary)',
@@ -107,51 +87,21 @@ export function TopBar() {
         </span>
       </div>
 
-      {/* Divider after brand */}
+      {/* Search box — centered, flexible */}
       <div
         style={{
-          width: 1,
-          height: 24,
-          background: 'var(--border-subtle)',
-          flexShrink: 0,
-        }}
-      />
-
-      {/* Global scope selector */}
-      <button
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          color: 'var(--text-secondary)',
-          fontFamily: 'var(--font-default-family)',
-          fontSize: 13,
-          padding: '4px 6px',
-          borderRadius: 6,
-        }}
-      >
-        <Icon name="globe" size={15} />
-        <span>Global Scope</span>
-        <Icon name="chevron-down" size={14} />
-      </button>
-
-      {/* Search box */}
-      <div
-        style={{
-          width: 260,
-          height: 32,
+          flex: 1,
+          maxWidth: 440,
+          margin: '0 auto',
+          height: 34,
           display: 'flex',
           alignItems: 'center',
           gap: 8,
           border: '1px solid var(--border-subtle)',
-          borderRadius: 6,
-          padding: '0 10px',
-          background: 'var(--surface)',
+          borderRadius: 8,
+          padding: '0 12px',
+          background: 'var(--bg-tertiary)',
           color: 'var(--text-secondary)',
-          flexShrink: 0,
         }}
       >
         <Icon name="search" size={14} />
@@ -163,7 +113,7 @@ export function TopBar() {
             color: 'var(--text-tertiary)',
           }}
         >
-          Search
+          Search findings, assets, keys, severity…
         </span>
         <span
           style={{
@@ -179,16 +129,10 @@ export function TopBar() {
         </span>
       </div>
 
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
-
-      {/* Icons row — ~16px gap */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      {/* Right cluster: bell + gear + profile */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
         <button style={iconBtnStyle} aria-label="Notifications">
           <Icon name="bell" size={16} />
-        </button>
-        <button style={iconBtnStyle} aria-label="New">
-          <Icon name="plus" size={16} />
         </button>
         <button
           title="Settings"
@@ -198,48 +142,60 @@ export function TopBar() {
         >
           <Icon name="settings" size={16} />
         </button>
-      </div>
 
-      {/* Org switcher chip */}
-      <button
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          background: 'none',
-          border: '1px solid var(--border-subtle)',
-          cursor: 'pointer',
-          color: 'var(--text-secondary)',
-          fontFamily: 'var(--font-default-family)',
-          fontSize: 13,
-          padding: '4px 10px',
-          borderRadius: 6,
-          whiteSpace: 'nowrap',
-        }}
-      >
-        <OrgRing />
-        <span>Acme Cloud</span>
-        <Icon name="chevron-down" size={13} />
-      </button>
-
-      {/* Avatar */}
-      <div
-        style={{
-          width: 30,
-          height: 30,
-          borderRadius: '50%',
-          background: 'var(--uw-cyan-02)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 13,
-          fontWeight: 600,
-          color: '#ffffff',
-          flexShrink: 0,
-          userSelect: 'none',
-        }}
-      >
-        E
+        {/* Profile chip */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            marginLeft: 4,
+          }}
+        >
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              background: 'var(--uw-primary-02)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 12,
+              fontWeight: 600,
+              color: '#ffffff',
+              flexShrink: 0,
+              userSelect: 'none',
+            }}
+          >
+            AM
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-default-family)',
+                lineHeight: 1,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Alex Morgan
+            </span>
+            <span
+              style={{
+                fontSize: 11,
+                color: 'var(--text-tertiary)',
+                fontFamily: 'var(--font-default-family)',
+                lineHeight: 1,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Security Engineer
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

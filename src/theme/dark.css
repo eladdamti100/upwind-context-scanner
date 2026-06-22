@@ -6,16 +6,16 @@
    ========================================================= */
 
 html[data-theme="dark"] {
-  --bg-secondary: #0d1017;
-  --bg-primary: #12161d;
-  --surface: #151a22;
-  --surface-card: #151a22;
-  --surface-elevated: #1b212b;
-  --bg-tertiary: #1b212b;
-  --border-subtle: #252c38;
-  --border-primary: #33404f;
-  --interactive-hover: #1b2230;
-  --interactive-active: #252c38;
+  --bg-secondary: #0b0e14;
+  --bg-primary: #0e121a;
+  --surface: #12161f;
+  --surface-card: #12161f;
+  --surface-elevated: #171c26;
+  --bg-tertiary: #1b212c;
+  --border-subtle: #1c2230;
+  --border-primary: #2a313f;
+  --interactive-hover: #161b25;
+  --interactive-active: #1f2734;
 
   --uw-royal-purple-06: #201d36;
   --uw-amber-06: #2a2014;

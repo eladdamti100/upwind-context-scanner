@@ -29,17 +29,25 @@ function AppShell() {
     >
       <TopBar />
 
+      {/* Tabs row — compact, directly under the TopBar */}
       <div
         style={{
-          flex: 1,
-          overflow: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
+          padding: '12px 20px 0',
+          flexShrink: 0,
         }}
       >
         <PageHeader />
         <Tabs />
+      </div>
 
+      {/* Active view */}
+      <div
+        style={{
+          flex: 1,
+          overflow: 'auto',
+          padding: '16px 20px 40px',
+        }}
+      >
         {state.tab === 'findings' && (
           <FindingsView />
         )}
