@@ -18,7 +18,7 @@ export function PageHeader() {
           fontSize: 13.5,
           color: 'var(--text-secondary)',
           maxWidth: 780,
-          margin: '8px 0 0',
+          margin: '6px 0 0',
           fontFamily: 'var(--font-default-family)',
           lineHeight: 1.5,
         }}

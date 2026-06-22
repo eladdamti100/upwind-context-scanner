@@ -18,18 +18,19 @@ function Card({ label, value, color, helper }: CardProps) {
         borderRadius: 12,
         boxShadow: 'var(--shadow-sm)',
         padding: 20,
+        minHeight: 128,
         display: 'flex',
         flexDirection: 'column',
-        gap: 4,
+        gap: 10,
       }}
     >
-      <span style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+      <span style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
         {label}
       </span>
-      <span style={{ fontSize: 32, fontWeight: 600, color, lineHeight: 1.1 }}>
+      <span style={{ fontSize: 32, fontWeight: 600, color, lineHeight: 1, letterSpacing: '-0.02em' }}>
         {value}
       </span>
-      <span style={{ fontSize: 11, color: 'var(--text-tertiary)', lineHeight: 1.4 }}>
+      <span style={{ fontSize: 11.5, color: 'var(--text-tertiary)', lineHeight: 1.35 }}>
         {helper}
       </span>
     </div>

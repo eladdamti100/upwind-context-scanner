@@ -34,13 +34,15 @@ export function Tabs() {
                 ? '2px solid var(--action-primary)'
                 : '2px solid transparent',
               cursor: 'pointer',
-              padding: '8px 16px',
+              height: 42,
+              padding: '0 16px',
               fontSize: 14,
               fontWeight: isActive ? 600 : 500,
-              color: isActive ? 'var(--uw-primary-01, var(--uw-primary-02))' : 'var(--text-secondary)',
+              color: isActive ? 'var(--uw-primary-01)' : 'var(--text-secondary)',
               fontFamily: 'var(--font-default-family)',
               marginBottom: -1,
               letterSpacing: '-0.01em',
+              whiteSpace: 'nowrap',
             }}
           >
             {label}

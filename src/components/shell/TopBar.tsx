@@ -1,5 +1,64 @@
+import type { CSSProperties } from 'react';
 import { Icon } from '../common/Icon';
 import { useStore } from '../../state/StoreContext';
+
+/** Inline SVG: concentric broadcast arcs radiating from a center dot with a short downward stem */
+function SignalGlyph() {
+  return (
+    <svg
+      width={17}
+      height={17}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#ffffff"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {/* Center dot */}
+      <circle cx="12" cy="10" r="1.5" fill="#ffffff" stroke="none" />
+      {/* Inner arc */}
+      <path d="M9 7.5a4.24 4.24 0 0 1 6 0" />
+      {/* Outer arc */}
+      <path d="M6 4.5a8.49 8.49 0 0 1 12 0" />
+      {/* Downward stem */}
+      <line x1="12" y1="11.5" x2="12" y2="16" />
+    </svg>
+  );
+}
+
+/** Small circle ring for the org chip */
+function OrgRing() {
+  return (
+    <svg
+      width={12}
+      height={12}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+const iconBtnStyle: CSSProperties = {
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  color: 'var(--text-tertiary)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 6,
+  borderRadius: 6,
+};
 
 export function TopBar() {
   const { dispatch } = useStore();
@@ -24,7 +83,7 @@ export function TopBar() {
           style={{
             width: 30,
             height: 30,
-            borderRadius: 8,
+            borderRadius: 9,
             background: 'linear-gradient(135deg,#2C72DD,#553BF1)',
             display: 'flex',
             alignItems: 'center',
@@ -32,7 +91,7 @@ export function TopBar() {
             flexShrink: 0,
           }}
         >
-          <Icon name="shield" size={16} stroke="#ffffff" />
+          <SignalGlyph />
         </div>
         <span
           style={{
@@ -75,14 +134,14 @@ export function TopBar() {
         }}
       >
         <Icon name="globe" size={15} />
-        <span>Global scope</span>
+        <span>Global Scope</span>
         <Icon name="chevron-down" size={14} />
       </button>
 
       {/* Search box */}
       <div
         style={{
-          width: 240,
+          width: 260,
           height: 32,
           display: 'flex',
           alignItems: 'center',
@@ -123,57 +182,21 @@ export function TopBar() {
       {/* Spacer */}
       <div style={{ flex: 1 }} />
 
-      {/* Icons row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-        <button
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-tertiary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 6,
-            borderRadius: 6,
-          }}
-          aria-label="Notifications"
-        >
-          <Icon name="bell" size={17} />
+      {/* Icons row — ~16px gap */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <button style={iconBtnStyle} aria-label="Notifications">
+          <Icon name="bell" size={16} />
         </button>
-        <button
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-tertiary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 6,
-            borderRadius: 6,
-          }}
-          aria-label="New"
-        >
-          <Icon name="plus" size={17} />
+        <button style={iconBtnStyle} aria-label="New">
+          <Icon name="plus" size={16} />
         </button>
         <button
           title="Settings"
           onClick={() => dispatch({ type: 'OPEN_SETTINGS' })}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-tertiary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 6,
-            borderRadius: 6,
-          }}
+          style={iconBtnStyle}
           aria-label="Settings"
         >
-          <Icon name="settings" size={17} />
+          <Icon name="settings" size={16} />
         </button>
       </div>
 
@@ -194,6 +217,7 @@ export function TopBar() {
           whiteSpace: 'nowrap',
         }}
       >
+        <OrgRing />
         <span>Acme Cloud</span>
         <Icon name="chevron-down" size={13} />
       </button>
@@ -204,7 +228,7 @@ export function TopBar() {
           width: 30,
           height: 30,
           borderRadius: '50%',
-          background: '#0BC5C5',
+          background: 'var(--uw-cyan-02)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
