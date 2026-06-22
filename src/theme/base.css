@@ -1,0 +1,28 @@
+/* =========================================================
+   SignalLens — base resets, scrollbars, animations
+   ========================================================= */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg-secondary);
+  font-family: var(--font-default-family);
+  font-size: var(--font-default-size);
+  color: var(--text-primary);
+}
+
+#root { height: 100%; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--uw-gray-04); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes uwspin { to { transform: rotate(360deg); } }
+@keyframes uwfade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes uwslide { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
