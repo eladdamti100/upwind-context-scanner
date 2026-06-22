@@ -206,6 +206,10 @@ export interface ClassificationDetail {
   guardrail: string;
 }
 
+// ---- Finding lifecycle / triage (spec §18) ----------------------------------
+export type FindingStatus = 'open' | 'in-review' | 'snoozed' | 'accepted-risk' | 'resolved' | 'false-positive';
+export interface SnoozeInfo { until: string; reason: string; applyToSimilar: boolean; }
+
 // ---- Map / exposure topology (spec §16) -------------------------------------
 export interface MapAsset {
   key: string;
