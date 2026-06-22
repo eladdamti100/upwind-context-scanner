@@ -6,8 +6,15 @@ import { AssetPanel } from './AssetPanel';
 
 export function MapView() {
   return (
-    <div data-testid="map-view" style={{ padding: '18px 32px 60px' }}>
-      <p style={{ margin: '0 0 14px', fontSize: 13, color: 'var(--text-secondary)' }}>
+    <div data-testid="map-view" style={{ padding: '20px 32px 64px' }}>
+      <p
+        style={{
+          margin: '0 0 14px',
+          fontSize: 13,
+          color: 'var(--text-secondary)',
+          lineHeight: 1.5,
+        }}
+      >
         Visual topology of exposed assets, data flows, and external AI service connections. Click any node to inspect findings.
       </p>
       <ExposureMap />
