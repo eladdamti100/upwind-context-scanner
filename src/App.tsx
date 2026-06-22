@@ -9,6 +9,7 @@ import { RiskPopover } from './components/findings/RiskPopover';
 import { ValidationModal } from './components/findings/ValidationModal';
 import { LifecycleDialog } from './components/findings/LifecycleDialog';
 import { SettingsModal } from './components/settings/SettingsModal';
+import { ClassificationsView } from './components/classifications/ClassificationsView';
 
 function AppShell() {
   const { state } = useStore();
@@ -42,9 +43,7 @@ function AppShell() {
           <FindingsView />
         )}
         {state.tab === 'classifications' && (
-          <div data-testid="classifications-view" style={{ padding: '18px 32px 60px' }}>
-            Classifications view
-          </div>
+          <ClassificationsView />
         )}
         {state.tab === 'map' && (
           <div data-testid="map-view" style={{ padding: '18px 32px 60px' }}>
