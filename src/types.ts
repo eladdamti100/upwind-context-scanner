@@ -33,6 +33,9 @@ export type Category =
   | 'Secret' | 'Fintech' | 'SaaS' | 'PII' | 'PCI' | 'Healthcare' | 'Retail'
   | 'False Positive Pattern' | 'Documentation Example' | 'Test Value';
 
+export type AccessScope = 'public' | 'broad' | 'internal' | 'restricted';
+export type ActivitySignal = 'high' | 'medium' | 'low' | 'unknown';
+
 // Spec §13 — kebab-case so they map cleanly to CSS/UI keys.
 export type ValidationStatus =
   | 'not-validated' | 'validated-active' | 'validated-inactive'
@@ -42,13 +45,17 @@ export type ValidationStatus =
 
 // Spec §11 — the components combined into the final scores.
 export interface RiskScoreBreakdown {
-  regexConfidence: number; // 0..1
-  deterministicRules: number; // signed delta applied to authenticity
-  lgbmProbability: number; // 0..1
-  authenticityScore: number; // 0..100
-  exposureScore: number; // 0..100
-  assetCriticalityScore: number; // 0..100
-  priorityScore: number; // 0..100
+  // authenticity axis (is it a real secret?)
+  regexConfidence: number;    // 0..1
+  deterministicRules: number; // signed delta
+  lgbmProbability: number;    // 0..1
+  authenticityScore: number;  // 0..100
+  // remediation-priority axis (what to fix first?)
+  accessScore: number;        // 0..100
+  exposureScore: number;      // 0..100
+  secretTypeSeverity: number; // 0..100
+  activityScore: number;      // 0..100
+  remediationPriority: number;// 0..100  (customer-facing "Remediation Priority")
 }
 
 // Spec §9 — deterministic rules run in parallel to the model. Rule packs and
@@ -166,6 +173,8 @@ export interface Finding {
   offset: number;
   exposure: Exposure;
   assetCriticality: AssetCriticality;
+  accessScope: AccessScope;
+  activity: ActivitySignal;
   scores: RiskScoreBreakdown;
   isFalsePositive?: boolean;
   riskUpReasons: string[];

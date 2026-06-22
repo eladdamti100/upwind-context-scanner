@@ -5,7 +5,8 @@ import type { Finding, RiskScoreBreakdown } from '../types';
 // --- test-only fixtures (NOT the real mock dataset) -------------------------
 const scores: RiskScoreBreakdown = {
   regexConfidence: 0.9, deterministicRules: 0, lgbmProbability: 0.5,
-  authenticityScore: 50, exposureScore: 50, assetCriticalityScore: 50, priorityScore: 50,
+  authenticityScore: 50, exposureScore: 50,
+  accessScore: 50, secretTypeSeverity: 50, activityScore: 50, remediationPriority: 50,
 };
 function makeFinding(o: Partial<Finding> = {}): Finding {
   return {
@@ -14,6 +15,7 @@ function makeFinding(o: Partial<Finding> = {}): Finding {
     risk: 50, validation: 'not-validated', file: 'a.env', path: '/app/a.env', asset: 'asset-1',
     assetKind: 'Service', environment: 'Production', cloud: 'AWS', owner: 'Maya Rosen',
     createdAt: 'Jun 1, 2026', line: 1, offset: 1, exposure: 'Internal', assetCriticality: 'Medium',
+    accessScope: 'internal', activity: 'unknown',
     scores: { ...scores }, riskUpReasons: [], riskDownReasons: [], explanation: '',
     ...o,
   };
