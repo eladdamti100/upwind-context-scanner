@@ -10,6 +10,7 @@ import { ValidationModal } from './components/findings/ValidationModal';
 import { LifecycleDialog } from './components/findings/LifecycleDialog';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { ClassificationsView } from './components/classifications/ClassificationsView';
+import { MapView } from './components/map/MapView';
 
 function AppShell() {
   const { state } = useStore();
@@ -46,9 +47,7 @@ function AppShell() {
           <ClassificationsView />
         )}
         {state.tab === 'map' && (
-          <div data-testid="map-view" style={{ padding: '18px 32px 60px' }}>
-            Map view
-          </div>
+          <MapView />
         )}
       </div>
 

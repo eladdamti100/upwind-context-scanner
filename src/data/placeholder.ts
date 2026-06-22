@@ -6,7 +6,7 @@
 //   by pointing the app at the real `data/` modules later.
 // - Covers the demo narrative: real critical secrets + clear false positives.
 // ============================================================================
-import type { Finding, ClassificationRow, ClassificationDetail, MapAsset } from '../types';
+import type { Finding, ClassificationRow, ClassificationDetail, MapAsset, MapFlowEdge, ExternalAiNode } from '../types';
 
 export const FINDINGS: Finding[] = [
   {
@@ -142,3 +142,29 @@ export const MAP_ASSETS: Record<string, MapAsset> = {
     position: { xPct: 52, yPct: 46 }, edges: [],
   },
 };
+
+export const MAP_FLOWS: MapFlowEdge[] = [
+  {
+    id: 'flow-1',
+    fromKey: 'payment-service',
+    toKey: 'customer-prod-bucket',
+    protocol: 'service-to-service',
+    findings: [{ detectedType: 'stripe-secret-key', priority: 'high', validation: 'Not validated', locationType: 'flow' }],
+  },
+  {
+    id: 'flow-ai',
+    fromKey: 'checkout-api',
+    toKey: 'openai',
+    protocol: 'AI API call',
+    findings: [{ detectedType: 'api-key', priority: 'high', validation: 'Unsupported', locationType: 'external_ai' }],
+  },
+];
+
+export const EXTERNAL_AI_NODES: ExternalAiNode[] = [
+  {
+    key: 'openai',
+    provider: 'OpenAI',
+    position: { xPct: 88, yPct: 12 },
+    findings: [{ detectedType: 'api-key', priority: 'high', validation: 'Unsupported', locationType: 'external_ai' }],
+  },
+];

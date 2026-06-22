@@ -225,3 +225,28 @@ export interface MapAsset {
   position: { xPct: number; yPct: number };
   edges: string[];
 }
+
+// ---- Exposure map extensions ------------------------------------------------
+export type ExposureLocationType = 'asset' | 'flow' | 'external_ai';
+
+export interface MapFindingRef {
+  detectedType: string;
+  priority: Priority;
+  validation: string;
+  locationType: ExposureLocationType;
+}
+
+export interface MapFlowEdge {
+  id: string;
+  fromKey: string;
+  toKey: string;
+  protocol?: string;
+  findings: MapFindingRef[];
+}
+
+export interface ExternalAiNode {
+  key: string;
+  provider: string;
+  position: { xPct: number; yPct: number };
+  findings: MapFindingRef[];
+}
