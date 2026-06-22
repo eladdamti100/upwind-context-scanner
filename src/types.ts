@@ -6,7 +6,8 @@
 // that need a single source of truth (verticals).
 //
 // INVARIANT: only MASKED secret values ever appear in these structures
-// (`maskedValue`, `*Masked`). Full secrets are never stored, logged, or modeled.
+// (`maskedValue`, `*Masked`). Full secrets are never stored, logged, or passed
+// to the model.
 // ============================================================================
 
 // ---- Customer verticals -----------------------------------------------------
@@ -224,6 +225,18 @@ export interface MapAsset {
   findings: { detectedType: string; priority: Priority; validation: string }[];
   position: { xPct: number; yPct: number };
   edges: string[];
+}
+
+// ---- Suggested rules --------------------------------------------------------
+export interface SuggestedRule {
+  id: string;
+  title: string;
+  description: string;
+  reason: string;
+  scope: string;
+  affectedFindingsCount: number;
+  ruleType: 'default' | 'vertical-specific' | 'customer-specific';
+  status: 'suggested' | 'approved' | 'dismissed';
 }
 
 // ---- Exposure map extensions ------------------------------------------------
