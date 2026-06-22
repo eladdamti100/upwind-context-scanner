@@ -1,0 +1,9 @@
+/* =========================================================
+   Upwind — webfonts
+   DM Mono (code) via Google Fonts. "Upwind Sans" is referenced
+   by the family token with a robust system fallback; drop the
+   real Upwind_Sans_*.otf files into /public/fonts and add the
+   @font-face rules here to use the exact brand face.
+   ========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap");

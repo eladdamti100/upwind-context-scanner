@@ -1,0 +1,72 @@
+[
+  {
+    "asset_id": "evenup-legal-backups",
+    "client": "evenup",
+    "type": "bucket",
+    "storage_exposure": "public",
+    "asset_criticality": "critical",
+    "is_publicly_accessible": true,
+    "cloud_provider": "aws",
+    "service_context": "legal-archive"
+  },
+  {
+    "asset_id": "evenup-claims-exports",
+    "client": "evenup",
+    "type": "bucket",
+    "storage_exposure": "shared",
+    "asset_criticality": "critical",
+    "is_publicly_accessible": true,
+    "cloud_provider": "aws",
+    "service_context": "backoffice-exports"
+  },
+  {
+    "asset_id": "evenup-claims-ai-prod",
+    "client": "evenup",
+    "type": "workload",
+    "storage_exposure": "internet",
+    "asset_criticality": "critical",
+    "is_publicly_accessible": true,
+    "cloud_provider": "aws",
+    "service_context": "production-claims-ai"
+  },
+  {
+    "asset_id": "evenup-monorepo",
+    "client": "evenup",
+    "type": "repo",
+    "storage_exposure": "internal",
+    "asset_criticality": "medium",
+    "is_publicly_accessible": false,
+    "cloud_provider": "github",
+    "service_context": "engineering"
+  },
+  {
+    "asset_id": "evenup-docs",
+    "client": "evenup",
+    "type": "repo",
+    "storage_exposure": "internal",
+    "asset_criticality": "low",
+    "is_publicly_accessible": false,
+    "cloud_provider": "github",
+    "service_context": "documentation"
+  },
+  {
+    "asset_id": "evenup-samples",
+    "client": "evenup",
+    "type": "repo",
+    "storage_exposure": "internal",
+    "asset_criticality": "low",
+    "is_publicly_accessible": false,
+    "cloud_provider": "github",
+    "service_context": "samples"
+  },
+  {
+    "asset_id": "evenup-internal-host",
+    "client": "evenup",
+    "type": "host",
+    "storage_exposure": "internal",
+    "asset_criticality": "low",
+    "is_publicly_accessible": false,
+    "cloud_provider": "aws",
+    "service_context": "internal"
+  }
+]

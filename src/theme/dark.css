@@ -1,0 +1,28 @@
+/* =========================================================
+   SignalLens dark theme — refinements layered on top of the
+   base [data-theme="dark"] tokens in colors.css/spacing.css.
+   These deepen the console surfaces and add the soft tinted
+   "-06" accent fills used by badges/chips, matching the design.
+   ========================================================= */
+
+html[data-theme="dark"] {
+  --bg-secondary: #0d1017;
+  --bg-primary: #12161d;
+  --surface: #151a22;
+  --surface-card: #151a22;
+  --surface-elevated: #1b212b;
+  --bg-tertiary: #1b212b;
+  --border-subtle: #252c38;
+  --border-primary: #33404f;
+  --interactive-hover: #1b2230;
+  --interactive-active: #252c38;
+
+  --uw-royal-purple-06: #201d36;
+  --uw-amber-06: #2a2014;
+  --uw-green-06: #13271d;
+  --uw-blue-06: #0e2138;
+  --uw-cyan-06: #0c2733;
+  --uw-red-06: #2a1816;
+  --uw-metal-blue-06: #0e2636;
+  --uw-eggplant-06: #241830;
+}

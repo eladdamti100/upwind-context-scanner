@@ -21,6 +21,93 @@
 
 ---
 
+## Product Feedback Update — 2026-06-22 (Upwind PM)
+
+This section **supersedes/extends** the affected parts of the original tasks below. Nothing here is implemented yet; it updates direction only. All MVP constraints still hold (masked-only secrets, LightGBM interface, Regex = candidate-detection only, demo-stable, **no final mock data** — minimal isolated placeholders only). Status of work so far: Tasks 1–7 (scaffold, theme, types, classify, features, rules, lgbm) are already built; the changes below mostly land in the **not-yet-built** scoring/state/UI tasks, plus additive extensions to the committed `types.ts`.
+
+### PF-1 · Map: three exposure-location categories
+The map must distinguish **where** a secret is exposed:
+- **A. Static exposed secret** — on a specific asset node (bucket, repo, config/deployment file, cloud asset). Findings attach to **asset nodes** (today's model).
+- **B. Dynamic exposed secret** — observed moving between assets (API calls, runtime traffic, token in request/response). Findings attach to **edges/flows** between assets, not just nodes.
+- **C. Secret sent to an external AI service** — payload sent to OpenAI/Anthropic/other LLM provider. Represented as **external-AI nodes / AI-risk edges**, visually separate from normal asset exposure.
+
+New/changed types (add in the scoring/map step; additive to `types.ts`):
+```ts
+export type ExposureLocationType = 'asset' | 'flow' | 'external_ai';
+export interface MapFindingRef { detectedType: string; priority: Priority; validation: string; locationType: ExposureLocationType; }
+export interface MapFlowEdge { id: string; fromKey: string; toKey: string; protocol?: string; findings: MapFindingRef[]; } // dynamic
+export interface ExternalAiNode { key: string; provider: string; /* OpenAI | Anthropic | … */ position: { xPct: number; yPct: number }; findings: MapFindingRef[]; }
+// MapAsset.findings become MapFindingRef[] with locationType 'asset'.
+```
+The map legend/filters gain an exposure-location dimension (static / dynamic / external-AI). Demo data: 1–2 illustrative flow edges and 1 external-AI node (placeholder, clearly isolated).
+
+### PF-2 · Rename "Priority" → **Remediation Priority** (recommended)
+**Recommendation: "Remediation Priority"** — it tells the customer *what to fix first*, action-oriented, and reads well next to the separate **Authenticity** score (is-it-real). (Considered: Exposure Priority — too close to the "Exposure map" label; Risk Priority/Exposure Risk — overlap with the existing Risk score; Action Priority — vaguer.) UI shows the column/label as **"Remediation priority"**.
+
+It is composed of four inputs (authenticity stays a *separate* real-vs-FP axis; low-authenticity/FP findings are downranked or suppressed via sensitivity):
+- **Access** — who can access the secret/asset (`AccessScope`)
+- **Exposure** — how externally exposed it is (existing `exposureScore`)
+- **Secret type severity** — how dangerous the type is (existing `typeSeverity`)
+- **Activity / actual access** — how much it's accessed in practice — **mocked** for MVP as `ActivitySignal`
+
+```ts
+export type AccessScope = 'public' | 'broad' | 'internal' | 'restricted';
+export type ActivitySignal = 'high' | 'medium' | 'low' | 'unknown'; // MOCKED input — not real telemetry
+export interface RemediationPriorityBreakdown {
+  accessScore: number;       // 0..100 from AccessScope
+  exposureScore: number;     // 0..100 (existing)
+  secretTypeSeverity: number;// 0..100 (existing typeSeverity)
+  activityScore: number;     // 0..100 from ActivitySignal (high≈100, medium≈60, low≈25, unknown≈40)
+  remediationPriority: number; // 0..100 final, customer-facing
+}
+// Proposed MVP formula (tunable): remediationPriority =
+//   round(0.30*access + 0.30*exposure + 0.25*secretTypeSeverity + 0.15*activity)
+```
+`Finding` gains `accessScope: AccessScope` and `activity: ActivitySignal`; `RiskScoreBreakdown.priorityScore` is renamed/aliased to `remediationPriority` (keep authenticity fields as-is). **Do not** build real runtime telemetry — `activity` is a mockable per-finding signal.
+
+### PF-3 · Suggested rules (MVP-light, mocked)
+A product flow where the system *suggests* rules from repeated findings/patterns (e.g. "Suppress similar placeholder tokens in docs", "Increase severity for payment secrets in prod configs", "Treat test-fixture secrets as low risk for this customer"). **MVP = mocked suggestions surfaced in the UI; do NOT build a rule-authoring engine** unless explicitly approved.
+```ts
+export interface SuggestedRule {
+  id: string; title: string; description: string; reason: string; scope: string;
+  affectedFindingsCount: number;
+  ruleType: 'default' | 'vertical-specific' | 'customer-specific';
+  status: 'suggested' | 'approved' | 'dismissed';
+}
+```
+UI: a "Suggested rules" surface (panel in Settings or a small section near Classifications) listing mocked suggestions with Approve / Dismiss (state-only, toast feedback).
+
+### PF-4 · Finding lifecycle management (replaces the simple "feedback" concept)
+Triage workflow, **separate from ML feedback** (the 👍/👎 model-signal stays as its own thing). Findings gain a lifecycle status + snooze:
+```ts
+export type FindingStatus = 'open' | 'in-review' | 'snoozed' | 'accepted-risk' | 'resolved' | 'false-positive';
+export interface SnoozeInfo { until: string; reason: string; applyToSimilar: boolean; }
+// Finding gains: status: FindingStatus; snooze?: SnoozeInfo;
+```
+UI: the former `FeedbackModal` becomes a **lifecycle/triage** control (status dropdown + a Snooze dialog: duration → `until` date, reason, optional apply-to-similar). ML feedback is kept distinct.
+
+### PF-5 · Move configurability into a Settings screen
+Config leaves the main dashboard; add a **settings entry point (gear icon)** opening a Settings screen/modal. The dashboard stays focused on **findings + map**. Settings contains:
+- **Scanner sensitivity** — Strict / Balanced / Flexible (moved out of the findings toolbar)
+- **Customer vertical** — SaaS / Fintech / Retail / Healthcare / General-Default
+- **Rule packs** — default / vertical-specific / customer-specific (toggles)
+- **Validation settings** — mocked validation; enabled/disabled placeholder
+
+Sensitivity + vertical still drive the mocked pipeline (via `lib/priority` + rule packs), but the **controls live in Settings**, not the toolbar.
+
+### Revised implementation order (deltas only)
+1. Foundation order unchanged through Step 7 (done).
+2. **Scoring step (Step 8 / Task 7):** implement the new **Remediation Priority** composite (access + exposure + secret-type + mocked activity) and rename `priorityScore` → `remediationPriority`; add `AccessScope`/`ActivitySignal` to `types.ts` + `Finding`.
+3. **State/types:** extend the reducer + `types.ts` for `FindingStatus`/`SnoozeInfo`, settings state (sensitivity, vertical, rule packs, validation), and `SuggestedRule[]` (mocked).
+4. **UI phase:** add a **Settings screen/modal task** (sensitivity + vertical + rule packs + validation) and move the sensitivity control there (Task 15 toolbar keeps search/filters only). Findings table column "Priority" → "Remediation priority".
+5. **Lifecycle replaces feedback (Task 20):** status + snooze triage; keep ML feedback separate.
+6. **Map (Task 22):** extend to the three exposure-location categories (asset / flow / external-AI) with the new map types + legend/filter dimension.
+7. **Suggested rules (new task):** mocked suggestions surface — lower priority, after the core findings + map demo is stable.
+
+These add two new tasks (see **Task 24 · Settings screen** and **Task 25 · Suggested rules (mocked)** below) and modify Tasks 7, 11, 15, 20, 22. Build order still prioritizes a stable core demo before the additive surfaces.
+
+---
+
 ## File Structure
 
 ```
@@ -458,6 +545,8 @@ export const priorityRank = (p: Priority): number =>
 
 ## Task 7: lib/scoring (authenticity + priority formulas)
 
+> ⚠️ **Updated by Product Feedback PF-2.** Rename `priorityScore` → **`remediationPriority`** and compose it from **access + exposure + secret-type severity + mocked activity** (see `RemediationPriorityBreakdown`), adding `AccessScope` + `ActivitySignal` to `types.ts`/`Finding`. Authenticity stays a separate axis. The formulas below are the original baseline — keep authenticity as-is; replace the priority formula per PF-2.
+
 **Files:**
 - Create: `src/lib/scoring.ts`, `src/lib/scoring.test.ts`
 
@@ -742,6 +831,8 @@ Run: `npm test -- smoke`. Expected: PASS.
 
 ## Task 15: FilterToolbar + SensitivityControl
 
+> ⚠️ **Updated by Product Feedback PF-5.** The **sensitivity control moves to the Settings screen (Task 24)** — this toolbar keeps only search + filter chips + Clear/Save view. `SensitivityControl` is built/owned by Task 24. Also rename the findings table "Priority" column to **"Remediation priority"** (PF-2).
+
 **Files:**
 - Create: `src/components/findings/FilterToolbar.tsx`, `src/components/findings/SensitivityControl.tsx`
 
@@ -828,7 +919,9 @@ Run: `npm test -- smoke`. Expected: PASS.
 
 ---
 
-## Task 20: FeedbackModal
+## Task 20: Finding lifecycle / triage (replaces FeedbackModal)
+
+> ⚠️ **Updated by Product Feedback PF-4.** This becomes **finding lifecycle management** (`FindingStatus`: open / in-review / snoozed / accepted-risk / resolved / false-positive) with a **Snooze dialog** (`SnoozeInfo`: until / reason / applyToSimilar). Keep the ML 👍/👎 model-feedback as a *separate* control — lifecycle is triage, not model signal.
 
 **Files:**
 - Create: `src/components/findings/FeedbackModal.tsx`
@@ -859,6 +952,8 @@ Run: `npm test -- smoke`. Expected: PASS.
 ---
 
 ## Task 22: Map view
+
+> ⚠️ **Updated by Product Feedback PF-1.** Extend the map to **three exposure-location categories**: static (asset nodes — today's model), dynamic (`MapFlowEdge` between assets), and external-AI (`ExternalAiNode` for OpenAI/Anthropic/etc.). Add `ExposureLocationType` + the new map types, a legend/filter dimension for static/dynamic/external-AI, and 1–2 placeholder flow edges + 1 external-AI node in the (isolated, replaceable) demo data.
 
 **Files:**
 - Create: `src/components/map/{MapView,ExposureMap,AssetPanel}.tsx`
@@ -891,6 +986,39 @@ Run: `npm test -- smoke`. Expected: PASS.
 - [ ] **Step 4: Full build + test gate** — Run: `npm run build && npm test`. Expected: build clean, all tests green.
 
 - [ ] **Step 5: Commit** — `git add -A && git commit -m "test: demo-flow + masking audit; fidelity pass"`
+
+---
+
+## Task 24: Settings screen (Product Feedback PF-5)
+
+**Files:**
+- Create: `src/components/settings/{SettingsModal,SensitivityControl}.tsx` (move `SensitivityControl` here from Task 15)
+- Modify: `src/components/shell/TopBar.tsx` (gear icon → open settings), `src/state/store.ts` (settings state)
+
+**Interfaces:**
+- Consumes/produces settings state: `sensitivity` (Strict/Balanced/Flexible), `customerVertical` (SaaS/Fintech/Retail/Healthcare/General), `rulePacks` (default / vertical-specific / customer-specific toggles), `validation` (mocked; enabled/disabled placeholder). Sensitivity + vertical still feed the mocked pipeline.
+
+- [ ] **Step 1:** Add a gear icon to `TopBar` that opens a `SettingsModal` (or slide-over). Move the segmented `SensitivityControl` out of the findings toolbar into Settings.
+- [ ] **Step 2:** Add settings reducer state + actions (SET_SENSITIVITY already exists; add SET_VERTICAL, TOGGLE_RULE_PACK, SET_VALIDATION_MODE). Keep the dashboard free of config controls.
+- [ ] **Step 3: Smoke test** — opening Settings shows the three sensitivity options + vertical selector; changing sensitivity still re-ranks findings (effPriority). Run: `npm test -- settings`.
+- [ ] **Step 4: Commit** (suggested message): `feat: add settings screen (sensitivity, vertical, rule packs, validation)`
+
+---
+
+## Task 25: Suggested rules — mocked (Product Feedback PF-3)
+
+**Files:**
+- Create: `src/components/rules/SuggestedRulesPanel.tsx`; mocked data in an isolated, clearly-labeled placeholder module (e.g. `src/data/suggestedRules.placeholder.ts` — replaceable; not final mock data)
+- Modify: `src/state/store.ts` (suggested-rule status: approve/dismiss)
+
+**Interfaces:**
+- Consumes a `SuggestedRule[]` (mocked); renders title/description/reason/scope/affected-count/ruleType, with Approve / Dismiss (state-only + toast). **No rule-authoring engine.**
+
+- [ ] **Step 1:** Render the mocked `SuggestedRule[]` in a panel (in Settings or near Classifications). Approve/Dismiss update `status` in state and toast.
+- [ ] **Step 2: Smoke test** — panel lists a mocked suggestion; Dismiss flips its status. Run: `npm test -- suggested`.
+- [ ] **Step 3: Commit** (suggested message): `feat: add mocked suggested-rules panel`
+
+> Lower priority — build after the core findings + map demo is stable. Keep the mocked rules isolated and replaceable (teammate owns final data).
 
 ---
 
