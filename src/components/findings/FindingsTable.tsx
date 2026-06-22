@@ -712,6 +712,7 @@ export function FindingsTable() {
                                   {priLabel(b)}
                                 </span>
                                 <button
+                                  aria-label="Why this score?"
                                   onClick={e => {
                                     e.stopPropagation();
                                     dispatch({ type: 'OPEN_RISK', id: f.id });

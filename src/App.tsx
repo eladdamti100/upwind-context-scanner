@@ -5,6 +5,8 @@ import { Tabs } from './components/shell/Tabs';
 import { Toast } from './components/common/Toast';
 import { FindingsView } from './components/findings/FindingsView';
 import { DetailDrawer } from './components/findings/DetailDrawer';
+import { RiskPopover } from './components/findings/RiskPopover';
+import { ValidationModal } from './components/findings/ValidationModal';
 
 function AppShell() {
   const { state } = useStore();
@@ -50,6 +52,8 @@ function AppShell() {
       </div>
 
       <DetailDrawer />
+      <RiskPopover />
+      <ValidationModal />
       <Toast message={state.toast} />
     </div>
   );
