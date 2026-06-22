@@ -1,0 +1,6 @@
+
+# Generated synthetic corpus — regenerate with: go run ./cmd/generate
+customer-data/
+
+# Generated mock corpus fixture
+mockgen/
