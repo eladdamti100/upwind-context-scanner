@@ -23,13 +23,13 @@ import { Popover } from '../common/Popover';
 // Small shared helpers
 // ---------------------------------------------------------------------------
 
-function Chip({ label, fg, bg }: { label: string; fg: string; bg: string }) {
+function Chip({ label, fg, bg, dot = true }: { label: string; fg: string; bg: string; dot?: boolean }) {
   return (
     <span
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: 5,
+        gap: dot ? 5 : 0,
         height: 20,
         padding: '0 7px',
         borderRadius: 4,
@@ -41,9 +41,11 @@ function Chip({ label, fg, bg }: { label: string; fg: string; bg: string }) {
         whiteSpace: 'nowrap',
       }}
     >
-      <span
-        style={{ width: 5, height: 5, borderRadius: '50%', background: fg, flexShrink: 0 }}
-      />
+      {dot && (
+        <span
+          style={{ width: 5, height: 5, borderRadius: '50%', background: fg, flexShrink: 0 }}
+        />
+      )}
       {label}
     </span>
   );
@@ -432,7 +434,7 @@ export function FindingsTable() {
   // Shared TD style
   const tdStyle: React.CSSProperties = {
     padding: '0 12px',
-    height: 48,
+    height: 52,
     borderBottom: '1px solid var(--border-subtle)',
     fontSize: 13,
     color: 'var(--text-primary)',
@@ -494,7 +496,7 @@ export function FindingsTable() {
                       onClick={sortable ? () => handleHeaderClick(col.id) : undefined}
                       style={{
                         padding: '0 12px',
-                        height: 36,
+                        height: 38,
                         textAlign: 'left',
                         fontSize: 11.5,
                         fontWeight: 600,
@@ -562,7 +564,12 @@ export function FindingsTable() {
                           const cs = categoryStyle(f.category);
                           return (
                             <td key={col.id} style={tdStyle}>
-                              <Chip label={f.classification} fg={cs.fg} bg={cs.bg} />
+                              <Chip
+                                label={f.classification}
+                                fg={cs.fg}
+                                bg={cs.bg}
+                                dot={false}
+                              />
                             </td>
                           );
                         }
@@ -574,22 +581,36 @@ export function FindingsTable() {
                                 style={{
                                   display: 'inline-flex',
                                   alignItems: 'center',
-                                  gap: 6,
-                                  padding: '3px 8px 3px 6px',
-                                  borderRadius: 24,
-                                  background: 'var(--uw-royal-purple-06)',
-                                  border: '1px solid var(--uw-royal-purple-02)',
-                                  color: 'var(--uw-royal-purple-02)',
-                                  fontSize: 12,
-                                  fontFamily: 'var(--font-mono-family, monospace)',
+                                  gap: 8,
                                 }}
                               >
-                                <Icon
-                                  name="key"
-                                  size={12}
-                                  stroke="var(--uw-royal-purple-02)"
-                                />
-                                {f.detectedType}
+                                <span
+                                  style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: 22,
+                                    height: 22,
+                                    borderRadius: 6,
+                                    background: 'var(--uw-royal-purple-06)',
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  <Icon
+                                    name="key"
+                                    size={12}
+                                    stroke="var(--uw-royal-purple-02)"
+                                  />
+                                </span>
+                                <span
+                                  style={{
+                                    fontFamily: 'var(--font-mono-family, monospace)',
+                                    fontSize: 12,
+                                    color: 'var(--text-primary)',
+                                  }}
+                                >
+                                  {f.detectedType}
+                                </span>
                               </span>
                             </td>
                           );
@@ -772,7 +793,7 @@ export function FindingsTable() {
                                       }}
                                       style={{
                                         fontSize: 11,
-                                        padding: '2px 7px',
+                                        padding: '2px 8px',
                                         borderRadius: 4,
                                         border: '1px solid var(--action-primary)',
                                         background: 'transparent',
@@ -788,6 +809,26 @@ export function FindingsTable() {
                             </td>
                           );
                         }
+
+                        case 'explanation':
+                          return (
+                            <td key={col.id} style={tdStyle}>
+                              <span
+                                style={{
+                                  display: 'block',
+                                  fontSize: 12.5,
+                                  color: 'var(--text-secondary)',
+                                  maxWidth: 280,
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                                title={f.explanation}
+                              >
+                                {f.explanation}
+                              </span>
+                            </td>
+                          );
 
                         case 'actions':
                           return (

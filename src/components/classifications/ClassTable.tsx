@@ -133,7 +133,7 @@ export function ClassTable() {
                     }}
                   >
                     {/* Name */}
-                    <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '14px 12px', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div
                           style={{
@@ -143,18 +143,18 @@ export function ClassTable() {
                             width: 26,
                             height: 26,
                             borderRadius: 6,
-                            background: 'var(--severity-safe-bg)',
+                            background: 'var(--uw-green-06)',
                             flexShrink: 0,
                           }}
                         >
-                          <Icon name="leaf" size={14} stroke="var(--severity-safe)" />
+                          <Icon name="leaf" size={14} stroke="var(--uw-green-02)" />
                         </div>
-                        <span style={{ fontWeight: 500 }}>{c.name}</span>
+                        <span style={{ fontWeight: 500, fontSize: 13 }}>{c.name}</span>
                       </div>
                     </td>
 
                     {/* Category */}
-                    <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '14px 12px', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span
                           style={{
@@ -166,29 +166,29 @@ export function ClassTable() {
                             flexShrink: 0,
                           }}
                         />
-                        <span style={{ color: 'var(--text-secondary)' }}>{c.category}</span>
+                        <span style={{ color: catStyle.fg, fontSize: 12, fontWeight: 500 }}>{c.category}</span>
                       </div>
                     </td>
 
                     {/* Patterns */}
-                    <td style={{ padding: '10px 12px', color: 'var(--text-secondary)' }}>
+                    <td style={{ padding: '14px 12px', color: 'var(--text-secondary)' }}>
                       {c.patterns}
                     </td>
 
                     {/* Rule packs */}
-                    <td style={{ padding: '10px 12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '14px 12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
                       {c.rulePacks}
                     </td>
 
                     {/* Findings */}
-                    <td style={{ padding: '10px 12px', color: 'var(--text-secondary)' }}>
+                    <td style={{ padding: '14px 12px', color: 'var(--text-secondary)' }}>
                       {c.findings.toLocaleString()}
                     </td>
 
                     {/* Critical */}
                     <td
                       style={{
-                        padding: '10px 12px',
+                        padding: '14px 12px',
                         fontWeight: c.critical > 0 ? 600 : 400,
                         color:
                           c.critical > 0
@@ -200,7 +200,7 @@ export function ClassTable() {
                     </td>
 
                     {/* FP reduction */}
-                    <td style={{ padding: '10px 12px' }}>
+                    <td style={{ padding: '14px 12px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div
                           style={{
@@ -228,12 +228,12 @@ export function ClassTable() {
                     </td>
 
                     {/* Created by */}
-                    <td style={{ padding: '10px 12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '14px 12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
                       {c.createdBy}
                     </td>
 
                     {/* Status */}
-                    <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '14px 12px', whiteSpace: 'nowrap' }}>
                       <div
                         style={{
                           display: 'inline-flex',
