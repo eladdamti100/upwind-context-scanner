@@ -14,6 +14,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"path/filepath"
 	"sort"
@@ -52,6 +53,136 @@ type FileNode struct {
 	// io.Writer and counts bytes/lines as they pass through, so the manifest stays
 	// exact without ever buffering the whole file in memory.
 	Stream func(w io.Writer) error
+	// Findings carries the line-level, per-candidate ground truth used to emit the
+	// rich Finding Context Objects, the ML training set, and the SQLite store. When
+	// empty, the deployer synthesizes a coarse finding from the file-level
+	// GroundTruth (so the legacy file-level agents still populate the DB outputs).
+	Findings []Finding
+}
+
+// Finding is one line-level candidate inside a file plus its ground truth — the
+// unit the context engine, the ML model, and the map view all reason about. Raw
+// secret bodies never reach here: MaskedValue/ValuePrefix/ValueSuffix are derived
+// by NewFinding, which keeps the full value inside the generator.
+type Finding struct {
+	Line           int     `json:"line_number"`
+	VariableName   string  `json:"variable_name"`
+	DetectedType   string  `json:"detected_type"`
+	MaskedValue    string  `json:"masked_value"`
+	ValuePrefix    string  `json:"value_prefix"`
+	ValueSuffix    string  `json:"value_suffix"`
+	ValueLength    int     `json:"value_length"`
+	Entropy        float64 `json:"entropy"`
+	Label          string  `json:"label"`          // true_secret|false_positive|placeholder|documentation_example|test_value|public_non_secret
+	Classification string  `json:"classification"` // expected detector label; "" for benign
+	Validation     string  `json:"validation"`     // not_validated|validated_active|validated_inactive|validation_unsupported|...
+}
+
+// Ground-truth labels for a Finding (product spec §10 training labels).
+const (
+	LabelTrueSecret    = "true_secret"
+	LabelFalsePositive = "false_positive"
+	LabelPlaceholder   = "placeholder"
+	LabelDocExample    = "documentation_example"
+	LabelTestValue     = "test_value"
+	LabelPublicNonSec  = "public_non_secret"
+)
+
+// Validation statuses (product spec §13).
+const (
+	ValNotValidated      = "not_validated"
+	ValActive            = "validated_active"
+	ValInactive          = "validated_inactive"
+	ValUnsupported       = "validation_unsupported"
+	ValPermissionReq     = "validation_permission_required"
+)
+
+// NewFinding builds a Finding from a raw (synthetic) value, masking it on the
+// way in. rawValue is hashed down to prefix/suffix/length/entropy and then
+// discarded — only the masked projection is retained, honoring the privacy
+// invariant that full secret bodies never leave the generator.
+func NewFinding(line int, variable, detectedType, label, classification, validation, rawValue string) Finding {
+	return Finding{
+		Line:           line,
+		VariableName:   variable,
+		DetectedType:   detectedType,
+		MaskedValue:    maskValue(rawValue),
+		ValuePrefix:    valuePrefix(rawValue),
+		ValueSuffix:    valueSuffix(rawValue),
+		ValueLength:    len(rawValue),
+		Entropy:        shannon(rawValue),
+		Label:          label,
+		Classification: classification,
+		Validation:     validation,
+	}
+}
+
+// WithFindings attaches line-level findings to a file (builder style).
+func (f FileNode) WithFindings(fs ...Finding) FileNode {
+	f.Findings = fs
+	return f
+}
+
+// maskValue keeps a short visible prefix and replaces the body with asterisks,
+// preserving roughly the original length so the UI can render a faithful mask.
+func maskValue(s string) string {
+	if s == "" {
+		return ""
+	}
+	keep := 7
+	if len(s) <= keep+4 {
+		keep = len(s) / 3
+	}
+	stars := len(s) - keep
+	if stars > 16 {
+		stars = 16
+	}
+	if stars < 4 {
+		stars = 4
+	}
+	return s[:keep] + strings.Repeat("*", stars)
+}
+
+func valuePrefix(s string) string {
+	// Prefer the token up to the first separator (sk_live, AKIA, github_pat, …).
+	for i := 0; i < len(s) && i < 8; i++ {
+		if s[i] == '_' || s[i] == '-' || s[i] == '.' {
+			return s[:i]
+		}
+	}
+	if len(s) < 6 {
+		return s
+	}
+	return s[:6]
+}
+
+func valueSuffix(s string) string {
+	if len(s) < 4 {
+		return s
+	}
+	return s[len(s)-4:]
+}
+
+// shannon returns the Shannon entropy (bits/byte) of s — the value-feature the
+// rules and the LightGBM model lean on to tell high-entropy keys from words.
+func shannon(s string) float64 {
+	if s == "" {
+		return 0
+	}
+	var freq [256]float64
+	for i := 0; i < len(s); i++ {
+		freq[s[i]]++
+	}
+	n := float64(len(s))
+	h := 0.0
+	for _, c := range freq {
+		if c == 0 {
+			continue
+		}
+		p := c / n
+		h -= p * math.Log2(p)
+	}
+	return math.Round(h*100) / 100
 }
 
 // FolderNode is a directory within a client workspace.
@@ -67,6 +198,57 @@ type Workspace struct {
 	ClientName string
 	Industry   string
 	Root       FolderNode
+	// Assets are the cloud assets this client's files live in. Each finding is
+	// linked to the asset whose PathPrefix is the longest match for its file —
+	// this is what powers the map view and the Priority Score's exposure term.
+	Assets []Asset
+}
+
+// Asset is a cloud resource (bucket, workload, repo, host) that files live in.
+// PathPrefix is a client-relative directory prefix; the deployer links a finding
+// to the asset with the longest matching prefix.
+type Asset struct {
+	AssetID              string `json:"asset_id"`
+	Client               string `json:"client"`
+	Type                 string `json:"type"`              // bucket|workload|repo|host
+	StorageExposure      string `json:"storage_exposure"`  // public|internet|shared|internal|private|docs
+	AssetCriticality     string `json:"asset_criticality"` // critical|high|medium|low
+	IsPubliclyAccessible bool   `json:"is_publicly_accessible"`
+	CloudProvider        string `json:"cloud_provider"`
+	ServiceContext       string `json:"service_context"`
+	PathPrefix           string `json:"-"` // client-relative prefix used for finding→asset resolution
+}
+
+// FindingRecord is a fully-resolved finding ready to emit (Finding Context
+// Object JSON, training.csv row, SQLite row). It joins the line-level Finding
+// with its file, file role, and the asset it was found in.
+type FindingRecord struct {
+	FindingID            string  `json:"finding_id"`
+	Client               string  `json:"client"`
+	Vertical             string  `json:"customer_vertical"`
+	Path                 string  `json:"file_path"`
+	FileName             string  `json:"file_name"`
+	Extension            string  `json:"file_extension"`
+	FileRole             string  `json:"file_role"`
+	Category             string  `json:"category"`
+	StorageLocation      string  `json:"storage_location"`
+	AssetID              string  `json:"asset_id"`
+	StorageExposure      string  `json:"storage_exposure"`
+	AssetCriticality     string  `json:"asset_criticality"`
+	IsPubliclyAccessible bool    `json:"is_publicly_accessible"`
+	Line                 int     `json:"line_number"`
+	VariableName         string  `json:"variable_name"`
+	DetectedType         string  `json:"detected_type"`
+	MaskedValue          string  `json:"masked_value"`
+	ValuePrefix          string  `json:"value_prefix"`
+	ValueSuffix          string  `json:"value_suffix"`
+	ValueLength          int     `json:"value_length"`
+	Entropy              float64 `json:"entropy"`
+	EntropyLevel         string  `json:"entropy_level"`
+	Label                string  `json:"label"`
+	Classification       string  `json:"classification"`
+	Validation           string  `json:"validation"`
+	RegexConfidence      string  `json:"regex_confidence"`
 }
 
 // NewWorkspace returns an empty workspace for a client.
@@ -75,7 +257,14 @@ func NewWorkspace(name, industry string) *Workspace {
 		ClientName: name,
 		Industry:   industry,
 		Root:       FolderNode{Name: name, SubFolders: []FolderNode{}, Files: []FileNode{}},
+		Assets:     []Asset{},
 	}
+}
+
+// AddAsset registers a cloud asset for the workspace (client is filled in).
+func (w *Workspace) AddAsset(a Asset) {
+	a.Client = w.ClientName
+	w.Assets = append(w.Assets, a)
 }
 
 // Add places a file at the given client-relative directory, creating folders.
@@ -184,14 +373,25 @@ type Stats struct {
 }
 
 // Deploy writes the workspace under scanRoot/<client>/... and records every
-// file in manifest (keyed by client-relative-or-absolute scan path).
-func Deploy(scanRoot string, w *Workspace, manifest map[string]ManifestEntry) (Stats, error) {
+// file in manifest (keyed by client-relative scan path). It also returns the
+// fully-resolved line-level finding records (joined to file role + asset) that
+// feed the Finding Context Objects, the ML training set, and the SQLite store.
+func Deploy(scanRoot string, w *Workspace, manifest map[string]ManifestEntry) (Stats, []FindingRecord, error) {
 	var st Stats
-	err := deployFolder(scanRoot, w.ClientName, w.Root, manifest, &st)
-	return st, err
+	dc := &deployCtx{ws: w}
+	err := deployFolder(scanRoot, w.ClientName, w.Root, manifest, &st, dc)
+	return st, dc.findings, err
 }
 
-func deployFolder(scanRoot, client string, folder FolderNode, manifest map[string]ManifestEntry, st *Stats) error {
+// deployCtx threads per-workspace context (assets, accumulated findings, a
+// deterministic finding counter) through the recursive folder walk.
+type deployCtx struct {
+	ws       *Workspace
+	findings []FindingRecord
+	seq      int
+}
+
+func deployFolder(scanRoot, client string, folder FolderNode, manifest map[string]ManifestEntry, st *Stats, dc *deployCtx) error {
 	dir := filepath.Join(scanRoot, client, filepath.FromSlash(folder.RelativePath))
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("mkdir %s: %w", dir, err)
@@ -213,9 +413,10 @@ func deployFolder(scanRoot, client string, folder FolderNode, manifest map[strin
 			nbytes, nlines = len(f.Content), strings.Count(f.Content, "\n")
 		}
 
+		rel := folder.RelativePath
 		key := client
-		if folder.RelativePath != "" {
-			key += "/" + folder.RelativePath
+		if rel != "" {
+			key += "/" + rel
 		}
 		key += "/" + f.FileName
 
@@ -238,17 +439,219 @@ func deployFolder(scanRoot, client string, folder FolderNode, manifest map[strin
 		default:
 			st.CleanFile++
 		}
+
+		dc.collectFindings(client, rel, key, f)
 	}
 	// Deterministic child order regardless of insertion order.
 	subs := make([]FolderNode, len(folder.SubFolders))
 	copy(subs, folder.SubFolders)
 	sort.Slice(subs, func(i, j int) bool { return subs[i].Name < subs[j].Name })
 	for _, sub := range subs {
-		if err := deployFolder(scanRoot, client, sub, manifest, st); err != nil {
+		if err := deployFolder(scanRoot, client, sub, manifest, st, dc); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+// collectFindings resolves a file's findings (explicit or synthesized) into
+// emit-ready FindingRecords, joining file role + asset metadata.
+func (dc *deployCtx) collectFindings(client, rel, scanKey string, f FileNode) {
+	findings := f.Findings
+	if len(findings) == 0 {
+		// Synthesize a coarse finding from the file-level ground truth so the
+		// legacy file-level agents still populate the DB outputs. Clean files
+		// (asset-inventory) produce nothing.
+		syn := synthesizeFinding(f.GroundTruth)
+		if syn == nil {
+			return
+		}
+		findings = []Finding{*syn}
+	}
+
+	relPath := rel
+	if relPath != "" {
+		relPath += "/"
+	}
+	relPath += f.FileName
+	asset := dc.ws.resolveAsset(relPath)
+	role := deriveFileRole(scanKey, f.GroundTruth.Category, extOf(f.FileName))
+
+	for _, fn := range findings {
+		dc.seq++
+		dc.findings = append(dc.findings, FindingRecord{
+			FindingID:            fmt.Sprintf("%s_finding_%04d", client, dc.seq),
+			Client:               client,
+			Vertical:             dc.ws.Industry,
+			Path:                 scanKey,
+			FileName:             f.FileName,
+			Extension:            extOf(f.FileName),
+			FileRole:             role,
+			Category:             f.GroundTruth.Category,
+			StorageLocation:      storageLocation(asset, scanKey),
+			AssetID:              asset.AssetID,
+			StorageExposure:      asset.StorageExposure,
+			AssetCriticality:     asset.AssetCriticality,
+			IsPubliclyAccessible: asset.IsPubliclyAccessible,
+			Line:                 fn.Line,
+			VariableName:         fn.VariableName,
+			DetectedType:         fn.DetectedType,
+			MaskedValue:          fn.MaskedValue,
+			ValuePrefix:          fn.ValuePrefix,
+			ValueSuffix:          fn.ValueSuffix,
+			ValueLength:          fn.ValueLength,
+			Entropy:              fn.Entropy,
+			EntropyLevel:         entropyLevel(fn.Entropy),
+			Label:                fn.Label,
+			Classification:       fn.Classification,
+			Validation:           defaultValidation(fn.Validation),
+			RegexConfidence:      regexConfidence(f.GroundTruth),
+		})
+	}
+}
+
+// synthesizeFinding derives a single coarse finding from a file's file-level
+// ground truth (used for legacy agents that don't attach explicit findings).
+func synthesizeFinding(gt GroundTruth) *Finding {
+	switch {
+	case gt.HasRealSecret:
+		dt, cls := "secret", ""
+		if len(gt.ExpectedClassifications) > 0 {
+			cls = gt.ExpectedClassifications[0]
+			dt = detectedTypeFor(cls)
+		}
+		return &Finding{Line: 1, DetectedType: dt, MaskedValue: "********", ValueLength: 32,
+			Entropy: 4.5, Label: LabelTrueSecret, Classification: cls}
+	case gt.Category == CatTestFixture:
+		return &Finding{Line: 1, DetectedType: "candidate", MaskedValue: "********", ValueLength: 24,
+			Entropy: 3.5, Label: LabelTestValue}
+	case gt.Category == CatNoisePII:
+		return &Finding{Line: 1, DetectedType: "pii", MaskedValue: "********", ValueLength: 16,
+			Entropy: 3.0, Label: LabelFalsePositive}
+	default:
+		return nil
+	}
+}
+
+// resolveAsset returns the asset whose PathPrefix is the longest match for the
+// client-relative path, falling back to a synthetic internal asset.
+func (w *Workspace) resolveAsset(relPath string) Asset {
+	best := Asset{
+		AssetID: w.ClientName + "-unclassified", Client: w.ClientName, Type: "host",
+		StorageExposure: "internal", AssetCriticality: "low", CloudProvider: "aws",
+		ServiceContext: "unclassified",
+	}
+	bestLen := -1
+	for _, a := range w.Assets {
+		p := strings.Trim(a.PathPrefix, "/")
+		if p == "" {
+			if bestLen < 0 {
+				best, bestLen = a, 0
+			}
+			continue
+		}
+		if relPath == p || strings.HasPrefix(relPath, p+"/") {
+			if len(p) > bestLen {
+				best, bestLen = a, len(p)
+			}
+		}
+	}
+	return best
+}
+
+func storageLocation(a Asset, scanKey string) string {
+	switch a.Type {
+	case "bucket":
+		return "s3://" + a.AssetID + "/" + scanKey
+	case "repo":
+		return "git://" + a.AssetID + "/" + scanKey
+	case "workload":
+		return "k8s://" + a.AssetID + "/" + scanKey
+	default:
+		return "file://" + a.AssetID + "/" + scanKey
+	}
+}
+
+// deriveFileRole maps a path + category + extension to a product-spec file role.
+func deriveFileRole(path, category, ext string) string {
+	p := strings.ToLower(path)
+	switch {
+	case strings.Contains(p, "/test/") || strings.Contains(p, "/fixtures/") || strings.Contains(p, "_test."):
+		return "test"
+	case strings.Contains(p, "/samples/") || strings.Contains(p, "/templates/") || strings.Contains(p, "placeholder"):
+		return "sample"
+	case strings.Contains(p, "/docs/") || ext == "md":
+		return "documentation"
+	case ext == "log":
+		return "log"
+	case ext == "yaml" || ext == "yml" || ext == "tf" || ext == "tfstate":
+		return "iac"
+	case strings.Contains(p, "/production/") || strings.Contains(p, "/prod/") || strings.Contains(p, "/srv/") || category == CatProdCredential:
+		return "production_config"
+	case ext == "go" || ext == "py" || ext == "ts" || ext == "tsx" || ext == "rb" || ext == "scala" || ext == "cs":
+		return "source_code"
+	default:
+		return "config"
+	}
+}
+
+func extOf(name string) string {
+	if i := strings.LastIndexByte(name, '.'); i >= 0 && i < len(name)-1 {
+		return strings.ToLower(name[i+1:])
+	}
+	return ""
+}
+
+// entropyLevel buckets Shannon entropy into the categorical feature the model uses.
+func entropyLevel(h float64) string {
+	switch {
+	case h >= 4.0:
+		return "high"
+	case h >= 3.0:
+		return "medium"
+	default:
+		return "low"
+	}
+}
+
+func defaultValidation(v string) string {
+	if v == "" {
+		return ValNotValidated
+	}
+	return v
+}
+
+// regexConfidence projects the file-level ground truth onto the regex layer's
+// self-reported confidence (the candidate-generation signal, not the verdict).
+func regexConfidence(gt GroundTruth) string {
+	switch gt.Category {
+	case CatProdCredential:
+		return "high"
+	case CatTestFixture:
+		return "medium"
+	default:
+		return "low"
+	}
+}
+
+// detectedTypeFor maps a classification label to a coarse detected_type.
+func detectedTypeFor(cls string) string {
+	switch {
+	case strings.Contains(cls, "private-key") || strings.Contains(cls, "ssh"):
+		return "private_key"
+	case strings.Contains(cls, "aws") || strings.Contains(cls, "gcp") || strings.Contains(cls, "cloud"):
+		return "cloud_key"
+	case strings.Contains(cls, "db") || strings.Contains(cls, "connection") || strings.Contains(cls, "postgres") || strings.Contains(cls, "snowflake"):
+		return "database_password"
+	case strings.Contains(cls, "stripe") || strings.Contains(cls, "paypal") || strings.Contains(cls, "adyen") || strings.Contains(cls, "braintree"):
+		return "payment_secret"
+	case strings.Contains(cls, "card") || strings.Contains(cls, "pan"):
+		return "credit_card"
+	case strings.Contains(cls, "ssn") || strings.Contains(cls, "pii") || strings.Contains(cls, "phi"):
+		return "pii"
+	default:
+		return "api_key"
+	}
 }
 
 // countingWriter forwards writes to an underlying writer while tallying total

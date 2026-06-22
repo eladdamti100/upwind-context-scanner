@@ -63,16 +63,20 @@ type finding struct {
 
 func main() {
 	// Load the answer key (kept outside data/).
-	raw, err := os.ReadFile(filepath.Join("_truth", "manifest.json"))
+	raw, err := os.ReadFile(filepath.Join("DB", "manifest.json"))
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "read _truth/manifest.json (run generate.go first):", err)
+		fmt.Fprintln(os.Stderr, "read DB/manifest.json (run generate.go first):", err)
 		os.Exit(1)
 	}
-	var manifest map[string]manifestEntry
-	if err := json.Unmarshal(raw, &manifest); err != nil {
+	// manifest.json is wrapped as {"summary": {...}, "files": {path: entry}}.
+	var doc struct {
+		Files map[string]manifestEntry `json:"files"`
+	}
+	if err := json.Unmarshal(raw, &doc); err != nil {
 		fmt.Fprintln(os.Stderr, "parse manifest.json:", err)
 		os.Exit(1)
 	}
+	manifest := doc.Files
 	// Key ground truth by on-disk path: customer-data/<client-relative-key>.
 	truth := make(map[string]manifestEntry, len(manifest))
 	for rel, e := range manifest {

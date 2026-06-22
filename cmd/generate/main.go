@@ -1,8 +1,11 @@
-// Command generate is the orchestrator. It commands the four customer-profile
-// agents (Wix, Agoda, Fiverr, Insurify), each of which architects a
-// hyper-realistic simulated filesystem on disk under customer-data/, then
-// writes a single ground-truth answer key to _truth/manifest.json — outside
-// the scan root so the scanner never reads it.
+// Command generate is the orchestrator. For the demo it commands a single
+// customer-profile agent — EvenUp, a hyper-dense AI personal-injury claims
+// platform (fintech-legal-hybrid) — which architects a realistic simulated
+// filesystem on disk under customer-data/, then writes the DB contract to a
+// root-level DB/ folder: the answer key (manifest.json) plus findings.json,
+// assets.json, training.csv, and scanner.db — all outside the scan root so the
+// scanner never reads them. The legacy clients (wix/agoda/fiverr/insurify/
+// omni-corp) still live in pkg/agents but are not registered in main().
 //
 // Determinism: every agent receives its own seeded *secrets.Gen, so the entire
 // corpus is byte-for-byte reproducible across runs.
@@ -19,19 +22,22 @@ import (
 	"sort"
 	"strconv"
 
-	"upwind-context-scanner/pkg/agents/agoda"
-	"upwind-context-scanner/pkg/agents/fiverr"
-	"upwind-context-scanner/pkg/agents/insurify"
-	"upwind-context-scanner/pkg/agents/wix"
+	"upwind-context-scanner/pkg/agents/evenup"
 	"upwind-context-scanner/pkg/content"
+	"upwind-context-scanner/pkg/features"
 	"upwind-context-scanner/pkg/fsbuilder"
 	"upwind-context-scanner/pkg/secrets"
+	"upwind-context-scanner/pkg/store"
 )
 
 const (
 	scanRoot     = "customer-data"
-	truthDir     = "_truth"
-	manifestPath = "_truth/manifest.json"
+	truthDir     = "DB"
+	manifestPath = "DB/manifest.json"
+	findingsPath = "DB/findings.json"
+	assetsPath   = "DB/assets.json"
+	trainingPath = "DB/training.csv"
+	sqlitePath   = "DB/scanner.db"
 )
 
 // agentDef binds an agent's Build function to a deterministic seed.
@@ -53,12 +59,12 @@ func main() {
 		}
 	}
 
-	// Distinct, fixed seeds keep each agent independent yet reproducible.
+	// Demo isolation: the pipeline runs a single flagship hybrid enterprise.
+	// The legacy clients (wix/agoda/fiverr/insurify) remain in pkg/agents but are
+	// deliberately not registered here, so the corpus and every _truth/ artifact
+	// contain 100% omni-corp context. Re-add their agentDefs to restore them.
 	agents := []agentDef{
-		{"wix", 1001, wix.Build},
-		{"agoda", 2002, agoda.Build},
-		{"fiverr", 3003, fiverr.Build},
-		{"insurify", 4004, insurify.Build},
+		{"evenup", 7007, evenup.Build},
 	}
 
 	// Clean slate.
@@ -81,15 +87,19 @@ func main() {
 
 	var clientStats []clientStat
 	var totFiles, totBytes, totTP, totFP, totClean int
+	var allFindings []fsbuilder.FindingRecord
+	var allAssets []fsbuilder.Asset
 
-	fmt.Println("Orchestrator: commanding 4 customer-profile agents...")
+	fmt.Printf("Orchestrator: commanding %d customer-profile agents...\n", len(agents))
 	for _, a := range agents {
 		g := secrets.New(a.seed)
 		ws := a.build(g)
-		st, err := fsbuilder.Deploy(scanRoot, ws, manifest)
+		st, recs, err := fsbuilder.Deploy(scanRoot, ws, manifest)
 		if err != nil {
 			fatal("deploy %s: %v", a.name, err)
 		}
+		allFindings = append(allFindings, recs...)
+		allAssets = append(allAssets, ws.Assets...)
 		clientStats = append(clientStats, clientStat{
 			Client: ws.ClientName, Industry: ws.Industry,
 			Files: st.Files, KB: st.Bytes / 1024,
@@ -100,8 +110,8 @@ func main() {
 		totTP += st.TruePos
 		totFP += st.FalsePos
 		totClean += st.CleanFile
-		fmt.Printf("  [%-8s] industry=%-14s files=%3d  ~%4dKB  TP=%d  FP=%2d  clean=%3d\n",
-			ws.ClientName, ws.Industry, st.Files, st.Bytes/1024, st.TruePos, st.FalsePos, st.CleanFile)
+		fmt.Printf("  [%-9s] industry=%-17s files=%3d  ~%5dKB  TP=%d  FP=%2d  clean=%3d  findings=%d\n",
+			ws.ClientName, ws.Industry, st.Files, st.Bytes/1024, st.TruePos, st.FalsePos, st.CleanFile, len(recs))
 	}
 
 	cleanPct := 0.0
@@ -114,6 +124,7 @@ func main() {
 		"seedNote":         "Deterministic: per-agent fixed seeds reproduce the corpus byte-for-byte.",
 		"corpusScale":      content.Scale,
 		"totalFiles":       totFiles,
+		"totalFindings":    len(allFindings),
 		"totalKB":          totBytes / 1024,
 		"truePositives":    totTP,
 		"falsePositives":   totFP,
@@ -127,13 +138,40 @@ func main() {
 		fatal("write manifest: %v", err)
 	}
 
+	// DB data contract: per-finding context objects, the cloud-asset inventory,
+	// the labeled ML training set, and a ready-to-load SQLite database.
+	if err := store.WriteFindingsJSON(findingsPath, allFindings); err != nil {
+		fatal("write findings: %v", err)
+	}
+	if err := store.WriteAssetsJSON(assetsPath, allAssets); err != nil {
+		fatal("write assets: %v", err)
+	}
+	if err := features.WriteCSV(trainingPath, allFindings); err != nil {
+		fatal("write training set: %v", err)
+	}
+	if err := store.WriteSQLite(sqlitePath, allFindings, allAssets, manifest); err != nil {
+		fatal("write sqlite: %v", err)
+	}
+
+	// Fence the synthetic corpus off as a nested throwaway module so the parent
+	// module's tooling (`go build ./...`, `go vet ./...`) never tries to compile
+	// the deliberately non-compiling haystack code (many files share a package
+	// and redeclare symbols by design). customer-data/ is gitignored, so this
+	// marker is never committed.
+	fence := "module omni-corp-fixtures\n\ngo 1.25\n"
+	if err := os.WriteFile(scanRoot+"/go.mod", []byte(fence), 0o644); err != nil {
+		fatal("write fixtures go.mod: %v", err)
+	}
+
 	fmt.Printf("\nDeployed %d files (~%d KB) across %d clients to %s/\n",
 		totFiles, totBytes/1024, len(agents), scanRoot)
 	fmt.Printf("  True positives (real-shaped leaks): %d\n", totTP)
 	fmt.Printf("  False positives (benign noise)    : %d\n", totFP)
 	fmt.Printf("  Clean inventory                   : %d\n", totClean)
 	fmt.Printf("  Non-leaking corpus                : %.1f%%\n", cleanPct)
-	fmt.Printf("Answer key -> %s (%d entries)\n", manifestPath, len(manifest))
+	fmt.Printf("Answer key   -> %s (%d entries)\n", manifestPath, len(manifest))
+	fmt.Printf("DB contract  -> %s (%d findings), %s (%d assets), %s, %s\n",
+		findingsPath, len(allFindings), assetsPath, len(allAssets), trainingPath, sqlitePath)
 }
 
 // classVocab returns the sorted set of every classification across all TPs,

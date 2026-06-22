@@ -4,3 +4,6 @@ customer-data/
 
 # Generated mock corpus fixture
 mockgen/
+
+# Generated SQLite store (binary) — regenerate with: go run ./cmd/generate
+DB/scanner.db
