@@ -7,6 +7,7 @@ import { FindingsView } from './components/findings/FindingsView';
 import { DetailDrawer } from './components/findings/DetailDrawer';
 import { RiskPopover } from './components/findings/RiskPopover';
 import { ValidationModal } from './components/findings/ValidationModal';
+import { SettingsModal } from './components/settings/SettingsModal';
 
 function AppShell() {
   const { state } = useStore();
@@ -54,6 +55,7 @@ function AppShell() {
       <DetailDrawer />
       <RiskPopover />
       <ValidationModal />
+      <SettingsModal />
       <Toast message={state.toast} />
     </div>
   );
