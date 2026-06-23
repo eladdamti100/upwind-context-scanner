@@ -15,6 +15,7 @@ import { SettingsModal } from './components/settings/SettingsModal';
 import { AddRulesModal } from './components/rules/AddRulesModal';
 import { ClassificationsView } from './components/classifications/ClassificationsView';
 import { MapView } from './components/map/MapView';
+import { FileTreeView } from './components/repository/FileTreeView';
 
 // How long a toast stays on screen before it auto-dismisses.
 const TOAST_DURATION_MS = 3000;
@@ -74,6 +75,9 @@ function AppShell() {
         )}
         {state.tab === 'map' && (
           <MapView />
+        )}
+        {state.tab === 'repository' && (
+          <FileTreeView />
         )}
       </div>
 

@@ -6,7 +6,7 @@ import type { Action } from './actions';
 // Sub-state shapes
 // ---------------------------------------------------------------------------
 
-export type TabKey = 'overview' | 'findings' | 'classifications' | 'map';
+export type TabKey = 'overview' | 'findings' | 'classifications' | 'map' | 'repository';
 
 export interface ColumnState {
   id: string;

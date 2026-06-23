@@ -8,6 +8,7 @@ const TAB_LABELS: { key: TabKey; label: string; icon: IconName }[] = [
   { key: 'findings', label: 'Exposed Sensitive Data', icon: 'shield' },
   { key: 'classifications', label: 'Data classifications', icon: 'layers' },
   { key: 'map', label: 'Exposure map', icon: 'map' },
+  { key: 'repository', label: 'Repository', icon: 'database' },
 ];
 
 export function Tabs() {
