@@ -1,48 +1,6 @@
 import { test, expect, describe } from 'vitest';
-import type { ContextFeatures } from '../types';
 import { evaluateRules } from './rules';
-
-// ---------------------------------------------------------------------------
-// Test fixture helper — sane defaults, override with Partial<ContextFeatures>
-// ---------------------------------------------------------------------------
-function makeFeatures(overrides: Partial<ContextFeatures> = {}): ContextFeatures {
-  const defaults: ContextFeatures = {
-    isProdPath: false,
-    isDevPath: false,
-    isTestPath: false,
-    isDocsPath: false,
-    isExamplePath: false,
-    isConfigFile: false,
-    isSourceCodeFile: false,
-    isLogFile: false,
-    isIacFile: false,
-    fileRole: 'unknown',
-    environmentHint: 'Dev',
-    detectedType: 'generic-token',
-    valueLength: 32,
-    entropy: 3.5,
-    entropyLevel: 'medium',
-    hasLivePrefix: false,
-    hasTestPrefix: false,
-    looksLikePlaceholder: false,
-    isKnownTestValue: false,
-    hasSecretVariableName: false,
-    hasPublicVariableName: false,
-    variableIntent: 'secret',
-    hasExampleLanguage: false,
-    hasPlaceholderLanguage: false,
-    hasTestLanguage: false,
-    hasSecretLanguage: false,
-    hasProductionLanguage: false,
-    hasDocumentationContext: false,
-    storageExposure: 'Internal',
-    isPubliclyAccessible: false,
-    assetCriticality: 'Medium',
-    cloudProvider: 'aws',
-    customerVertical: 'general',
-  };
-  return { ...defaults, ...overrides };
-}
+import { makeFeatures } from './testFeatures';
 
 // ---------------------------------------------------------------------------
 // 1. Prod public AWS key (fintech) — high severity, critical guardrail

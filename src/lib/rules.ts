@@ -1,4 +1,5 @@
 import type { ContextFeatures, DeterministicRuleResult, Priority, Vertical } from '../types';
+import { runDomainRules } from './domainRules';
 
 // ---------------------------------------------------------------------------
 // Internal types
@@ -102,6 +103,71 @@ const BASE_RULES: Rule[] = [
     rulePack: 'base',
     when: (f) => f.hasPublicVariableName && !f.hasSecretVariableName,
   },
+  // ---- DomainRulesAgent structural / semantic suppressors (FP killers) ------
+  {
+    id: 'structural-invalid',
+    label: 'Fails its format’s checksum / range (structurally impossible)',
+    direction: 'decrease',
+    weight: 40,
+    rulePack: 'base',
+    when: (f) => !f.structurallyValid || !f.formatValidForType || !f.luhnValid,
+  },
+  {
+    id: 'public-by-design',
+    label: 'Public-by-design value (never a secret)',
+    direction: 'decrease',
+    weight: 30,
+    rulePack: 'base',
+    when: (f) => f.isPublicByDesign,
+  },
+  {
+    id: 'known-example-value',
+    label: 'Known test / example / curated vector',
+    direction: 'decrease',
+    weight: 26,
+    rulePack: 'base',
+    when: (f) => f.isKnownTestValue || f.isKnownTestVector,
+  },
+  {
+    id: 'already-masked',
+    label: 'Value is already masked / redacted in source',
+    direction: 'decrease',
+    weight: 30,
+    rulePack: 'base',
+    when: (f) => f.isAlreadyMasked,
+  },
+  {
+    id: 'commit-sha-not-token',
+    label: 'Git commit SHA masquerading as a token',
+    direction: 'decrease',
+    weight: 28,
+    rulePack: 'base',
+    when: (f) => f.isHighEntropySha,
+  },
+  {
+    id: 'shape-contradicts-type',
+    label: 'Numeric identifier shaped like a PAN (epoch / order id)',
+    direction: 'decrease',
+    weight: 28,
+    rulePack: 'base',
+    when: (f) => f.shapeContradictsType,
+  },
+  {
+    id: 'fixture-sample-template-path',
+    label: 'Located in a fixtures / samples / templates / boilerplate directory',
+    direction: 'decrease',
+    weight: 16,
+    rulePack: 'base',
+    when: (f) => Boolean(f.inFixturesDir || f.inSamplesDir || f.inBoilerplateDir),
+  },
+  {
+    id: 'placeholder-identity-context',
+    label: 'Surrounded by placeholder identities (e.g. John Doe / Acme)',
+    direction: 'decrease',
+    weight: 10,
+    rulePack: 'base',
+    when: (f) => Boolean(f.hasPlaceholderIdentity),
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -167,28 +233,46 @@ const VERTICAL_RULES: Record<Vertical, Rule[]> = {
 // ---------------------------------------------------------------------------
 // Guardrails
 // ---------------------------------------------------------------------------
+// Detected types arrive in either kebab ('aws-access-key') or the corpus's
+// underscore form ('cloud_key', 'database_password'); normalize before matching.
+const dt = (f: ContextFeatures): string => f.detectedType.toLowerCase().replace(/_/g, '-');
+
+// A guardrail must only ever FLOOR a genuine secret. `genuine` is the inverse of
+// every authoritative "not a live secret" signal the DomainRulesAgent suppresses
+// on — so a public-by-design / known-test / already-masked / structurally-invalid
+// value can never be accidentally elevated to Critical.
+const genuine = (f: ContextFeatures): boolean =>
+  f.structurallyValid &&
+  f.formatValidForType &&
+  !f.isPublicByDesign &&
+  !f.isKnownTestValue &&
+  !f.isKnownTestVector &&
+  !f.isAlreadyMasked &&
+  !f.isHighEntropySha &&
+  !f.shapeContradictsType;
+
+// High-severity credential types in the corpus + standard kebab vocabulary.
+const CLOUD_CRED_TYPES = ['aws-access-key', 'aws-secret-key', 'cloud-key'];
+const CRITICAL_FLOOR_TYPES = [
+  'aws-access-key', 'aws-secret-key', 'cloud-key', 'pem-private-key',
+  'database-password', 'db-connection-string', 'payment-secret', 'stripe-live-key',
+];
+
 const GUARDRAILS: Guardrail[] = [
   {
     id: 'private-key-floor',
     floor: 'high',
-    when: (f) => f.detectedType === 'pem-private-key',
+    when: (f) => dt(f) === 'pem-private-key' && genuine(f),
   },
   {
     id: 'cloud-cred-prod-floor',
     floor: 'high',
-    when: (f) =>
-      ['aws-access-key', 'aws-secret-key', 'cloud-key'].includes(f.detectedType) &&
-      f.isProdPath &&
-      f.isConfigFile,
+    when: (f) => CLOUD_CRED_TYPES.includes(dt(f)) && f.isProdPath && f.isConfigFile && genuine(f),
   },
   {
     id: 'public-critical-floor',
     floor: 'critical',
-    when: (f) =>
-      f.isPubliclyAccessible &&
-      ['aws-access-key', 'aws-secret-key', 'pem-private-key', 'database-password'].includes(
-        f.detectedType
-      ),
+    when: (f) => f.isPubliclyAccessible && genuine(f) && CRITICAL_FLOOR_TYPES.includes(dt(f)),
   },
 ];
 
@@ -244,5 +328,12 @@ export function evaluateRules(features: ContextFeatures): DeterministicRuleResul
     }
   }
 
-  return { score, triggered, guardrailFloor };
+  // DomainRulesAgent verdict — the post-regex structural/semantic filter. Its
+  // hard-suppress decision is surfaced here; the orchestrator honors it only
+  // when no guardrailFloor outranks it (recall guard).
+  const domain = runDomainRules(features);
+  const suppress = domain.decision === 'suppress';
+  const suppressReason = suppress ? domain.reasons[0] : undefined;
+
+  return { score, triggered, guardrailFloor, suppress, suppressReason };
 }

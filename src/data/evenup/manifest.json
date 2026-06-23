@@ -9,6 +9,24 @@
       "bytes": 876,
       "lines": 19
     },
+    "evenup/docs/integration/guides/integration_guide_01.md": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "test-fixture",
+      "expectedClassifications": [],
+      "technique": "known-example-credentials",
+      "bytes": 256,
+      "lines": 6
+    },
+    "evenup/docs/integration/guides/integration_guide_02.md": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "test-fixture",
+      "expectedClassifications": [],
+      "technique": "known-example-credentials",
+      "bytes": 255,
+      "lines": 6
+    },
     "evenup/docs/legal/templates/settlement_template_01.txt": {
       "client": "evenup",
       "hasRealSecret": false,
@@ -59,7 +77,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 91079,
+      "bytes": 91003,
       "lines": 1050
     },
     "evenup/home/ci/cache/build-01/package-lock.json": {
@@ -67,7 +85,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 54028,
+      "bytes": 54035,
       "lines": 1058
     },
     "evenup/home/ci/cache/build-01/yarn.lock": {
@@ -75,7 +93,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 43680,
+      "bytes": 43579,
       "lines": 1053
     },
     "evenup/home/ci/cache/build-02/go.sum": {
@@ -83,7 +101,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 90991,
+      "bytes": 90967,
       "lines": 1050
     },
     "evenup/home/ci/cache/build-02/package-lock.json": {
@@ -91,7 +109,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 54019,
+      "bytes": 54009,
       "lines": 1058
     },
     "evenup/home/ci/cache/build-02/yarn.lock": {
@@ -99,7 +117,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 43658,
+      "bytes": 43607,
       "lines": 1053
     },
     "evenup/home/ci/cache/build-03/go.sum": {
@@ -107,7 +125,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 91047,
+      "bytes": 91059,
       "lines": 1050
     },
     "evenup/home/ci/cache/build-03/package-lock.json": {
@@ -115,7 +133,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 54039,
+      "bytes": 54008,
       "lines": 1058
     },
     "evenup/home/ci/cache/build-03/yarn.lock": {
@@ -123,7 +141,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 43624,
+      "bytes": 43587,
       "lines": 1053
     },
     "evenup/home/ci/cache/build-04/go.sum": {
@@ -131,7 +149,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 90973,
+      "bytes": 91043,
       "lines": 1050
     },
     "evenup/home/ci/cache/build-04/package-lock.json": {
@@ -139,7 +157,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 54045,
+      "bytes": 54016,
       "lines": 1058
     },
     "evenup/home/ci/cache/build-04/yarn.lock": {
@@ -147,7 +165,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 43603,
+      "bytes": 43549,
       "lines": 1053
     },
     "evenup/home/ci/cache/build-05/go.sum": {
@@ -155,7 +173,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 91015,
+      "bytes": 90995,
       "lines": 1050
     },
     "evenup/home/ci/cache/build-05/package-lock.json": {
@@ -163,7 +181,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 54027,
+      "bytes": 54017,
       "lines": 1058
     },
     "evenup/home/ci/cache/build-05/yarn.lock": {
@@ -171,7 +189,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 43602,
+      "bytes": 43572,
       "lines": 1053
     },
     "evenup/home/ci/cache/build-06/go.sum": {
@@ -179,7 +197,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 90991,
+      "bytes": 91015,
       "lines": 1050
     },
     "evenup/home/ci/cache/build-06/package-lock.json": {
@@ -187,7 +205,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 54017,
+      "bytes": 54027,
       "lines": 1058
     },
     "evenup/home/ci/cache/build-06/yarn.lock": {
@@ -195,7 +213,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 43582,
+      "bytes": 43575,
       "lines": 1053
     },
     "evenup/src/apps/billing/internal/billing_01.go": {
@@ -293,6 +311,28 @@
       "expectedClassifications": [],
       "bytes": 16146,
       "lines": 403
+    },
+    "evenup/src/apps/billing/internal/creds/assemble_01.go": {
+      "client": "evenup",
+      "hasRealSecret": true,
+      "category": "prod-credential",
+      "expectedClassifications": [
+        "aws-secret-access-key"
+      ],
+      "technique": "split-concatenated-secret",
+      "bytes": 137,
+      "lines": 3
+    },
+    "evenup/src/apps/billing/internal/creds/assemble_02.go": {
+      "client": "evenup",
+      "hasRealSecret": true,
+      "category": "prod-credential",
+      "expectedClassifications": [
+        "aws-secret-access-key"
+      ],
+      "technique": "split-concatenated-secret",
+      "bytes": 137,
+      "lines": 3
     },
     "evenup/src/apps/billing/test/fixtures/invoice_mock_model_01.json": {
       "client": "evenup",
@@ -1385,7 +1425,7 @@
       "category": "noise-pii",
       "expectedClassifications": [],
       "technique": "txn-id-mistaken-for-pan",
-      "bytes": 912602,
+      "bytes": 912471,
       "lines": 4200
     },
     "evenup/srv/production/workloads/billing-api/logs/audit.json": {
@@ -1393,8 +1433,68 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 1620227,
+      "bytes": 1620465,
       "lines": 4200
+    },
+    "evenup/srv/production/workloads/billing/config/secrets-redacted-01.yaml": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "redacted-or-sealed-values",
+      "bytes": 250,
+      "lines": 3
+    },
+    "evenup/srv/production/workloads/billing/config/secrets-redacted-02.yaml": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "redacted-or-sealed-values",
+      "bytes": 250,
+      "lines": 3
+    },
+    "evenup/srv/production/workloads/billing/config/secrets-redacted-03.yaml": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "redacted-or-sealed-values",
+      "bytes": 250,
+      "lines": 3
+    },
+    "evenup/srv/production/workloads/claims-ai/config/runtime-01.yaml": {
+      "client": "evenup",
+      "hasRealSecret": true,
+      "category": "prod-credential",
+      "expectedClassifications": [
+        "generic-high-entropy-secret"
+      ],
+      "technique": "generic-and-substring-evading-secret",
+      "bytes": 163,
+      "lines": 4
+    },
+    "evenup/srv/production/workloads/claims-ai/config/runtime-02.yaml": {
+      "client": "evenup",
+      "hasRealSecret": true,
+      "category": "prod-credential",
+      "expectedClassifications": [
+        "generic-high-entropy-secret"
+      ],
+      "technique": "generic-and-substring-evading-secret",
+      "bytes": 163,
+      "lines": 4
+    },
+    "evenup/srv/production/workloads/claims-ai/config/runtime-03.yaml": {
+      "client": "evenup",
+      "hasRealSecret": true,
+      "category": "prod-credential",
+      "expectedClassifications": [
+        "generic-high-entropy-secret"
+      ],
+      "technique": "generic-and-substring-evading-secret",
+      "bytes": 163,
+      "lines": 4
     },
     "evenup/srv/production/workloads/claims-ai/logs/app.json": {
       "client": "evenup",
@@ -1402,7 +1502,7 @@
       "category": "noise-pii",
       "expectedClassifications": [],
       "technique": "txn-id-mistaken-for-pan",
-      "bytes": 903919,
+      "bytes": 904019,
       "lines": 4200
     },
     "evenup/srv/production/workloads/claims-ai/logs/audit.json": {
@@ -1410,8 +1510,48 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 1618282,
+      "bytes": 1620119,
       "lines": 4200
+    },
+    "evenup/srv/production/workloads/gateway/config/gateway-01.conf": {
+      "client": "evenup",
+      "hasRealSecret": true,
+      "category": "prod-credential",
+      "expectedClassifications": [
+        "stripe-live-key"
+      ],
+      "technique": "base64-encoded-secret",
+      "bytes": 89,
+      "lines": 2
+    },
+    "evenup/srv/production/workloads/gateway/config/gateway-02.conf": {
+      "client": "evenup",
+      "hasRealSecret": true,
+      "category": "prod-credential",
+      "expectedClassifications": [
+        "stripe-live-key"
+      ],
+      "technique": "base64-encoded-secret",
+      "bytes": 89,
+      "lines": 2
+    },
+    "evenup/srv/production/workloads/gateway/config/sample-env-reference-01.txt": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "test-fixture",
+      "expectedClassifications": [],
+      "technique": "known-example-credentials-in-prod-doc",
+      "bytes": 254,
+      "lines": 6
+    },
+    "evenup/srv/production/workloads/gateway/config/sample-env-reference-02.txt": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "test-fixture",
+      "expectedClassifications": [],
+      "technique": "known-example-credentials-in-prod-doc",
+      "bytes": 254,
+      "lines": 6
     },
     "evenup/srv/production/workloads/gateway/logs/app.json": {
       "client": "evenup",
@@ -1419,7 +1559,7 @@
       "category": "noise-pii",
       "expectedClassifications": [],
       "technique": "txn-id-mistaken-for-pan",
-      "bytes": 895601,
+      "bytes": 895805,
       "lines": 4200
     },
     "evenup/srv/production/workloads/gateway/logs/audit.json": {
@@ -1427,7 +1567,7 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 1618644,
+      "bytes": 1620041,
       "lines": 4200
     },
     "evenup/srv/production/workloads/gateway/telemetry/metrics-stream.pem": {
@@ -1445,7 +1585,7 @@
       "category": "noise-pii",
       "expectedClassifications": [],
       "technique": "txn-id-mistaken-for-pan",
-      "bytes": 908425,
+      "bytes": 908298,
       "lines": 4200
     },
     "evenup/srv/production/workloads/intake-api/logs/audit.json": {
@@ -1453,8 +1593,80 @@
       "hasRealSecret": false,
       "category": "asset-inventory",
       "expectedClassifications": [],
-      "bytes": 1618920,
+      "bytes": 1619881,
       "lines": 4200
+    },
+    "evenup/srv/production/workloads/orders/logs/orders-01.log": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "order-id-and-uuid-not-secret",
+      "bytes": 245528,
+      "lines": 2000
+    },
+    "evenup/srv/production/workloads/orders/logs/orders-02.log": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "order-id-and-uuid-not-secret",
+      "bytes": 245508,
+      "lines": 2000
+    },
+    "evenup/srv/production/workloads/orders/logs/orders-03.log": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "order-id-and-uuid-not-secret",
+      "bytes": 245526,
+      "lines": 2000
+    },
+    "evenup/srv/production/workloads/orders/logs/orders-04.log": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "order-id-and-uuid-not-secret",
+      "bytes": 245499,
+      "lines": 2000
+    },
+    "evenup/srv/production/workloads/web/config/public-client-01.yaml": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "public-by-design-config",
+      "bytes": 201,
+      "lines": 4
+    },
+    "evenup/srv/production/workloads/web/config/public-client-02.yaml": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "public-by-design-config",
+      "bytes": 201,
+      "lines": 4
+    },
+    "evenup/srv/production/workloads/web/config/public-client-03.yaml": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "public-by-design-config",
+      "bytes": 201,
+      "lines": 4
+    },
+    "evenup/srv/production/workloads/web/config/public-client-04.yaml": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "public-by-design-config",
+      "bytes": 202,
+      "lines": 4
     },
     "evenup/sys/backups/legal/executed/settlement_001_signed_confidential.md": {
       "client": "evenup",
@@ -1526,6 +1738,33 @@
       "bytes": 1792,
       "lines": 24
     },
+    "evenup/var/backoffice/exports/analytics/identifiers_01.export": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "semantic-id-mismatch",
+      "bytes": 222,
+      "lines": 5
+    },
+    "evenup/var/backoffice/exports/analytics/identifiers_02.export": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "semantic-id-mismatch",
+      "bytes": 224,
+      "lines": 5
+    },
+    "evenup/var/backoffice/exports/analytics/identifiers_03.export": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "semantic-id-mismatch",
+      "bytes": 224,
+      "lines": 5
+    },
     "evenup/var/backoffice/exports/db/claims_dump.sql": {
       "client": "evenup",
       "hasRealSecret": false,
@@ -1534,6 +1773,33 @@
       "technique": "sql-dump-pii-noise",
       "bytes": 147869,
       "lines": 1823
+    },
+    "evenup/var/backoffice/exports/finance/payment_corrections_01.csv": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "luhn-invalid-card-batch",
+      "bytes": 484,
+      "lines": 8
+    },
+    "evenup/var/backoffice/exports/finance/payment_corrections_02.csv": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "luhn-invalid-card-batch",
+      "bytes": 484,
+      "lines": 8
+    },
+    "evenup/var/backoffice/exports/finance/payment_corrections_03.csv": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "luhn-invalid-card-batch",
+      "bytes": 484,
+      "lines": 8
     },
     "evenup/var/backoffice/exports/finance/q1_settlements_unencrypted.csv": {
       "client": "evenup",
@@ -1586,6 +1852,33 @@
       "technique": "exposed-government-id-export",
       "bytes": 253895,
       "lines": 2401
+    },
+    "evenup/var/backoffice/exports/intake/synthetic_roster_01.csv": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "impossible-ssn-range",
+      "bytes": 239,
+      "lines": 8
+    },
+    "evenup/var/backoffice/exports/intake/synthetic_roster_02.csv": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "impossible-ssn-range",
+      "bytes": 246,
+      "lines": 8
+    },
+    "evenup/var/backoffice/exports/intake/synthetic_roster_03.csv": {
+      "client": "evenup",
+      "hasRealSecret": false,
+      "category": "noise-pii",
+      "expectedClassifications": [],
+      "technique": "impossible-ssn-range",
+      "bytes": 241,
+      "lines": 8
     },
     "evenup/var/backoffice/exports/kyc/kyc_fixed_width.dat": {
       "client": "evenup",
@@ -1706,6 +1999,7 @@
       "docusign-token",
       "drivers-license",
       "ein",
+      "generic-high-entropy-secret",
       "iban",
       "insurance-member-id",
       "jwt",
@@ -1721,21 +2015,21 @@
       {
         "client": "evenup",
         "industry": "fintech-legal-hybrid",
-        "files": 189,
-        "kb": 17554,
-        "truePositives": 26,
-        "falsePositives": 29,
+        "files": 220,
+        "kb": 18523,
+        "truePositives": 33,
+        "falsePositives": 53,
         "cleanFiles": 134
       }
     ],
     "corpusScale": 1,
     "description": "Ground-truth answer key for the Upwind Cloud Scanner haystack corpus. Lives outside customer-data/ — the scanner must NOT read this.",
-    "falsePositives": 29,
-    "nonLeakingPct": "86.2%",
+    "falsePositives": 53,
+    "nonLeakingPct": "85.0%",
     "seedNote": "Deterministic: per-agent fixed seeds reproduce the corpus byte-for-byte.",
-    "totalFiles": 189,
-    "totalFindings": 223,
-    "totalKB": 17554,
-    "truePositives": 26
+    "totalFiles": 220,
+    "totalFindings": 345,
+    "totalKB": 18523,
+    "truePositives": 33
   }
 }

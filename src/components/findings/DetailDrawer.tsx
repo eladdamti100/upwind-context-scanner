@@ -16,6 +16,7 @@ import { Icon } from '../common/Icon';
 import type { IconName } from '../common/Icon';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { CircularScore } from '../common/CircularScore';
+import { DomainRulesBanner } from './DomainRulesBanner';
 
 // Inject keyframes once into document head (no-op if already present)
 function ensureSlideKeyframes() {
@@ -350,6 +351,8 @@ export function DetailDrawer() {
 
           {/* ── 4. Why it matters ───────────────────────────────────────── */}
           <Section>
+            {/* Surfaces the DomainRulesAgent suppression reason when present. */}
+            <DomainRulesBanner finding={sel} />
             <SectionLabel style={{ marginBottom: 12 }}>Why it matters</SectionLabel>
             <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: reasons.length ? 12 : 0 }}>
               <Icon name="shield" size={16} stroke={ps.fg} />
