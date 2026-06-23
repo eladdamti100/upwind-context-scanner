@@ -9,6 +9,18 @@ test('FindingsTable renders column headers', () => {
   expect(screen.getByText('Confidence Level')).toBeInTheDocument();
 });
 
+test('header info icons reveal their tooltips', () => {
+  render(<App />);
+
+  // Confidence Level
+  fireEvent.click(screen.getByLabelText('What is Confidence Level?'));
+  expect(screen.getByText(/Confidence Level estimates how likely/)).toBeInTheDocument();
+
+  // Remediation Priority (clicking it closes the first via outside-click)
+  fireEvent.click(screen.getByLabelText('What is Remediation Priority?'));
+  expect(screen.getByText(/Remediation Priority indicates how urgently/)).toBeInTheDocument();
+});
+
 test('row three-dot menu opens meaningful actions', () => {
   render(<App />);
   const moreButtons = screen.getAllByTitle('More actions');

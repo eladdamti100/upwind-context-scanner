@@ -18,6 +18,7 @@ import { Icon } from '../common/Icon';
 import { Avatar } from '../common/Avatar';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { Popover } from '../common/Popover';
+import { InfoTooltip } from '../common/InfoTooltip';
 import type { Finding } from '../../types';
 
 // ---------------------------------------------------------------------------
@@ -625,13 +626,10 @@ export function FindingsTable() {
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         {col.label}
                         {(col.id === 'risk' || col.id === 'priority') && (
-                          <span
-                            title={col.id === 'risk' ? CONFIDENCE_TOOLTIP : PRIORITY_TOOLTIP}
-                            onClick={e => e.stopPropagation()}
-                            style={{ display: 'inline-flex', cursor: 'help', color: 'var(--text-tertiary)' }}
-                          >
-                            <Icon name="info" size={12} />
-                          </span>
+                          <InfoTooltip
+                            text={col.id === 'risk' ? CONFIDENCE_TOOLTIP : PRIORITY_TOOLTIP}
+                            label={col.id === 'risk' ? 'What is Confidence Level?' : 'What is Remediation Priority?'}
+                          />
                         )}
                         {isActive && (
                           <Icon
