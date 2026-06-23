@@ -163,8 +163,10 @@ function Select<T extends string>({
 
 function ReadOnlyRow({ label, value }: { label: string; value: string }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '7px 0' }}>
-      <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{label}</span>
+    // Label + badge sit close together (fixed-width label keeps the badges
+    // aligned in a column) rather than the badge being flush to the far right.
+    <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '7px 0' }}>
+      <span style={{ fontSize: 13, color: 'var(--text-secondary)', width: 130, flexShrink: 0 }}>{label}</span>
       <span
         style={{
           fontSize: 12,
