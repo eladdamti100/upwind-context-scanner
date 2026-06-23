@@ -73,13 +73,14 @@ export interface AppState {
 
 const DEFAULT_COLS: ColumnState[] = [
   // Required columns — always visible, cannot be turned off.
+  // Actions leads the row so details/actions are reachable from the start.
+  { id: 'actions',        label: 'Actions',              vis: true,  required: true },
   { id: 'risk',           label: 'Confidence Level',     vis: true,  required: true },
   { id: 'priority',       label: 'Remediation priority', vis: true,  required: true },
   { id: 'secretType',     label: 'Secret type',          vis: true,  required: true },
   { id: 'classification', label: 'Classification',       vis: true,  required: true },
   { id: 'validation',     label: 'Credential Check',     vis: true,  required: true },
   { id: 'file',           label: 'File name | path',     vis: true,  required: true },
-  { id: 'actions',        label: 'Actions',              vis: true,  required: true },
   // Optional columns — user-configurable (hidden by default to keep it clean).
   { id: 'owner',          label: 'Owner',                vis: false },
   { id: 'environment',    label: 'Environment',          vis: false },

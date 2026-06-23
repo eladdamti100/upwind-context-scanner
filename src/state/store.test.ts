@@ -140,10 +140,11 @@ test('TOGGLE_COL is a no-op for required columns', () => {
 
 test('the required columns are exactly the expected set, in order, leading the defaults', () => {
   const requiredIds = initialState.cols.filter(c => c.required).map(c => c.id);
-  expect(requiredIds).toEqual(['risk', 'priority', 'secretType', 'classification', 'validation', 'file', 'actions']);
-  // Confidence Level (risk) is first
-  expect(initialState.cols[0].id).toBe('risk');
-  expect(initialState.cols[0].label).toBe('Confidence Level');
+  expect(requiredIds).toEqual(['actions', 'risk', 'priority', 'secretType', 'classification', 'validation', 'file']);
+  // Actions leads the row, Confidence Level follows
+  expect(initialState.cols[0].id).toBe('actions');
+  expect(initialState.cols[1].id).toBe('risk');
+  expect(initialState.cols[1].label).toBe('Confidence Level');
 });
 
 // ---------------------------------------------------------------------------

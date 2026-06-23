@@ -121,12 +121,23 @@ const COL_SORT_MAP: Record<string, string> = {
 // slack, keeping the other columns tight instead of letting them stretch.
 // Columns not listed size to their content.
 const COL_WIDTH: Record<string, string> = {
+  actions: '76px',      // Actions — narrow, leads the row
   risk: '160px',        // Confidence Level — header + icons + centered ring
   priority: '184px',    // Remediation priority — header + info + badge
   validation: '152px',  // Credential Check
   file: '100%',         // File name | path — flexible, absorbs remaining width
-  actions: '92px',      // Actions — narrow, right-aligned
 };
+
+// Columns whose cell content is a chip/badge/ring/icon group — centered in
+// the column (header included). Plain-text columns stay left-aligned.
+const CENTERED_COLS = new Set([
+  'actions',
+  'risk',
+  'priority',
+  'classification',
+  'validation',
+  'environment',
+]);
 
 // ---------------------------------------------------------------------------
 // TableToolbar
@@ -646,7 +657,7 @@ export function FindingsTable() {
                         padding: '0 14px',
                         height: 36,
                         width: COL_WIDTH[col.id],
-                        textAlign: col.id === 'risk' ? 'center' : 'left',
+                        textAlign: CENTERED_COLS.has(col.id) ? 'center' : 'left',
                         fontSize: 11,
                         fontWeight: 600,
                         textTransform: 'uppercase',
@@ -709,13 +720,17 @@ export function FindingsTable() {
                   >
                     {visCols.map((col, colIdx) => {
                       const isFirstCol = colIdx === 0;
-                      const railTdStyle: React.CSSProperties = isFirstCol
+                      const baseTdStyle: React.CSSProperties = isFirstCol
                         ? {
                             ...tdStyle,
                             borderLeft: `3px solid ${priStyle(effPriority(f, sensitivity)).fg}`,
                             paddingLeft: 9,
                           }
                         : tdStyle;
+                      // Chip/badge/icon columns are centered; text columns stay left.
+                      const railTdStyle: React.CSSProperties = CENTERED_COLS.has(col.id)
+                        ? { ...baseTdStyle, textAlign: 'center' }
+                        : baseTdStyle;
                       switch (col.id) {
                         case 'priority':
                           return (
