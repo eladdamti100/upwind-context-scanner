@@ -3,8 +3,8 @@
 // existing finding data. SECURITY: shows only safe metadata — never a secret
 // value (raw, masked, or fragment).
 
-import React from 'react';
-import { FINDINGS, CLASSIFICATIONS } from '../../data';
+import React, { useMemo } from 'react';
+import { FINDINGS, CLASSIFICATIONS, MAP_ASSETS } from '../../data';
 import { effPriority } from '../../lib/priority';
 import { valStyle, envStyle } from '../../lib/classify';
 import { useStore } from '../../state/StoreContext';
@@ -15,39 +15,29 @@ import { CircularScore } from '../common/CircularScore';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { CloudBadge } from '../common/CloudBadge';
 
-// Curated landing-dashboard metrics (isolated Overview demo values; the
-// findings table reflects the real dataset). Keeps the headline narrative
-// coherent: 24 active credentials surfaced from 345 raw regex candidates.
-const HERO_ACTIVE = 24;
-const KPIS: { label: string; value: string; helper: string; icon: IconName; tileBg: string; iconColor: string }[] = [
-  { label: 'Active credentials', value: '24', helper: 'Confirmed live credentials', icon: 'shield', tileBg: 'var(--severity-safe-bg)', iconColor: 'var(--severity-safe)' },
-  { label: 'High priority findings', value: '18', helper: 'Need immediate attention', icon: 'alert-triangle', tileBg: 'var(--severity-critical-bg)', iconColor: 'var(--severity-critical)' },
-  { label: 'Publicly exposed assets', value: '188', helper: 'Public or internet-facing', icon: 'globe', tileBg: 'var(--uw-cyan-06, var(--severity-info-bg))', iconColor: 'var(--uw-cyan-02)' },
-  { label: 'Noise reduced', value: '1,248', helper: 'Downgraded or suppressed', icon: 'bar-chart', tileBg: 'var(--uw-royal-purple-06)', iconColor: 'var(--uw-royal-purple-02)' },
-];
+// Overview metrics are DERIVED from the committed dataset (FINDINGS / MAP_ASSETS
+// / CLASSIFICATIONS) inside the component — see the `useMemo` in OverviewView.
+// These interfaces type the derived KPI cards and funnel stages.
+// SECURITY: every value rendered here is an aggregate count; no secret value
+// (raw, masked, or fragment) is ever surfaced.
+interface KpiCard { label: string; value: number; helper: string; icon: IconName; tileBg: string; iconColor: string }
+interface FunnelStageData { value: number; title: string; desc: string; icon: IconName; accent: string; tint: string }
 
 const EXPOSURE_BREAKDOWN: { label: string; count: number; color: string }[] = [
   { label: 'Static exposed secrets', count: 14, color: 'var(--action-primary)' },
   { label: 'Dynamic exposed secrets', count: 6, color: 'var(--uw-metal-blue-02)' },
   { label: 'Shared with external AI service', count: 4, color: 'var(--uw-royal-purple-02)' },
 ];
-const RISK_BY_CLOUD: { provider: string; count: number }[] = [
-  { provider: 'AWS', count: 18 },
-  { provider: 'Azure', count: 4 },
-  { provider: 'GCP', count: 2 },
-];
 const SUGGESTED_RULES = [
   'Detect Azure Storage Account Keys in configuration files',
   'Flag secrets in container images and build artifacts',
   'Identify API tokens sent to external domains',
 ];
-const SCAN_ANALYZED = 223;
-const NOISE_REDUCED = 1248;
-
-// Funnel: regex candidates → context filtering → noise removed → surfaced risk.
-const FUNNEL_STAGES: { value: number; title: string; desc: string; icon: IconName; accent: string; tint: string }[] = [
+// Funnel narrative: regex candidates → context filtering → noise removed →
+// surfaced risk. Presentation is static; the per-stage `value` is derived from
+// the dataset in OverviewView and threaded in by index.
+const FUNNEL_META: Omit<FunnelStageData, 'value'>[] = [
   {
-    value: 345,
     title: 'Raw regex candidates',
     desc: 'Broad pattern matches across repos and assets. Includes docs, tests, and placeholders.',
     icon: 'search',
@@ -55,7 +45,6 @@ const FUNNEL_STAGES: { value: number; title: string; desc: string; icon: IconNam
     tint: 'var(--uw-blue-06)',
   },
   {
-    value: 221,
     title: 'Context-aware filtering',
     desc: 'Smart context analysis applied across identities, paths, file types, and context checks.',
     icon: 'filter',
@@ -63,7 +52,6 @@ const FUNNEL_STAGES: { value: number; title: string; desc: string; icon: IconNam
     tint: 'var(--uw-cyan-06, var(--severity-info-bg))',
   },
   {
-    value: 124,
     title: 'Noise / false positives reduced',
     desc: 'Filtered out documentation placeholders, test paths, dev keys, and synthetic values.',
     icon: 'alert-triangle',
@@ -71,7 +59,6 @@ const FUNNEL_STAGES: { value: number; title: string; desc: string; icon: IconNam
     tint: 'var(--severity-medium-bg)',
   },
   {
-    value: 24,
     title: 'High-value surfaced findings',
     desc: 'Validated active credentials requiring immediate attention.',
     icon: 'shield',
@@ -178,7 +165,7 @@ function HeaderCell({ children, align = 'left' }: { children: React.ReactNode; a
 // Funnel
 // ---------------------------------------------------------------------------
 
-function FunnelStage({ stage, first, last }: { stage: (typeof FUNNEL_STAGES)[number]; first: boolean; last: boolean }) {
+function FunnelStage({ stage, first, last }: { stage: FunnelStageData; first: boolean; last: boolean }) {
   const clip = first
     ? 'polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%)'
     : last
@@ -220,7 +207,7 @@ function FunnelStage({ stage, first, last }: { stage: (typeof FUNNEL_STAGES)[num
   );
 }
 
-function FunnelCard() {
+function FunnelCard({ stages }: { stages: FunnelStageData[] }) {
   return (
     <Card style={{ gridArea: 'bottom', padding: '18px 20px' }}>
       <CardTitle>How SignalLens reduces noise to surface real risk</CardTitle>
@@ -231,10 +218,10 @@ function FunnelCard() {
 
       {/* Funnel stages with arrow connectors */}
       <div style={{ display: 'flex', alignItems: 'stretch' }}>
-        {FUNNEL_STAGES.map((s, i) => (
+        {stages.map((s, i) => (
           <React.Fragment key={s.title}>
-            <FunnelStage stage={s} first={i === 0} last={i === FUNNEL_STAGES.length - 1} />
-            {i < FUNNEL_STAGES.length - 1 && (
+            <FunnelStage stage={s} first={i === 0} last={i === stages.length - 1} />
+            {i < stages.length - 1 && (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, flexShrink: 0 }}>
                 <Icon name="chevron-right" size={18} stroke="var(--text-tertiary)" />
               </div>
@@ -283,6 +270,52 @@ export function OverviewView() {
   const sensitivity = state.settings.sensitivity;
   const go = (tab: TabKey) => dispatch({ type: 'SET_TAB', tab });
 
+  // ── Derived metrics ──────────────────────────────────────────────────────
+  // Everything the Overview reports is computed from the committed dataset so
+  // the numbers can never contradict the findings table. Reactive to the active
+  // sensitivity and any in-session validation overrides.
+  const metrics = useMemo(() => {
+    const total = FINDINGS.length;
+    const validationOf = (f: (typeof FINDINGS)[number]) => state.validations[f.id] ?? f.validation;
+    const isHigh = (f: (typeof FINDINGS)[number]) => {
+      const p = effPriority(f, sensitivity);
+      return p === 'critical' || p === 'high';
+    };
+
+    const activeCredentials = FINDINGS.filter(f => validationOf(f) === 'validated-active').length;
+    const highPriority = FINDINGS.filter(isHigh).length;
+    const noise = FINDINGS.filter(f => f.isFalsePositive).length;
+    const realFindings = total - noise;
+    const publicAssets = Object.values(MAP_ASSETS).filter(
+      a => a.exposure === 'Public' || a.exposure === 'Internet-facing',
+    ).length;
+
+    // Risk by cloud: high-priority findings per provider, only providers that
+    // actually appear in the data (no phantom Azure/GCP).
+    const cloudCounts: Record<string, number> = {};
+    for (const f of FINDINGS) {
+      if (!isHigh(f)) continue;
+      cloudCounts[f.cloud] = (cloudCounts[f.cloud] ?? 0) + 1;
+    }
+    const riskByCloud = Object.entries(cloudCounts)
+      .map(([provider, count]) => ({ provider, count }))
+      .sort((a, b) => b.count - a.count);
+
+    return { total, activeCredentials, highPriority, noise, realFindings, publicAssets, riskByCloud };
+  }, [sensitivity, state.validations]);
+
+  const kpis: KpiCard[] = [
+    { label: 'Active credentials', value: metrics.activeCredentials, helper: 'Confirmed live credentials', icon: 'shield', tileBg: 'var(--severity-safe-bg)', iconColor: 'var(--severity-safe)' },
+    { label: 'High priority findings', value: metrics.highPriority, helper: 'Critical or high severity', icon: 'alert-triangle', tileBg: 'var(--severity-critical-bg)', iconColor: 'var(--severity-critical)' },
+    { label: 'Public-facing assets', value: metrics.publicAssets, helper: 'Public or internet-facing', icon: 'globe', tileBg: 'var(--uw-cyan-06, var(--severity-info-bg))', iconColor: 'var(--uw-cyan-02)' },
+    { label: 'Noise reduced', value: metrics.noise, helper: 'Low-risk findings downgraded or suppressed', icon: 'bar-chart', tileBg: 'var(--uw-royal-purple-06)', iconColor: 'var(--uw-royal-purple-02)' },
+  ];
+
+  // Funnel values by stage: total → real (kept by context) → noise removed →
+  // validated-active credentials. Narrows monotonically across the dataset.
+  const funnelValues = [metrics.total, metrics.realFindings, metrics.noise, metrics.activeCredentials];
+  const funnelStages: FunnelStageData[] = FUNNEL_META.map((m, i) => ({ ...m, value: funnelValues[i] }));
+
   const topFindings = [...FINDINGS]
     .sort((a, b) => b.scores.remediationPriority - a.scores.remediationPriority)
     .slice(0, 4);
@@ -316,7 +349,7 @@ export function OverviewView() {
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
-            {HERO_ACTIVE} active credentials are exposed across public or internet-facing assets
+            {metrics.activeCredentials} active credentials are exposed across public or internet-facing assets
           </div>
           <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 3 }}>
             SignalLens prioritized what needs attention first and reduced noisy findings.
@@ -347,7 +380,7 @@ export function OverviewView() {
 
       {/* ── 2. KPI cards ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
-        {KPIS.map(k => (
+        {kpis.map(k => (
           <Card key={k.label} style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
             <span
               style={{
@@ -498,7 +531,7 @@ export function OverviewView() {
           <Card style={{ padding: '16px 18px' }}>
             <CardTitle>Risk by cloud</CardTitle>
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: 16 }}>
-              {RISK_BY_CLOUD.map(c => (
+              {metrics.riskByCloud.map(c => (
                 <div key={c.provider} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
                   <CloudBadge provider={c.provider} size={38} />
                   <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>{c.count}</span>
@@ -546,9 +579,9 @@ export function OverviewView() {
             <CardTitle>Recent scan summary</CardTitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 12 }}>
               {([
-                ['Findings analyzed', SCAN_ANALYZED.toLocaleString()],
+                ['Findings analyzed', metrics.total.toLocaleString()],
                 ['Classifications', String(CLASSIFICATIONS.length)],
-                ['Noise reduced', NOISE_REDUCED.toLocaleString()],
+                ['Noise reduced', metrics.noise.toLocaleString()],
               ] as [string, string][]).map(([label, value]) => (
                 <div key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
                   <span style={{ fontSize: 12.5, color: 'var(--text-secondary)' }}>{label}</span>
@@ -563,7 +596,7 @@ export function OverviewView() {
         </div>
 
         {/* ── Funnel card (lower-left, spans the main column) ── */}
-        <FunnelCard />
+        <FunnelCard stages={funnelStages} />
       </div>
     </div>
   );

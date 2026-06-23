@@ -3,6 +3,27 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { test, expect } from 'vitest';
 import App from '../../App';
+import { FINDINGS, MAP_ASSETS } from '../../data';
+import { effPriority } from '../../lib/priority';
+
+// Expected metrics derived from the committed dataset the SAME way OverviewView
+// derives them (default 'balanced' sensitivity, no in-session overrides). This
+// pins the Overview to the real data: if the dataset changes, both move together;
+// if someone re-hardcodes a curated number, these assertions fail.
+const expected = (() => {
+  const isHigh = (f: (typeof FINDINGS)[number]) => {
+    const p = effPriority(f, 'balanced');
+    return p === 'critical' || p === 'high';
+  };
+  const total = FINDINGS.length;
+  const activeCredentials = FINDINGS.filter(f => f.validation === 'validated-active').length;
+  const highPriority = FINDINGS.filter(isHigh).length;
+  const noise = FINDINGS.filter(f => f.isFalsePositive).length;
+  const publicAssets = Object.values(MAP_ASSETS).filter(
+    a => a.exposure === 'Public' || a.exposure === 'Internet-facing',
+  ).length;
+  return { total, activeCredentials, highPriority, noise, publicAssets };
+})();
 
 test('app opens on the Overview tab by default', () => {
   render(<App />);
@@ -14,9 +35,38 @@ test('Overview shows the four KPI cards', () => {
   render(<App />);
   expect(screen.getByText('Active credentials')).toBeInTheDocument();
   expect(screen.getByText('High priority findings')).toBeInTheDocument();
-  expect(screen.getByText('Publicly exposed assets')).toBeInTheDocument();
-  // "Noise reduced" appears as both the KPI label and the bottom card title.
+  expect(screen.getByText('Public-facing assets')).toBeInTheDocument();
+  // "Noise reduced" appears as both the KPI label and the recent-scan row.
   expect(screen.getAllByText('Noise reduced').length).toBeGreaterThan(0);
+});
+
+test('Overview KPI values are derived from the real dataset', () => {
+  render(<App />);
+  const view = screen.getByTestId('overview-view');
+  const text = view.textContent ?? '';
+
+  // Derived values are present.
+  expect(screen.getAllByText(String(expected.activeCredentials)).length).toBeGreaterThan(0);
+  expect(screen.getAllByText(String(expected.highPriority)).length).toBeGreaterThan(0);
+  expect(screen.getAllByText(String(expected.publicAssets)).length).toBeGreaterThan(0);
+  expect(screen.getAllByText(String(expected.noise)).length).toBeGreaterThan(0);
+
+  // Sanity anchors on the known dataset.
+  expect(expected.activeCredentials).toBe(34);
+  expect(expected.publicAssets).toBe(3);
+
+  // The old curated/contradictory values must be gone.
+  expect(text).not.toContain('188'); // impossible public-asset count
+  expect(text).not.toContain('1,248'); // ungrounded noise number
+});
+
+test('Overview funnel uses derived dataset values', () => {
+  render(<App />);
+  const view = screen.getByTestId('overview-view');
+  const text = view.textContent ?? '';
+  // First stage = total candidates; last = validated-active credentials.
+  expect(text).toContain(String(expected.total));
+  expect(text).toContain(String(expected.activeCredentials));
 });
 
 test('"View exposed findings" navigates to the findings table', () => {
