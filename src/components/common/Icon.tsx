@@ -38,7 +38,11 @@ export type IconName =
   | 'flag'
   | 'bar-chart'
   | 'cloud'
-  | 'grid';
+  | 'grid'
+  | 'user'
+  | 'credit-card'
+  | 'landmark'
+  | 'activity';
 
 const PATHS: Record<IconName, string> = {
   'search':
@@ -115,6 +119,14 @@ const PATHS: Record<IconName, string> = {
     'M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z',
   'grid':
     'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z',
+  'user':
+    'M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+  'credit-card':
+    'M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM2 10h20',
+  'landmark':
+    'M3 22h18M6 18v-7M10 18v-7M14 18v-7M18 18v-7M12 2 3 8h18z',
+  'activity':
+    'M22 12h-4l-3 9L9 3l-3 9H2',
 };
 
 export function Icon({
