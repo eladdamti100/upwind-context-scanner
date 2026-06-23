@@ -19,7 +19,6 @@ import { SeverityBadge } from '../common/SeverityBadge';
 import { Popover } from '../common/Popover';
 import { InfoTooltip } from '../common/InfoTooltip';
 import { CircularScore } from '../common/CircularScore';
-import type { Finding } from '../../types';
 
 // ---------------------------------------------------------------------------
 // Small shared helpers
@@ -84,81 +83,6 @@ function IconBtn({
     >
       {children}
     </button>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Sort options
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
-// Row actions menu (three-dot)
-// ---------------------------------------------------------------------------
-
-function RowMenuItem({
-  label,
-  onClick,
-  disabled,
-}: {
-  label: string;
-  onClick?: () => void;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      disabled={disabled}
-      onClick={e => {
-        e.stopPropagation();
-        if (!disabled && onClick) onClick();
-      }}
-      onMouseEnter={e => {
-        if (!disabled) e.currentTarget.style.background = 'var(--interactive-hover)';
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.background = 'transparent';
-      }}
-      style={{
-        display: 'block',
-        width: '100%',
-        textAlign: 'left',
-        padding: '7px 10px',
-        border: 'none',
-        background: 'transparent',
-        color: disabled ? 'var(--text-disabled)' : 'var(--text-primary)',
-        fontSize: 13,
-        cursor: disabled ? 'default' : 'pointer',
-        borderRadius: 5,
-      }}
-    >
-      {label}
-    </button>
-  );
-}
-
-function RowActionsMenu({ finding, canValidate }: { finding: Finding; canValidate: boolean }) {
-  const { state, dispatch } = useStore();
-  const open = state.menu === 'row-' + finding.id;
-  const close = () => dispatch({ type: 'CLOSE_MENU' });
-
-  return (
-    <Popover open={open} onClose={close} style={{ top: 28, right: 0, minWidth: 196 }}>
-      <div style={{ padding: '4px 2px' }} onClick={e => e.stopPropagation()}>
-        <RowMenuItem label="Open details" onClick={() => { dispatch({ type: 'OPEN_DETAIL', id: finding.id }); close(); }} />
-        {canValidate ? (
-          <RowMenuItem label="Run credential check" onClick={() => { dispatch({ type: 'OPEN_VAL_MODAL', id: finding.id }); close(); }} />
-        ) : (
-          <RowMenuItem label="Run credential check (unavailable)" disabled />
-        )}
-        <RowMenuItem label="Change lifecycle status" onClick={() => { dispatch({ type: 'OPEN_LIFECYCLE', id: finding.id }); close(); }} />
-        <RowMenuItem label="Snooze finding" onClick={() => { dispatch({ type: 'OPEN_LIFECYCLE', id: finding.id }); close(); }} />
-        <RowMenuItem label="Assign owner" onClick={() => { dispatch({ type: 'SHOW_TOAST', message: 'Owner assignment is mocked in this demo' }); close(); }} />
-        <RowMenuItem label="Copy file path" onClick={() => {
-          try { navigator.clipboard?.writeText?.(finding.path); } catch { /* clipboard unavailable */ }
-          dispatch({ type: 'SHOW_TOAST', message: 'File path copied' });
-          close();
-        }} />
-      </div>
-    </Popover>
   );
 }
 
@@ -290,60 +214,57 @@ function TableToolbar({
           <Popover
             open={state.menu === 'cols'}
             onClose={() => dispatch({ type: 'CLOSE_MENU' })}
-            style={{ top: 34, right: 0, minWidth: 230 }}
+            style={{ top: 34, right: 0, minWidth: 214 }}
           >
-            <div style={{ padding: '4px 2px' }}>
+            <div style={{ padding: '2px 0' }}>
               {state.cols.map((col, idx) => (
                 <div
                   key={col.id}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 6,
-                    padding: '5px 8px',
-                    borderRadius: 5,
+                    gap: 7,
+                    padding: '3px 8px',
+                    borderRadius: 4,
+                    height: 26,
                   }}
                 >
-                  {/* Checkbox — required columns are checked and disabled */}
-                  <input
-                    type="checkbox"
-                    checked={col.vis}
-                    disabled={col.required}
-                    onChange={() => dispatch({ type: 'TOGGLE_COL', index: idx })}
-                    style={{
-                      cursor: col.required ? 'default' : 'pointer',
-                      accentColor: 'var(--action-primary)',
-                      flexShrink: 0,
-                      opacity: col.required ? 0.6 : 1,
-                    }}
-                  />
+                  {/* Required columns are locked — no checkbox. Optional columns toggle. */}
+                  {col.required ? (
+                    // Locked column — reserve the checkbox slot so labels stay aligned.
+                    <span
+                      aria-hidden="true"
+                      style={{ width: 13, flexShrink: 0 }}
+                    />
+                  ) : (
+                    <input
+                      type="checkbox"
+                      checked={col.vis}
+                      onChange={() => dispatch({ type: 'TOGGLE_COL', index: idx })}
+                      style={{
+                        width: 13,
+                        height: 13,
+                        cursor: 'pointer',
+                        accentColor: 'var(--action-primary)',
+                        flexShrink: 0,
+                        margin: 0,
+                      }}
+                    />
+                  )}
                   <span
                     style={{
                       flex: 1,
-                      fontSize: 13,
-                      color: 'var(--text-primary)',
+                      fontSize: 12,
+                      color: col.required ? 'var(--text-secondary)' : 'var(--text-primary)',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: 6,
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     {col.label}
                     {col.required && (
-                      <span
-                        title="Required column — always visible"
-                        style={{
-                          fontSize: 9.5,
-                          fontWeight: 600,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.04em',
-                          color: 'var(--text-tertiary)',
-                          border: '1px solid var(--border-subtle)',
-                          borderRadius: 4,
-                          padding: '1px 5px',
-                        }}
-                      >
-                        Required
-                      </span>
+                      <span style={{ fontSize: 10.5, color: 'var(--text-disabled)' }}>Fixed</span>
                     )}
                   </span>
                   {/* Move up */}
@@ -354,12 +275,12 @@ function TableToolbar({
                       background: 'transparent',
                       cursor: idx > 0 ? 'pointer' : 'default',
                       color: idx > 0 ? 'var(--text-secondary)' : 'var(--text-disabled)',
-                      padding: 2,
+                      padding: 1,
                       display: 'flex',
                     }}
                     disabled={idx === 0}
                   >
-                    <Icon name="chevron-up" size={12} />
+                    <Icon name="chevron-up" size={11} />
                   </button>
                   {/* Move down */}
                   <button
@@ -369,23 +290,23 @@ function TableToolbar({
                       background: 'transparent',
                       cursor: idx < state.cols.length - 1 ? 'pointer' : 'default',
                       color: idx < state.cols.length - 1 ? 'var(--text-secondary)' : 'var(--text-disabled)',
-                      padding: 2,
+                      padding: 1,
                       display: 'flex',
                     }}
                     disabled={idx === state.cols.length - 1}
                   >
-                    <Icon name="chevron-down" size={12} />
+                    <Icon name="chevron-down" size={11} />
                   </button>
                 </div>
               ))}
-              <div style={{ borderTop: '1px solid var(--border-subtle)', marginTop: 4, paddingTop: 6, paddingLeft: 8 }}>
+              <div style={{ borderTop: '1px solid var(--border-subtle)', marginTop: 4, paddingTop: 5, paddingLeft: 8 }}>
                 <button
                   onClick={() => dispatch({ type: 'RESET_COLS' })}
                   style={{
                     border: 'none',
                     background: 'transparent',
                     color: 'var(--text-link)',
-                    fontSize: 12,
+                    fontSize: 11.5,
                     cursor: 'pointer',
                     padding: '2px 0',
                   }}
@@ -618,7 +539,7 @@ export function FindingsTable() {
                       style={{
                         padding: '0 12px',
                         height: 34,
-                        textAlign: 'left',
+                        textAlign: col.id === 'risk' ? 'center' : 'left',
                         fontSize: 11,
                         fontWeight: 600,
                         textTransform: 'uppercase',
@@ -665,9 +586,7 @@ export function FindingsTable() {
                 return (
                   <tr
                     key={f.id}
-                    onClick={() => dispatch({ type: 'OPEN_DETAIL', id: f.id })}
                     style={{
-                      cursor: 'pointer',
                       opacity: eff === 'suppressed' ? 0.55 : 1,
                     }}
                     onMouseEnter={e => {
@@ -843,7 +762,7 @@ export function FindingsTable() {
 
                         case 'risk': {
                           return (
-                            <td key={col.id} style={railTdStyle}>
+                            <td key={col.id} style={{ ...railTdStyle, textAlign: 'center' }}>
                               <button
                                 aria-label="Why this score?"
                                 title="Why this score?"
@@ -854,13 +773,14 @@ export function FindingsTable() {
                                 style={{
                                   display: 'inline-flex',
                                   alignItems: 'center',
+                                  justifyContent: 'center',
                                   border: 'none',
                                   background: 'transparent',
                                   cursor: 'pointer',
                                   padding: 0,
                                 }}
                               >
-                                <CircularScore score={f.risk} size={40} stroke={4} />
+                                <CircularScore score={f.risk} size={32} stroke={3.5} />
                               </button>
                             </td>
                           );
@@ -945,28 +865,25 @@ export function FindingsTable() {
                                 >
                                   <Icon name="eye" size={14} />
                                 </button>
-                                <span style={{ position: 'relative', display: 'inline-flex' }}>
-                                  <button
-                                    onClick={e => {
-                                      e.stopPropagation();
-                                      dispatch({ type: 'TOGGLE_MENU', menu: 'row-' + f.id });
-                                    }}
-                                    style={{
-                                      display: 'inline-flex',
-                                      alignItems: 'center',
-                                      border: 'none',
-                                      background: 'transparent',
-                                      color: 'var(--text-secondary)',
-                                      cursor: 'pointer',
-                                      padding: 4,
-                                      borderRadius: 4,
-                                    }}
-                                    title="More actions"
-                                  >
-                                    <Icon name="more-vertical" size={14} />
-                                  </button>
-                                  <RowActionsMenu finding={f} canValidate={vs.canValidate && state.settings.validationEnabled && !isValidating} />
-                                </span>
+                                <button
+                                  onClick={e => {
+                                    e.stopPropagation();
+                                    dispatch({ type: 'OPEN_ACTIONS', id: f.id });
+                                  }}
+                                  style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    border: 'none',
+                                    background: 'transparent',
+                                    color: 'var(--text-secondary)',
+                                    cursor: 'pointer',
+                                    padding: 4,
+                                    borderRadius: 4,
+                                  }}
+                                  title="More actions"
+                                >
+                                  <Icon name="more-vertical" size={14} />
+                                </button>
                               </span>
                             </td>
                           );

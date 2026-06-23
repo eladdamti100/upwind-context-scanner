@@ -24,9 +24,9 @@ function clickText(text: string) {
   fireEvent.click(screen.getByText(text));
 }
 
-function getFirstDataRow(): HTMLElement {
-  const rows = document.querySelectorAll('tbody tr');
-  return rows[0] as HTMLElement;
+function openFirstDetail() {
+  // The drawer opens only via the eye ("View detail") icon, not a row click.
+  fireEvent.click(screen.getAllByTitle('View detail')[0]);
 }
 
 // ---------------------------------------------------------------------------
@@ -42,8 +42,7 @@ test('demo flow: findings → drawer → settings → exposure map', async () =>
   expect(rows.length).toBeGreaterThan(0);
 
   // ── 2. Open detail drawer for the first row ──────────────────────────────
-  const firstRow = getFirstDataRow();
-  fireEvent.click(firstRow);
+  openFirstDetail();
 
   // Drawer: "Score breakdown" section header
   expect(await screen.findByText('Score breakdown')).toBeInTheDocument();

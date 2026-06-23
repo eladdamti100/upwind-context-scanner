@@ -47,9 +47,9 @@ test('no raw secrets are ever rendered — only masked values', async () => {
   textSnapshots.push(document.body.textContent ?? '');
 
   // ── 2. Detail drawer for first row ────────────────────────────────────
-  // Click the first tbody row to open the drawer
-  const firstRow = document.querySelectorAll('tbody tr')[0] as HTMLElement;
-  fireEvent.click(firstRow);
+  // The drawer opens only via the eye ("View detail") icon, not a row click.
+  const eyeButton = screen.getAllByTitle('View detail')[0];
+  fireEvent.click(eyeButton);
 
   // Wait for the drawer to open — Score breakdown is always present
   await screen.findByText('Score breakdown');
@@ -57,6 +57,13 @@ test('no raw secrets are ever rendered — only masked values', async () => {
 
   // Close the drawer before navigating.
   fireEvent.click(screen.getByRole('button', { name: 'Close detail' }));
+
+  // ── 2b. Row actions modal ─────────────────────────────────────────────
+  const moreButton = screen.getAllByTitle('More actions')[0];
+  fireEvent.click(moreButton);
+  await screen.findByText('Finding actions');
+  textSnapshots.push(document.body.textContent ?? '');
+  fireEvent.click(screen.getByRole('button', { name: 'Close finding actions' }));
 
   // ── 3. Exposure map tab ─────────────────────────────────────────────
   fireEvent.click(screen.getByText('Exposure map'));

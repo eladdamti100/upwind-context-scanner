@@ -1,6 +1,7 @@
-// validationModal.test.tsx — credential-check flow via the row actions menu.
+// validationModal.test.tsx — credential-check flow via the row actions modal.
 // The inline table button was removed; the check is launched from the
-// three-dot row menu ("Run credential check") which opens ValidationModal.
+// three-dot "Finding actions" modal ("Run credential check") which opens
+// the ValidationModal.
 
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { test, expect, vi, afterEach } from 'vitest';
@@ -10,13 +11,19 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-// Open row menus until one exposes an enabled "Run credential check" item.
+// Open the row actions modal for each finding until one exposes an ENABLED
+// "Run credential check" action (disabled ones share the same label).
 function openRunnableCheck() {
   const moreButtons = screen.getAllByTitle('More actions');
   for (const btn of moreButtons) {
     fireEvent.click(btn);
-    const item = screen.queryByText('Run credential check'); // exact — skips "(unavailable)"
-    if (item) return item;
+    const enabled = screen
+      .queryAllByText('Run credential check')
+      .map(el => el.closest('button'))
+      .find(b => b && !(b as HTMLButtonElement).disabled);
+    if (enabled) return enabled as HTMLButtonElement;
+    // Not available for this finding — close the modal and try the next row.
+    fireEvent.click(screen.getByRole('button', { name: /close finding actions/i }));
   }
   return null;
 }

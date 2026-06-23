@@ -10,12 +10,26 @@ function getFirstDataRow() {
   return rows[0] as HTMLElement;
 }
 
-test('clicking the first data row opens the drawer with a masked value and score breakdown', () => {
+function openFirstDetail() {
+  const eyeButton = screen.getAllByTitle('View detail')[0];
+  fireEvent.click(eyeButton);
+}
+
+test('clicking a data row does NOT open the drawer', () => {
   render(<App />);
 
   const row = getFirstDataRow();
   expect(row).not.toBeNull();
   fireEvent.click(row);
+
+  // The drawer must stay closed — its "Score breakdown" label should be absent.
+  expect(screen.queryByText('Score breakdown')).not.toBeInTheDocument();
+});
+
+test('the eye icon opens the drawer with a masked value and score breakdown', () => {
+  render(<App />);
+
+  openFirstDetail();
 
   // Drawer should show a masked value (contains • or *)
   const maskedEls = screen.getAllByText(/[•*]/);
@@ -31,8 +45,7 @@ test('clicking the first data row opens the drawer with a masked value and score
 test('closing the drawer hides the score breakdown', () => {
   render(<App />);
 
-  const row = getFirstDataRow();
-  fireEvent.click(row);
+  openFirstDetail();
 
   // Confirm drawer is open
   expect(screen.getByText('Score breakdown')).toBeInTheDocument();

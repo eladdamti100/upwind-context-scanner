@@ -21,14 +21,43 @@ test('header info icons reveal their tooltips', () => {
   expect(screen.getByText(/Remediation Priority indicates how urgently/)).toBeInTheDocument();
 });
 
-test('row three-dot menu opens meaningful actions', () => {
+test('row three-dot opens the centered Finding actions modal', () => {
   render(<App />);
   const moreButtons = screen.getAllByTitle('More actions');
   expect(moreButtons.length).toBeGreaterThan(0);
   fireEvent.click(moreButtons[0]);
+
+  // Centered modal with a title and the available actions.
+  expect(screen.getByText('Finding actions')).toBeInTheDocument();
   expect(screen.getByText('Open details')).toBeInTheDocument();
   expect(screen.getByText('Copy file path')).toBeInTheDocument();
   expect(screen.getByText('Change lifecycle status')).toBeInTheDocument();
+  expect(screen.getByText('Mark as false positive')).toBeInTheDocument();
+});
+
+test('the Finding actions modal closes via its close button', () => {
+  render(<App />);
+  fireEvent.click(screen.getAllByTitle('More actions')[0]);
+  expect(screen.getByText('Finding actions')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole('button', { name: /close finding actions/i }));
+  expect(screen.queryByText('Finding actions')).not.toBeInTheDocument();
+});
+
+test('column picker locks required columns (no checkbox) and toggles optional ones', () => {
+  render(<App />);
+
+  // Open the column picker.
+  fireEvent.click(screen.getByTitle('Columns'));
+
+  // The word "Required" must no longer appear; locked columns read "Fixed".
+  expect(screen.queryByText('REQUIRED')).not.toBeInTheDocument();
+  expect(screen.queryByText('Required')).not.toBeInTheDocument();
+  expect(screen.getAllByText('Fixed').length).toBeGreaterThan(0);
+
+  // There are 7 required columns → at most (total − 7) checkboxes for optional ones.
+  const checkboxes = screen.getAllByRole('checkbox');
+  expect(checkboxes.length).toBe(6); // owner, environment, exposure, cloud, createdAt, explanation
 });
 
 test('FindingsTable renders at least one row', () => {

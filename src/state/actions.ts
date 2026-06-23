@@ -23,6 +23,8 @@ export type Action =
   | { type: 'CLOSE_MENU' }
   | { type: 'OPEN_DETAIL'; id: number }
   | { type: 'CLOSE_DETAIL' }
+  | { type: 'OPEN_ACTIONS'; id: number }
+  | { type: 'CLOSE_ACTIONS' }
   | { type: 'OPEN_RISK'; id: number }
   | { type: 'CLOSE_RISK' }
   | { type: 'OPEN_VAL_MODAL'; id: number }

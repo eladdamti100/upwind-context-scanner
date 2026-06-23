@@ -6,6 +6,7 @@ import { Tabs } from './components/shell/Tabs';
 import { Toast } from './components/common/Toast';
 import { FindingsView } from './components/findings/FindingsView';
 import { DetailDrawer } from './components/findings/DetailDrawer';
+import { RowActionsModal } from './components/findings/RowActionsModal';
 import { RiskPopover } from './components/findings/RiskPopover';
 import { ValidationModal } from './components/findings/ValidationModal';
 import { LifecycleDialog } from './components/findings/LifecycleDialog';
@@ -73,6 +74,7 @@ function AppShell() {
       </div>
 
       <DetailDrawer />
+      <RowActionsModal />
       <RiskPopover />
       <ValidationModal />
       <LifecycleDialog />

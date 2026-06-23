@@ -42,6 +42,7 @@ export interface AppState {
   rpp: number;
   menu: string | null;
   selectedId: number | null;
+  actionsId: number | null;
   riskId: number | null;
   valModalId: number | null;
   validatingId: number | null;
@@ -106,6 +107,7 @@ export const initialState: AppState = {
   rpp: 15,
   menu: null,
   selectedId: null,
+  actionsId: null,
   riskId: null,
   valModalId: null,
   validatingId: null,
@@ -207,6 +209,13 @@ export function reducer(state: AppState, action: Action): AppState {
 
     case 'CLOSE_DETAIL':
       return { ...state, selectedId: null };
+
+    // ---- Row actions modal ---------------------------------------------------
+    case 'OPEN_ACTIONS':
+      return { ...state, actionsId: action.id, menu: null };
+
+    case 'CLOSE_ACTIONS':
+      return { ...state, actionsId: null };
 
     // ---- Risk popover --------------------------------------------------------
     case 'OPEN_RISK':

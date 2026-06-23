@@ -5,12 +5,13 @@
 import React from 'react';
 import { FINDINGS } from '../../data';
 import { effPriority } from '../../lib/priority';
-import { priStyle, priLabel, valStyle } from '../../lib/classify';
+import { priStyle, valStyle } from '../../lib/classify';
 import { buildBreakdown } from '../../lib/scoring';
 import { explanationTitle, recommendedActions } from '../../lib/explain';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';
 import { SeverityBadge } from '../common/SeverityBadge';
+import { CircularScore } from '../common/CircularScore';
 
 // Inject keyframes once into document head (no-op if already present)
 function ensureSlideKeyframes() {
@@ -36,7 +37,7 @@ function Section({ children, style }: { children: React.ReactNode; style?: React
   return (
     <div
       style={{
-        padding: '14px 16px',
+        padding: '18px 20px',
         borderBottom: '1px solid var(--border-subtle)',
         ...style,
       }}
@@ -55,7 +56,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
         textTransform: 'uppercase',
         letterSpacing: '0.06em',
         color: 'var(--text-tertiary)',
-        marginBottom: 10,
+        marginBottom: 12,
       }}
     >
       {children}
@@ -79,12 +80,12 @@ export function DetailDrawer() {
   const ps = priStyle(p);
   const v = state.validations[sel.id] ?? sel.validation;
   const vs = valStyle(v);
-  const isFp = sel.isFalsePositive || p === 'suppressed';
   const isValidating = state.validatingId === sel.id;
 
   const breakdown = buildBreakdown(sel);
   const expTitle = explanationTitle(sel, p);
-  const actions = recommendedActions(sel, p);
+  // Keep the action list short and scannable — show the top recommendations only.
+  const actions = recommendedActions(sel, p).slice(0, 3);
 
   function close() {
     dispatch({ type: 'CLOSE_DETAIL' });
@@ -128,19 +129,13 @@ export function DetailDrawer() {
         }}
       >
         {/* ── 1. Header ─────────────────────────────────────────────────── */}
-        <Section
-          style={{
-            padding: '14px 16px',
-          }}
-        >
-          {/* Title row: classification + close button */}
+        <Section>
           <div
             style={{
               display: 'flex',
               alignItems: 'flex-start',
               justifyContent: 'space-between',
               gap: 10,
-              marginBottom: 8,
             }}
           >
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -188,19 +183,67 @@ export function DetailDrawer() {
               <Icon name="x" size={13} />
             </button>
           </div>
+        </Section>
 
-          {/* Chips row: severity + validation + cloud */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+        {/* ── 2. Key facts ──────────────────────────────────────────────── */}
+        <Section>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 28,
+              flexWrap: 'wrap',
+            }}
+          >
+            {/* Confidence level */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <CircularScore score={sel.risk} size={44} stroke={4} />
+              <span
+                style={{
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  color: 'var(--text-tertiary)',
+                  maxWidth: 70,
+                  lineHeight: 1.3,
+                }}
+              >
+                Confidence level
+              </span>
+            </div>
+
+            {/* Remediation priority */}
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <span style={{ fontSize: 26, fontWeight: 700, color: ps.fg, lineHeight: 1 }}>
+                {sel.scores.remediationPriority}
+              </span>
+              <span
+                style={{
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  color: 'var(--text-tertiary)',
+                  maxWidth: 72,
+                  lineHeight: 1.3,
+                }}
+              >
+                Remediation priority
+              </span>
+            </div>
+          </div>
+
+          {/* Status chips */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginTop: 14 }}>
             <SeverityBadge priority={p} />
-
-            {/* Validation chip */}
             <span
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 5,
                 height: 20,
-                padding: '0 7px',
+                padding: '0 8px',
                 borderRadius: 5,
                 background: vs.bg,
                 fontSize: 11,
@@ -221,15 +264,13 @@ export function DetailDrawer() {
               />
               {isValidating ? 'Checking…' : vs.label}
             </span>
-
-            {/* Cloud chip (if present) */}
             {sel.cloud && (
               <span
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   height: 20,
-                  padding: '0 7px',
+                  padding: '0 8px',
                   borderRadius: 5,
                   background: 'var(--bg-secondary)',
                   fontSize: 11,
@@ -243,44 +284,8 @@ export function DetailDrawer() {
               </span>
             )}
           </div>
-        </Section>
 
-        {/* ── 2. Prominent score band ───────────────────────────────────── */}
-        <Section style={{ padding: '14px 16px' }}>
-          {/* Score + label row */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'baseline',
-              gap: 8,
-              marginBottom: 10,
-            }}
-          >
-            <span
-              style={{
-                fontSize: 28,
-                fontWeight: 700,
-                color: ps.fg,
-                lineHeight: 1,
-              }}
-            >
-              {sel.scores.remediationPriority}
-            </span>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: 'var(--text-tertiary)',
-                lineHeight: 1.2,
-              }}
-            >
-              Remediation priority
-            </span>
-          </div>
-
-          {/* Masked value box */}
+          {/* Masked value */}
           <div
             style={{
               fontFamily: 'var(--font-mono-family, monospace)',
@@ -291,6 +296,7 @@ export function DetailDrawer() {
               padding: '8px 11px',
               overflowX: 'auto',
               whiteSpace: 'nowrap',
+              marginTop: 14,
             }}
           >
             {sel.maskedValue}
@@ -302,118 +308,29 @@ export function DetailDrawer() {
           <SectionLabel>Why this was flagged</SectionLabel>
           <div
             style={{
-              background: isFp ? 'var(--severity-safe-bg)' : ps.bg,
-              borderLeft: `3px solid ${isFp ? 'var(--uw-green-04)' : ps.fg}`,
-              borderRadius: '0 6px 6px 0',
-              padding: '10px 12px',
-              marginBottom:
-                sel.riskUpReasons.length > 0 || sel.riskDownReasons.length > 0 ? 12 : 0,
+              fontWeight: 700,
+              fontSize: 13,
+              color: 'var(--text-primary)',
+              marginBottom: 6,
             }}
           >
-            <div
-              style={{
-                fontWeight: 700,
-                fontSize: 13,
-                color: 'var(--text-primary)',
-                marginBottom: 6,
-              }}
-            >
-              {expTitle}
-            </div>
-            <div
-              style={{
-                fontSize: 12.5,
-                color: 'var(--text-secondary)',
-                lineHeight: 1.5,
-              }}
-            >
-              {sel.explanation}
-            </div>
+            {expTitle}
           </div>
-
-          {/* Risk-up reasons */}
-          {sel.riskUpReasons.length > 0 && (
-            <div style={{ marginBottom: sel.riskDownReasons.length > 0 ? 10 : 0 }}>
-              <ul
-                style={{
-                  margin: 0,
-                  padding: 0,
-                  listStyle: 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 4,
-                }}
-              >
-                {sel.riskUpReasons.map((r, i) => (
-                  <li
-                    key={i}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: 6,
-                      fontSize: 12.5,
-                      color: 'var(--text-secondary)',
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: 'var(--severity-high)',
-                        flexShrink: 0,
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      ▲
-                    </span>
-                    {r}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Risk-down reasons */}
-          {sel.riskDownReasons.length > 0 && (
-            <ul
-              style={{
-                margin: 0,
-                padding: 0,
-                listStyle: 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 4,
-              }}
-            >
-              {sel.riskDownReasons.map((r, i) => (
-                <li
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 6,
-                    fontSize: 12.5,
-                    color: 'var(--text-secondary)',
-                  }}
-                >
-                  <span
-                    style={{
-                      color: 'var(--severity-safe)',
-                      flexShrink: 0,
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    ▼
-                  </span>
-                  {r}
-                </li>
-              ))}
-            </ul>
-          )}
+          <div
+            style={{
+              fontSize: 12.5,
+              color: 'var(--text-secondary)',
+              lineHeight: 1.55,
+            }}
+          >
+            {sel.explanation}
+          </div>
         </Section>
 
         {/* ── 4. Score breakdown ────────────────────────────────────────── */}
         <Section>
           <SectionLabel>Score breakdown</SectionLabel>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {breakdown.map(row => (
               <div key={row.label}>
                 <div
@@ -459,144 +376,63 @@ export function DetailDrawer() {
           </div>
         </Section>
 
-        {/* ── 5. Details grid ───────────────────────────────────────────── */}
+        {/* ── 5. Location ───────────────────────────────────────────────── */}
         <Section>
-          <SectionLabel>Details</SectionLabel>
+          <SectionLabel>Location</SectionLabel>
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '8px 12px',
+              fontSize: 12.5,
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-mono-family, monospace)',
+              overflowX: 'auto',
+              whiteSpace: 'nowrap',
+              marginBottom: 6,
             }}
           >
-            {(
-              [
-                ['Classification',     sel.classification],
-                ['Remediation priority', priLabel(p)],
-                ['Cloud',             sel.cloud],
-                ['Environment',       sel.environment],
-                ['Exposure',          sel.exposure],
-                ['Access scope',      sel.accessScope],
-                ['Activity',          sel.activity],
-                ['Asset criticality', sel.assetCriticality],
-                ['Asset / storage',   sel.asset],
-                ['Owner',             sel.owner],
-              ] as [string, string][]
-            ).map(([label, value]) => (
-              <div key={label}>
-                <div
-                  style={{
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    color: 'var(--text-tertiary)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.04em',
-                    marginBottom: 2,
-                  }}
-                >
-                  {label}
-                </div>
-                <div style={{ fontSize: 12.5, color: 'var(--text-primary)' }}>{value}</div>
-              </div>
-            ))}
-
-            {/* File path — mono, full width */}
-            <div style={{ gridColumn: '1 / -1' }}>
-              <div
-                style={{
-                  fontSize: 11.5,
-                  fontWeight: 600,
-                  color: 'var(--text-tertiary)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  marginBottom: 2,
-                }}
-              >
-                File path
-              </div>
-              <div
-                style={{
-                  fontSize: 12.5,
-                  color: 'var(--text-primary)',
-                  fontFamily: 'var(--font-mono-family, monospace)',
-                  overflowX: 'auto',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {sel.path}
-              </div>
-            </div>
-
-            {/* Line : offset — mono */}
-            <div>
-              <div
-                style={{
-                  fontSize: 11.5,
-                  fontWeight: 600,
-                  color: 'var(--text-tertiary)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  marginBottom: 2,
-                }}
-              >
-                Line : offset
-              </div>
-              <div
-                style={{
-                  fontSize: 12.5,
-                  color: 'var(--text-primary)',
-                  fontFamily: 'var(--font-mono-family, monospace)',
-                }}
-              >
-                {sel.line} : {sel.offset}
-              </div>
-            </div>
+            {sel.path}
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
+            Line {sel.line} · offset {sel.offset}
           </div>
         </Section>
 
         {/* ── 6. Recommended actions ────────────────────────────────────── */}
         <Section>
           <SectionLabel>Recommended actions</SectionLabel>
-          <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {actions.map((action, idx) => {
-              const isEmphasized = idx < 2;
-              return (
-                <li
-                  key={idx}
+          <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {actions.map((action, idx) => (
+              <li
+                key={idx}
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 10,
+                  fontSize: 12.5,
+                  color: 'var(--text-primary)',
+                  lineHeight: 1.45,
+                }}
+              >
+                <span
                   style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 8,
-                    fontSize: 12.5,
-                    color: 'var(--text-primary)',
-                    padding: isEmphasized ? '8px 10px' : '4px 6px',
-                    borderRadius: isEmphasized ? 6 : 4,
-                    background: isEmphasized ? ps.bg : 'var(--bg-secondary)',
-                    borderLeft: isEmphasized ? `3px solid ${ps.fg}` : '3px solid transparent',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 18,
+                    height: 18,
+                    borderRadius: 4,
+                    background: idx === 0 ? ps.fg : 'var(--bg-tertiary)',
+                    color: idx === 0 ? '#fff' : 'var(--text-tertiary)',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    flexShrink: 0,
+                    marginTop: 1,
                   }}
                 >
-                  <span
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: 18,
-                      height: 18,
-                      borderRadius: 4,
-                      background: isEmphasized ? ps.fg : 'var(--bg-tertiary)',
-                      color: isEmphasized ? '#fff' : 'var(--text-tertiary)',
-                      fontSize: 10,
-                      fontWeight: 700,
-                      flexShrink: 0,
-                      marginTop: 1,
-                    }}
-                  >
-                    {idx + 1}
-                  </span>
-                  {action}
-                </li>
-              );
-            })}
+                  {idx + 1}
+                </span>
+                {action}
+              </li>
+            ))}
           </ol>
         </Section>
 
