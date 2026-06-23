@@ -4,7 +4,7 @@
 // value (raw, masked, or fragment).
 
 import React from 'react';
-import { FINDINGS } from '../../data';
+import { FINDINGS, CLASSIFICATIONS } from '../../data';
 import { effPriority } from '../../lib/priority';
 import { valStyle, envStyle } from '../../lib/classify';
 import { useStore } from '../../state/StoreContext';
@@ -229,10 +229,20 @@ export function OverviewView() {
         ))}
       </div>
 
-      {/* ── 3 + 4. Main + right column ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: 16, alignItems: 'start' }}>
+      {/* ── 3 + 4 + 5. Single grid: main + right column + bottom cards.
+          Areas keep the bottom cards directly under the main card and let the
+          right column span the full height — no large mid-page gap. ── */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1fr) 320px',
+          gridTemplateAreas: '"main side" "bottom side"',
+          gap: 16,
+          alignItems: 'start',
+        }}
+      >
         {/* Needs attention now */}
-        <Card style={{ padding: '16px 18px' }}>
+        <Card style={{ gridArea: 'main', padding: '16px 18px' }}>
           <CardTitle>Needs attention now</CardTitle>
           <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', marginTop: 4, marginBottom: 12 }}>
             Top prioritized findings based on confidence, priority, and exposure.
@@ -297,7 +307,7 @@ export function OverviewView() {
         </Card>
 
         {/* Right column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ gridArea: 'side', display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Exposure breakdown */}
           <Card style={{ padding: '16px 18px' }}>
             <CardTitle>Exposure breakdown</CardTitle>
@@ -365,12 +375,28 @@ export function OverviewView() {
               <LinkButton label="Review rules" onClick={() => dispatch({ type: 'OPEN_ADD_RULES' })} />
             </div>
           </Card>
-        </div>
-      </div>
 
-      {/* ── 5. Bottom cards ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 16 }}>
-        {/* Noise reduced */}
+          {/* Recent scan summary */}
+          <Card style={{ padding: '16px 18px' }}>
+            <CardTitle>Recent scan summary</CardTitle>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 12 }}>
+              {([
+                ['Findings analyzed', FINDINGS.length.toLocaleString()],
+                ['Classifications', String(CLASSIFICATIONS.length)],
+                ['Noise reduced', NOISE_REDUCED.toLocaleString()],
+              ] as [string, string][]).map(([label, value]) => (
+                <div key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                  <span style={{ fontSize: 12.5, color: 'var(--text-secondary)' }}>{label}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        {/* ── 5. Bottom cards — directly under the main card ── */}
+        <div style={{ gridArea: 'bottom', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 16 }}>
+          {/* Noise reduced */}
         <Card style={{ padding: '16px 18px' }}>
           <CardTitle>Noise reduced</CardTitle>
           <p style={{ margin: '10px 0 14px', fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
@@ -402,6 +428,7 @@ export function OverviewView() {
             <LinkButton label="Open exposure map" onClick={() => go('map')} />
           </div>
         </Card>
+        </div>
       </div>
     </div>
   );
