@@ -64,6 +64,15 @@ interface RawFinding {
     rule_source: string;
     regex_confidence: 'high' | 'medium' | 'low';
   };
+  signals?: {
+    structurally_valid?: boolean;
+    luhn_valid?: boolean;
+    format_valid_for_type?: boolean;
+    is_known_test_value?: boolean;
+    is_public_by_design?: boolean;
+    is_already_masked?: boolean;
+    is_high_entropy_sha?: boolean;
+  };
   local_context: {
     line_text_masked: string;
   };
@@ -271,30 +280,65 @@ export const FINDINGS: Finding[] = RAW.map((raw, i) => {
       customerVertical: vertical,
       enabledRulePacks: scan_metadata.enabled_rule_packs,
     },
+    // Bridge the Go-computed structural verdicts (signals-bridge). These are the
+    // authoritative source for the DomainRulesAgent; masked-value heuristics in
+    // extractFeatures are only a fallback when a field is absent.
+    signals: raw.signals
+      ? {
+          structurallyValid: raw.signals.structurally_valid ?? true,
+          luhnValid: raw.signals.luhn_valid,
+          formatValidForType: raw.signals.format_valid_for_type,
+          isKnownTestValue: raw.signals.is_known_test_value,
+          isPublicByDesign: raw.signals.is_public_by_design,
+          isAlreadyMasked: raw.signals.is_already_masked,
+          isHighEntropySha: raw.signals.is_high_entropy_sha,
+        }
+      : undefined,
   };
 
   // Run pipeline
   const features = extractFeatures(ctx, assetCtx);
   const rules = evaluateRules(features);
   const lgbm = mockLightGBM.predict(features);
-  const authenticity = authenticityScore(regexConf, rules.score, lgbm.secretProbability);
   const acc = toAccessScope(gt);
   const exp = toExposure(gt.storage_exposure);
+
+  // A fired guardrail means a real, well-formed credential → it is floored and
+  // NEVER suppressed (recall guard). Otherwise the DomainRulesAgent's structural
+  // hard-suppress applies.
+  const guardrailWins = rules.guardrailFloor !== undefined;
+  const applySuppress = Boolean(rules.suppress) && !guardrailWins;
+
+  // Authenticity = P(real secret). A definitive structural/public/known-test
+  // suppression collapses it toward zero so every downstream consumer — the
+  // remediation score, the priority band, AND the exported probability the
+  // evaluation thresholds — reflects "this cannot be a real secret".
+  let authenticity = authenticityScore(regexConf, rules.score, lgbm.secretProbability);
+  if (applySuppress) authenticity = Math.min(authenticity, 3);
   const remediation = remediationPriority(authenticity, acc, exp, detectedType, 'unknown');
 
   const bandP = band(remediation);
-  const basePriority: Priority =
-    rules.guardrailFloor !== undefined &&
-    priorityRank(rules.guardrailFloor) > priorityRank(bandP)
-      ? rules.guardrailFloor
-      : bandP;
+  let basePriority: Priority;
+  if (guardrailWins) {
+    basePriority =
+      priorityRank(rules.guardrailFloor!) > priorityRank(bandP) ? rules.guardrailFloor! : bandP;
+  } else if (applySuppress) {
+    basePriority = 'suppressed';
+  } else {
+    basePriority = bandP;
+  }
 
-  const isFalsePositive = ['false_positive', 'placeholder', 'documentation_example', 'test_value'].includes(gt.label);
+  const suppressedByAgent = applySuppress && basePriority === 'suppressed';
+  const isFalsePositive =
+    suppressedByAgent ||
+    ['false_positive', 'placeholder', 'documentation_example', 'test_value'].includes(gt.label);
 
   const file_role = file.file_role;
   const criticality = toCriticality(gt.asset_criticality);
 
-  const explanation = isFalsePositive
+  const explanation = suppressedByAgent
+    ? `Suppressed by DomainRulesAgent — ${rules.suppressReason ?? 'failed structural/semantic validation'} (${displayName} in a ${file_role} context).`
+    : isFalsePositive
     ? `Likely ${gt.label.replace(/_/g, ' ')}: ${displayName} in a ${file_role} context.`
     : `${displayName} detected in a ${file_role} (${exp} exposure, ${criticality} asset).`;
 

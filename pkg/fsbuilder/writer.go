@@ -85,6 +85,13 @@ type Finding struct {
 	IsKnownTestValue  bool   `json:"is_known_test_value"`
 	IsPublicByDesign  bool   `json:"is_public_by_design"`
 	Reason            string `json:"reason,omitempty"` // why benign (fp) or why dangerous (tp)
+
+	// Extended structural / semantic signals (computed on the raw value before
+	// masking). Defaults: FormatValidForType=true (set in NewFinding), the rest
+	// false. The clever FP factories override them via the With* builders.
+	FormatValidForType bool `json:"format_valid_for_type"` // value's shape matches its claimed detected_type (UUID/dictionary token under a key var = false)
+	IsAlreadyMasked    bool `json:"is_already_masked"`     // value is already redacted/masked or sealed ciphertext — no live secret present
+	IsHighEntropySha   bool `json:"is_high_entropy_sha"`   // 40/64-char hex VCS object id wearing a token shape
 }
 
 // Ground-truth labels for a Finding (product spec §10 training labels).
@@ -120,11 +127,41 @@ func NewFinding(line int, variable, detectedType, label, classification, validat
 		ValueSuffix:       valueSuffix(rawValue),
 		ValueLength:       len(rawValue),
 		Entropy:           shannon(rawValue),
-		Label:             label,
-		Classification:    classification,
-		Validation:        validation,
-		StructurallyValid: true, // overridden by WithSignals for invalid-shaped FPs
+		Label:              label,
+		Classification:     classification,
+		Validation:         validation,
+		StructurallyValid:  true, // overridden by WithSignals for invalid-shaped FPs
+		FormatValidForType: true, // overridden by WithFormatInvalid for shape mismatches
 	}
+}
+
+// WithFormatInvalid marks that the value's shape does not match its claimed
+// detected_type (e.g. a UUID or dictionary-word token under a key variable).
+func (f Finding) WithFormatInvalid(reason string) Finding {
+	f.FormatValidForType = false
+	if reason != "" {
+		f.Reason = reason
+	}
+	return f
+}
+
+// WithAlreadyMasked marks an already-redacted / sealed-ciphertext value — the
+// secret-shaped text carries no live secret.
+func (f Finding) WithAlreadyMasked(reason string) Finding {
+	f.IsAlreadyMasked = true
+	if reason != "" {
+		f.Reason = reason
+	}
+	return f
+}
+
+// WithCommitSha marks a high-entropy hex VCS object id masquerading as a token.
+func (f Finding) WithCommitSha(reason string) Finding {
+	f.IsHighEntropySha = true
+	if reason != "" {
+		f.Reason = reason
+	}
+	return f
 }
 
 // WithSignals sets the value-intrinsic / semantic context signals (builder style)
@@ -280,6 +317,9 @@ type FindingRecord struct {
 	StructurallyValid    bool    `json:"structurally_valid"`
 	IsKnownTestValue     bool    `json:"is_known_test_value"`
 	IsPublicByDesign     bool    `json:"is_public_by_design"`
+	FormatValidForType   bool    `json:"format_valid_for_type"`
+	IsAlreadyMasked      bool    `json:"is_already_masked"`
+	IsHighEntropySha     bool    `json:"is_high_entropy_sha"`
 	Reason               string  `json:"reason,omitempty"`
 }
 
@@ -541,6 +581,9 @@ func (dc *deployCtx) collectFindings(client, rel, scanKey string, f FileNode) {
 			StructurallyValid:    fn.StructurallyValid,
 			IsKnownTestValue:     fn.IsKnownTestValue,
 			IsPublicByDesign:     fn.IsPublicByDesign,
+			FormatValidForType:   fn.FormatValidForType,
+			IsAlreadyMasked:      fn.IsAlreadyMasked,
+			IsHighEntropySha:     fn.IsHighEntropySha,
 			Reason:               fn.Reason,
 		})
 	}
@@ -557,13 +600,13 @@ func synthesizeFinding(gt GroundTruth) *Finding {
 			dt = detectedTypeFor(cls)
 		}
 		return &Finding{Line: 1, DetectedType: dt, MaskedValue: "********", ValueLength: 32,
-			Entropy: 4.5, Label: LabelTrueSecret, Classification: cls, StructurallyValid: true}
+			Entropy: 4.5, Label: LabelTrueSecret, Classification: cls, StructurallyValid: true, FormatValidForType: true}
 	case gt.Category == CatTestFixture:
 		return &Finding{Line: 1, DetectedType: "candidate", MaskedValue: "********", ValueLength: 24,
-			Entropy: 3.5, Label: LabelTestValue, StructurallyValid: true}
+			Entropy: 3.5, Label: LabelTestValue, StructurallyValid: true, FormatValidForType: true}
 	case gt.Category == CatNoisePII:
 		return &Finding{Line: 1, DetectedType: "pii", MaskedValue: "********", ValueLength: 16,
-			Entropy: 3.0, Label: LabelFalsePositive, StructurallyValid: true}
+			Entropy: 3.0, Label: LabelFalsePositive, StructurallyValid: true, FormatValidForType: true}
 	default:
 		return nil
 	}

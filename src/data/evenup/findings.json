@@ -22,8 +22,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "phi",
@@ -76,8 +79,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "cloud_key",
@@ -131,8 +137,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "payment_secret",
@@ -186,8 +195,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -241,8 +253,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -296,8 +311,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -351,8 +369,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "cloud_key",
@@ -406,8 +427,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "payment_secret",
@@ -461,8 +485,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -516,8 +543,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -571,8 +601,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -626,8 +659,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -680,8 +716,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -734,8 +773,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -788,8 +830,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -842,8 +887,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -896,8 +944,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aws-secret-access-key",
@@ -951,8 +1002,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aws-secret-access-key",
@@ -1006,8 +1060,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -1060,8 +1117,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -1114,8 +1174,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -1168,8 +1231,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -1222,8 +1288,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -1276,8 +1345,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -1330,8 +1402,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -1384,8 +1459,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -1438,8 +1516,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -1492,8 +1573,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "phi",
@@ -1546,8 +1630,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "phi",
@@ -1600,8 +1687,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -1654,8 +1744,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "phi",
@@ -1708,8 +1801,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -1762,8 +1858,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "phi",
@@ -1816,8 +1915,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -1870,8 +1972,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "phi",
@@ -1924,8 +2029,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -1978,8 +2086,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "phi",
@@ -2032,8 +2143,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "database_password",
@@ -2086,8 +2200,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -2140,8 +2257,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -2194,8 +2314,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "database_password",
@@ -2248,8 +2371,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -2302,8 +2428,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -2356,8 +2485,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "database_password",
@@ -2410,8 +2542,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -2464,8 +2599,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -2518,8 +2656,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -2572,8 +2713,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "medical-record-number",
@@ -2626,8 +2770,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -2680,8 +2827,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -2734,8 +2884,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "db-connection-string",
@@ -2788,8 +2941,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -2842,8 +2998,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "medical-record-number",
@@ -2896,8 +3055,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -2950,8 +3112,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -3004,8 +3169,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "db-connection-string",
@@ -3058,8 +3226,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -3112,8 +3283,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "medical-record-number",
@@ -3166,8 +3340,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -3220,8 +3397,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -3274,8 +3454,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "db-connection-string",
@@ -3328,8 +3511,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -3382,8 +3568,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "medical-record-number",
@@ -3436,8 +3625,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -3490,8 +3682,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -3544,8 +3739,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "db-connection-string",
@@ -3598,8 +3796,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -3652,8 +3853,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "medical-record-number",
@@ -3706,8 +3910,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -3760,8 +3967,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -3814,8 +4024,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "db-connection-string",
@@ -3868,8 +4081,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -3922,8 +4138,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "medical-record-number",
@@ -3976,8 +4195,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -4030,8 +4252,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -4084,8 +4309,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "db-connection-string",
@@ -4138,8 +4366,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -4192,8 +4423,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "medical-record-number",
@@ -4246,8 +4480,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -4300,8 +4537,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -4354,8 +4594,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "db-connection-string",
@@ -4408,8 +4651,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aws-access-key-id",
@@ -4462,8 +4708,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aws-secret-access-key",
@@ -4516,8 +4765,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "db-connection-string",
@@ -4570,8 +4822,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "jwt",
@@ -4624,8 +4879,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "stripe-live-key",
@@ -4678,8 +4936,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aws-access-key-id",
@@ -4732,8 +4993,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aws-secret-access-key",
@@ -4786,8 +5050,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "db-connection-string",
@@ -4840,8 +5107,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "jwt",
@@ -4894,8 +5164,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "stripe-live-key",
@@ -4948,8 +5221,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aws-access-key-id",
@@ -5002,8 +5278,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aws-secret-access-key",
@@ -5056,8 +5335,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "db-connection-string",
@@ -5110,8 +5392,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "jwt",
@@ -5164,8 +5449,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "stripe-live-key",
@@ -5218,8 +5506,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": true,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "payment_secret",
@@ -5273,8 +5564,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": true,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "database_password",
@@ -5328,8 +5622,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": true,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "payment_secret",
@@ -5383,8 +5680,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": true,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "database_password",
@@ -5438,8 +5738,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": true,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "payment_secret",
@@ -5493,8 +5796,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": true,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "database_password",
@@ -5548,8 +5854,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -5602,8 +5911,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "generic-high-entropy-secret",
@@ -5657,8 +5969,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "generic-high-entropy-secret",
@@ -5712,8 +6027,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "generic-high-entropy-secret",
@@ -5767,8 +6085,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "generic-high-entropy-secret",
@@ -5822,8 +6143,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "generic-high-entropy-secret",
@@ -5877,8 +6201,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "generic-high-entropy-secret",
@@ -5932,8 +6259,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -5986,8 +6316,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "cloud_key",
@@ -6041,8 +6374,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "payment_secret",
@@ -6096,8 +6432,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -6151,8 +6490,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -6206,8 +6548,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -6261,8 +6606,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "cloud_key",
@@ -6316,8 +6664,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "payment_secret",
@@ -6371,8 +6722,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -6426,8 +6780,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "email",
@@ -6481,8 +6838,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": true,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -6536,8 +6896,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "stripe-live-key",
@@ -6591,8 +6954,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "stripe-live-key",
@@ -6646,8 +7012,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -6700,8 +7069,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -6754,8 +7126,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -6808,8 +7183,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -6863,8 +7241,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": false,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -6918,8 +7299,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -6973,8 +7357,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": false,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -7028,8 +7415,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -7083,8 +7473,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": false,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -7138,8 +7531,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -7193,8 +7589,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": false,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -7248,8 +7647,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -7303,8 +7705,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "cloud_key",
@@ -7358,8 +7763,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "url",
@@ -7413,8 +7821,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -7468,8 +7879,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "cloud_key",
@@ -7523,8 +7937,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "url",
@@ -7578,8 +7995,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -7633,8 +8053,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "cloud_key",
@@ -7688,8 +8111,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "url",
@@ -7743,8 +8169,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -7798,8 +8227,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "cloud_key",
@@ -7853,8 +8285,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": true
+      "is_public_by_design": true,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "url",
@@ -7908,8 +8343,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -7962,8 +8400,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -8016,8 +8457,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -8070,8 +8514,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "docusign-token",
@@ -8124,8 +8571,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -8178,8 +8628,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -8232,8 +8685,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -8286,8 +8742,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "docusign-token",
@@ -8340,8 +8799,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -8394,8 +8856,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -8448,8 +8913,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -8502,8 +8970,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "docusign-token",
@@ -8556,8 +9027,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -8610,8 +9084,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -8664,8 +9141,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -8718,8 +9198,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "docusign-token",
@@ -8772,8 +9255,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -8826,8 +9312,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -8880,8 +9369,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -8934,8 +9426,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "docusign-token",
@@ -8988,8 +9483,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": false,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -9043,8 +9541,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -9098,8 +9599,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": true
     },
     "regex": {
       "rule_id": "api_key",
@@ -9153,8 +9657,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": false,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -9208,8 +9715,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": false,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -9263,8 +9773,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -9318,8 +9831,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": true
     },
     "regex": {
       "rule_id": "api_key",
@@ -9373,8 +9889,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": false,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -9428,8 +9947,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": false,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -9483,8 +10005,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -9538,8 +10063,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": true
     },
     "regex": {
       "rule_id": "api_key",
@@ -9593,8 +10121,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": false,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "api_key",
@@ -9648,8 +10179,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -9702,8 +10236,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -9756,8 +10293,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -9810,8 +10350,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -9864,8 +10407,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -9918,8 +10464,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -9972,8 +10521,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -10026,8 +10578,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -10080,8 +10635,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -10134,8 +10692,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -10188,8 +10749,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -10242,8 +10806,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -10296,8 +10863,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -10350,8 +10920,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -10404,8 +10977,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -10458,8 +11034,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -10512,8 +11091,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -10566,8 +11148,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -10620,8 +11205,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -10674,8 +11262,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -10728,8 +11319,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -10782,8 +11376,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -10836,8 +11433,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -10890,8 +11490,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -10944,8 +11547,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -10998,8 +11604,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -11052,8 +11661,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -11106,8 +11718,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -11160,8 +11775,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -11214,8 +11832,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -11268,8 +11889,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -11322,8 +11946,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -11376,8 +12003,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -11430,8 +12060,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -11484,8 +12117,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -11538,8 +12174,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -11592,8 +12231,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -11646,8 +12288,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -11700,8 +12345,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -11754,8 +12402,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -11808,8 +12459,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -11862,8 +12516,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -11916,8 +12573,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -11970,8 +12630,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -12024,8 +12687,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -12078,8 +12744,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -12132,8 +12801,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -12186,8 +12858,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -12240,8 +12915,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -12294,8 +12972,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -12348,8 +13029,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -12402,8 +13086,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -12456,8 +13143,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -12510,8 +13200,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "iban",
@@ -12564,8 +13257,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -12618,8 +13314,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -12673,8 +13372,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -12728,8 +13430,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -12783,8 +13488,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -12838,8 +13546,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -12893,8 +13604,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -12948,8 +13662,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -13003,8 +13720,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -13058,8 +13778,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -13113,8 +13836,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -13168,8 +13894,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -13223,8 +13952,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -13278,8 +14010,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -13333,8 +14068,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -13388,8 +14126,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -13443,8 +14184,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -13498,8 +14242,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -13553,8 +14300,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -13608,8 +14358,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -13663,8 +14416,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -13718,8 +14474,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -13773,8 +14532,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -13828,8 +14590,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -13883,8 +14648,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -13938,8 +14706,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -13993,8 +14764,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -14048,8 +14822,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -14103,8 +14880,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -14158,8 +14938,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -14213,8 +14996,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -14268,8 +15054,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -14323,8 +15112,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -14378,8 +15170,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -14433,8 +15228,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -14488,8 +15286,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": false,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit_card",
@@ -14543,8 +15344,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "financial",
@@ -14598,8 +15402,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "passport",
@@ -14652,8 +15459,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "drivers-license",
@@ -14706,8 +15516,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -14760,8 +15573,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "passport",
@@ -14814,8 +15630,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "drivers-license",
@@ -14868,8 +15687,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -14922,8 +15744,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "passport",
@@ -14976,8 +15801,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "drivers-license",
@@ -15030,8 +15858,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -15084,8 +15915,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "passport",
@@ -15138,8 +15972,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "drivers-license",
@@ -15192,8 +16029,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -15246,8 +16086,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "passport",
@@ -15300,8 +16143,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "drivers-license",
@@ -15354,8 +16200,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -15408,8 +16257,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "passport",
@@ -15462,8 +16314,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "drivers-license",
@@ -15516,8 +16371,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -15570,8 +16428,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -15625,8 +16486,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -15680,8 +16544,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -15735,8 +16602,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -15790,8 +16660,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -15845,8 +16718,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -15900,8 +16776,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -15955,8 +16834,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16010,8 +16892,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16065,8 +16950,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16120,8 +17008,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16175,8 +17066,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16230,8 +17124,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16285,8 +17182,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16340,8 +17240,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16395,8 +17298,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16450,8 +17356,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16505,8 +17414,11 @@
     "signals": {
       "structurally_valid": false,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16560,8 +17472,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",
@@ -16614,8 +17529,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -16668,8 +17586,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -16722,8 +17643,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -16776,8 +17700,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -16830,8 +17757,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -16884,8 +17814,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -16938,8 +17871,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -16992,8 +17928,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -17046,8 +17985,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -17100,8 +18042,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -17154,8 +18099,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -17208,8 +18156,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -17262,8 +18213,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "npi",
@@ -17316,8 +18270,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "insurance-member-id",
@@ -17370,8 +18327,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "credit-card-pan",
@@ -17424,8 +18384,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -17478,8 +18441,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ein",
@@ -17532,8 +18498,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -17586,8 +18555,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -17640,8 +18612,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ein",
@@ -17694,8 +18669,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -17748,8 +18726,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -17802,8 +18783,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ein",
@@ -17856,8 +18840,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -17910,8 +18897,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -17964,8 +18954,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ein",
@@ -18018,8 +19011,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -18072,8 +19068,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -18126,8 +19125,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ein",
@@ -18180,8 +19182,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -18234,8 +19239,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -18288,8 +19296,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ein",
@@ -18342,8 +19353,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "aba-routing",
@@ -18396,8 +19410,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -18450,8 +19467,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "salary",
@@ -18504,8 +19524,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -18558,8 +19581,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "salary",
@@ -18612,8 +19638,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "ssn",
@@ -18666,8 +19695,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "salary",
@@ -18720,8 +19752,11 @@
     "signals": {
       "structurally_valid": true,
       "luhn_valid": true,
+      "format_valid_for_type": true,
       "is_known_test_value": false,
-      "is_public_by_design": false
+      "is_public_by_design": false,
+      "is_already_masked": false,
+      "is_high_entropy_sha": false
     },
     "regex": {
       "rule_id": "pii",

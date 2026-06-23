@@ -71,6 +71,11 @@ export interface DeterministicRuleResult {
     rulePack?: string; // e.g. 'base', 'fintech', 'healthcare'
   }[];
   guardrailFloor?: Priority; // e.g. private key can never be lower than High
+  // Hard-suppression set by the DomainRulesAgent when a candidate is structurally
+  // impossible, public-by-design, a known test value, or trips a semantic
+  // invariant. Honored only when no guardrailFloor outranks it (recall guard).
+  suppress?: boolean;
+  suppressReason?: string;
 }
 
 // Spec §10 — the model receives MASKED, structured features only.
@@ -111,6 +116,24 @@ export interface FindingContextObject {
     customerVertical: Vertical;
     enabledRulePacks: string[];
   };
+  // Value-intrinsic structural verdicts computed where the raw value exists (the
+  // Go scan/generation layer or a customer-side scanner) and bridged here as
+  // booleans — the raw value itself never reaches this object. See spec §8/§23.
+  signals?: StructuralSignals;
+}
+
+// Structural / semantic verdicts produced by the validator library on the raw
+// value (pre-masking). The DomainRulesAgent consumes these when no raw value is
+// available downstream (e.g. the masked demo pipeline).
+export interface StructuralSignals {
+  structurallyValid: boolean;   // passes its format's checksum/range (Luhn, mod-97, SSN range, …)
+  luhnValid?: boolean;          // Luhn result specifically (cards); undefined when N/A
+  formatValidForType?: boolean; // value's shape matches its claimed detected_type
+  isKnownTestValue?: boolean;   // well-known inert test/example constant
+  isPublicByDesign?: boolean;   // meant to be public (pk_live_, AWS account id, public URL)
+  isAlreadyMasked?: boolean;    // value already contains mask glyphs / REDACTED
+  isHighEntropySha?: boolean;   // 40/64-char hex VCS object id, not a credential
+  validator?: string;           // name of the validator that produced the verdict
 }
 
 // ---- Context features (spec §8) ---------------------------------------------
@@ -149,6 +172,38 @@ export interface ContextFeatures {
   assetCriticality: AssetCriticality;
   cloudProvider: string;
   customerVertical: Vertical;
+  // ---- Structural / semantic signals (bridged from StructuralSignals) --------
+  structurallyValid: boolean;   // false ⇒ value fails its own format's checksum/range
+  luhnValid: boolean;           // Luhn verdict (true when N/A so it never suppresses non-cards)
+  formatValidForType: boolean;  // value shape matches claimed detected_type
+  isPublicByDesign: boolean;    // public-by-design value (never a secret)
+  // ---- Creative semantic invariants -----------------------------------------
+  isHighEntropySha: boolean;    // git commit SHA masquerading as a token
+  isAlreadyMasked: boolean;     // value already redacted/masked
+  shapeContradictsType: boolean;// numeric id (epoch/order) matched as a PAN but failing Luhn+BIN
+  isKnownTestVector: boolean;   // matches a curated universally-known test constant
+  // ---- Enriched SLM-context features (spec §8 — enriched) --------------------
+  // OPTIONAL so existing ContextFeatures fixtures stay valid: populated by
+  // extractFeatures and consumed by the SLM semantic layer (lgbm.ts). All are
+  // masked/structural — never derived from a raw secret.
+  //
+  // Hierarchical path context: parent / grandparent directory segment names
+  // (lowercased; '' when absent) and boolean tags for benign-by-layout dir kinds.
+  parentDir?: string;
+  grandparentDir?: string;
+  inTestDir?: boolean;           // sits directly inside a tests/__tests__/spec dir
+  inFixturesDir?: boolean;       // …a fixtures/mocks dir
+  inSamplesDir?: boolean;        // …a samples/examples dir
+  inBoilerplateDir?: boolean;    // …a boilerplate/template/scaffold dir
+  // Global pattern frequency: how many candidates across the whole repo share
+  // this structural fingerprint. High repetition signals benign system IDs/traces.
+  patternFrequency?: number;     // >= 1 (1 = unique; defaults to 1 when no corpus)
+  isHighFrequencyPattern?: boolean;
+  // Semantic anchor flags: neighboring placeholder identities ("John Doe",
+  // "Israel Israeli") or structural domain nouns ("executed_at", "patient_name",
+  // "lookup_dictionary") — strong hints the match is illustrative / schema.
+  hasPlaceholderIdentity?: boolean;
+  hasStructuralDomainNoun?: boolean;
 }
 
 // ---- Finding (denormalized record the UI renders) ---------------------------

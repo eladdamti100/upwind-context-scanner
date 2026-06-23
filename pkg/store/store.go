@@ -59,10 +59,13 @@ type localContext struct {
 // clear what a regex-only scanner cannot (invalid checksum, public-by-design,
 // known-test). The backend reads these directly — they are NOT answer-key data.
 type signalBlock struct {
-	StructurallyValid bool `json:"structurally_valid"`
-	LuhnValid         bool `json:"luhn_valid"`
-	IsKnownTestValue  bool `json:"is_known_test_value"`
-	IsPublicByDesign  bool `json:"is_public_by_design"`
+	StructurallyValid  bool `json:"structurally_valid"`
+	LuhnValid          bool `json:"luhn_valid"`
+	FormatValidForType bool `json:"format_valid_for_type"`
+	IsKnownTestValue   bool `json:"is_known_test_value"`
+	IsPublicByDesign   bool `json:"is_public_by_design"`
+	IsAlreadyMasked    bool `json:"is_already_masked"`
+	IsHighEntropySha   bool `json:"is_high_entropy_sha"`
 }
 
 type scanMetadata struct {
@@ -120,10 +123,13 @@ func toContextObject(r fsbuilder.FindingRecord) FindingContextObject {
 			EntropyLevel: r.EntropyLevel, LineNumber: r.Line, VariableName: r.VariableName,
 		},
 		Signals: signalBlock{
-			StructurallyValid: r.StructurallyValid,
-			LuhnValid:         r.StructurallyValid || r.DetectedType != "credit_card",
-			IsKnownTestValue:  r.IsKnownTestValue,
-			IsPublicByDesign:  r.IsPublicByDesign,
+			StructurallyValid:  r.StructurallyValid,
+			LuhnValid:          r.StructurallyValid || r.DetectedType != "credit_card",
+			FormatValidForType: r.FormatValidForType,
+			IsKnownTestValue:   r.IsKnownTestValue,
+			IsPublicByDesign:   r.IsPublicByDesign,
+			IsAlreadyMasked:    r.IsAlreadyMasked,
+			IsHighEntropySha:   r.IsHighEntropySha,
 		},
 		Regex: regexBlock{RuleID: ruleID, RuleSource: r.Vertical, RegexConfidence: r.RegexConfidence},
 		LocalContext: localContext{LineTextMasked: lineText},
@@ -234,6 +240,9 @@ CREATE TABLE findings (
     structurally_valid INTEGER NOT NULL,
     is_known_test_value INTEGER NOT NULL,
     is_public_by_design INTEGER NOT NULL,
+    format_valid_for_type INTEGER NOT NULL,
+    is_already_masked INTEGER NOT NULL,
+    is_high_entropy_sha INTEGER NOT NULL,
     reason          TEXT
 );
 CREATE INDEX idx_findings_label  ON findings(label);
@@ -321,8 +330,9 @@ func insertFindings(tx *sql.Tx, recs []fsbuilder.FindingRecord) error {
         variable_name, detected_type, masked_value, value_prefix, value_length, entropy, entropy_level,
         label, classification, validation, regex_confidence, is_secret, is_sensitive,
         storage_exposure, asset_criticality, is_publicly_accessible,
-        structurally_valid, is_known_test_value, is_public_by_design, reason
-    ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
+        structurally_valid, is_known_test_value, is_public_by_design,
+        format_valid_for_type, is_already_masked, is_high_entropy_sha, reason
+    ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
 	if err != nil {
 		return err
 	}
@@ -333,7 +343,8 @@ func insertFindings(tx *sql.Tx, recs []fsbuilder.FindingRecord) error {
 			r.VariableName, r.DetectedType, r.MaskedValue, r.ValuePrefix, r.ValueLength, r.Entropy, r.EntropyLevel,
 			r.Label, r.Classification, r.Validation, r.RegexConfidence, boolToInt(isSecret(r)), boolToInt(isSensitive(r)),
 			r.StorageExposure, r.AssetCriticality, boolToInt(r.IsPubliclyAccessible),
-			boolToInt(r.StructurallyValid), boolToInt(r.IsKnownTestValue), boolToInt(r.IsPublicByDesign), r.Reason,
+			boolToInt(r.StructurallyValid), boolToInt(r.IsKnownTestValue), boolToInt(r.IsPublicByDesign),
+			boolToInt(r.FormatValidForType), boolToInt(r.IsAlreadyMasked), boolToInt(r.IsHighEntropySha), r.Reason,
 		); err != nil {
 			return fmt.Errorf("insert finding %s: %w", r.FindingID, err)
 		}

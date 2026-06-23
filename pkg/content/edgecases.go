@@ -31,6 +31,20 @@ func (b *lineBuf) secSig(text, variable, detectedType, label, classification, va
 	b.finds = append(b.finds, f)
 }
 
+// secSigMod is secSig plus an extra builder step for the extended structural
+// signals (format-invalid / already-masked / commit-SHA).
+func (b *lineBuf) secSigMod(text, variable, detectedType, label, classification, validation, raw string,
+	structurallyValid, knownTest, publicByDesign bool, reason string,
+	mod func(fsbuilder.Finding) fsbuilder.Finding) {
+	b.lines = append(b.lines, text)
+	f := fsbuilder.NewFinding(len(b.lines), variable, detectedType, label, classification, validation, raw).
+		WithSignals(structurallyValid, knownTest, publicByDesign, reason)
+	if mod != nil {
+		f = mod(f)
+	}
+	b.finds = append(b.finds, f)
+}
+
 // ===========================================================================
 // Family 1 — invalid checksum / impossible range (deterministic rule clears it)
 // ===========================================================================
@@ -88,7 +102,9 @@ func ProdOrderLog(g *secrets.Gen, lines int) (func(io.Writer) error, []fsbuilder
 		fsbuilder.NewFinding(1, "order_id", "credit_card", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, order0).
 			WithSignals(false, false, false, "numeric_id_not_card"),
 		fsbuilder.NewFinding(1, "trace_id", "api_key", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, trace0).
-			WithSignals(true, false, false, "uuid_not_credential"),
+			WithSignals(true, false, false, "uuid_not_credential").
+			WithFormatInvalid(""), // a UUID is not an API key
+
 	}
 	ng := g.Fork()
 	fn := func(w io.Writer) error {
@@ -112,17 +128,22 @@ func SemanticIdExport(g *secrets.Gen) (string, []fsbuilder.Finding) {
 	b := &lineBuf{}
 	b.add("# analytics_identifiers.export — internal ids only")
 	phone := g.PhoneAsSSN()
-	b.secSig("phone_ssn_shape: "+phone, "support_phone", "pii", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, phone,
-		true, false, false, "phone_not_ssn")
+	// A phone in SSN shape is not a PII identifier of that type → format mismatch.
+	b.secSigMod("phone_ssn_shape: "+phone, "support_phone", "pii", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, phone,
+		true, false, false, "phone_not_ssn",
+		func(f fsbuilder.Finding) fsbuilder.Finding { return f.WithFormatInvalid("") })
 	epoch := g.EpochNanos()
 	b.secSig("event_ts_nanos: "+epoch, "event_ts", "credit_card", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, epoch,
 		false, false, false, "numeric_id_not_card")
 	sha := g.GitCommitSHA()
-	b.secSig("build_commit: "+sha, "git_commit", "api_key", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, sha,
-		true, false, false, "git_sha_not_secret")
+	b.secSigMod("build_commit: "+sha, "git_commit", "api_key", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, sha,
+		true, false, false, "git_sha_not_secret",
+		func(f fsbuilder.Finding) fsbuilder.Finding { return f.WithCommitSha("") })
 	tok := g.DictionaryToken()
-	b.secSig("feature_label: "+tok, "feature_label", "api_key", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, tok,
-		true, false, false, "dictionary_words_low_entropy")
+	// Dictionary-word token is low-entropy — not a real high-entropy credential.
+	b.secSigMod("feature_label: "+tok, "feature_label", "api_key", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, tok,
+		true, false, false, "dictionary_words_low_entropy",
+		func(f fsbuilder.Finding) fsbuilder.Finding { return f.WithFormatInvalid("") })
 	return b.done()
 }
 
@@ -187,11 +208,13 @@ func RedactedConfig(g *secrets.Gen) (string, []fsbuilder.Finding) {
 	b := &lineBuf{}
 	b.add("# values are redacted at export / sealed by the secrets controller")
 	masked := "sk_live_****************"
-	b.secSig("STRIPE_SECRET_KEY: "+masked, "STRIPE_SECRET_KEY", "payment_secret", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, masked,
-		true, false, false, "already_redacted")
+	b.secSigMod("STRIPE_SECRET_KEY: "+masked, "STRIPE_SECRET_KEY", "payment_secret", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, masked,
+		true, false, false, "already_redacted",
+		func(f fsbuilder.Finding) fsbuilder.Finding { return f.WithAlreadyMasked("") })
 	sealed := "ENC[" + g.B64(120) + "]"
-	b.secSig("DB_PASSWORD: "+sealed, "DB_PASSWORD", "database_password", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, sealed,
-		true, false, false, "sealed_ciphertext")
+	b.secSigMod("DB_PASSWORD: "+sealed, "DB_PASSWORD", "database_password", fsbuilder.LabelFalsePositive, "", fsbuilder.ValUnsupported, sealed,
+		true, false, false, "sealed_ciphertext",
+		func(f fsbuilder.Finding) fsbuilder.Finding { return f.WithAlreadyMasked("") })
 	return b.done()
 }
 

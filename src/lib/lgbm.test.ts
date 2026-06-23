@@ -3,49 +3,7 @@
 
 import { test, expect } from 'vitest';
 import { mockLightGBM, defaultClassifier } from './lgbm';
-import type { ContextFeatures } from '../types';
-
-// ---------------------------------------------------------------------------
-// Test fixture helper — sane defaults; all booleans false, safe mid-point values
-// ---------------------------------------------------------------------------
-function makeFeatures(overrides: Partial<ContextFeatures> = {}): ContextFeatures {
-  return {
-    isProdPath: false,
-    isDevPath: false,
-    isTestPath: false,
-    isDocsPath: false,
-    isExamplePath: false,
-    isConfigFile: false,
-    isSourceCodeFile: false,
-    isLogFile: false,
-    isIacFile: false,
-    fileRole: 'source',
-    environmentHint: 'Dev',
-    detectedType: 'generic-token',
-    valueLength: 32,
-    entropy: 3.5,
-    entropyLevel: 'medium',
-    hasLivePrefix: false,
-    hasTestPrefix: false,
-    looksLikePlaceholder: false,
-    isKnownTestValue: false,
-    hasSecretVariableName: false,
-    hasPublicVariableName: false,
-    variableIntent: 'secret',
-    hasExampleLanguage: false,
-    hasPlaceholderLanguage: false,
-    hasTestLanguage: false,
-    hasSecretLanguage: false,
-    hasProductionLanguage: false,
-    hasDocumentationContext: false,
-    storageExposure: 'Internal',
-    isPubliclyAccessible: false,
-    assetCriticality: 'Medium',
-    cloudProvider: 'aws',
-    customerVertical: 'general',
-    ...overrides,
-  };
-}
+import { makeFeatures } from './testFeatures';
 
 // ---------------------------------------------------------------------------
 // Interface shape
