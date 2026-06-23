@@ -15,7 +15,7 @@ test('Settings modal shows user-facing sections, not internal demo controls', ()
   // Open via TopBar settings button (title="Settings")
   fireEvent.click(screen.getByTitle('Settings'));
 
-  // New user-facing sections
+  // New user-facing sections appear as accordion card headers (always visible)
   expect(screen.getByText('Detection sensitivity')).toBeInTheDocument();
   expect(screen.getByText('User preferences')).toBeInTheDocument();
   expect(screen.getByText('Display preferences')).toBeInTheDocument();
@@ -28,7 +28,9 @@ test('Settings modal shows user-facing sections, not internal demo controls', ()
   expect(screen.queryByText('SaaS')).not.toBeInTheDocument();
   expect(screen.queryByText(/Mocked validation/i)).not.toBeInTheDocument();
 
-  // Workspace context is read-only / auto-managed (Customer + Cloud both "Auto-detected")
+  // Expand the Workspace context card — it is read-only / auto-managed
+  // (Customer + Cloud both "Auto-detected", Rule profile "Managed automatically")
+  fireEvent.click(screen.getByText('Workspace context'));
   expect(screen.getAllByText('Auto-detected').length).toBeGreaterThan(0);
   expect(screen.getByText('Managed automatically')).toBeInTheDocument();
 });
