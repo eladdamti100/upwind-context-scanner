@@ -117,6 +117,17 @@ const COL_SORT_MAP: Record<string, string> = {
   createdAt: 'created',
 };
 
+// Per-column widths (auto table layout). `file` is greedy (100%) so it absorbs
+// slack, keeping the other columns tight instead of letting them stretch.
+// Columns not listed size to their content.
+const COL_WIDTH: Record<string, string> = {
+  risk: '160px',        // Confidence Level — header + icons + centered ring
+  priority: '184px',    // Remediation priority — header + info + badge
+  validation: '152px',  // Credential Check
+  file: '100%',         // File name | path — flexible, absorbs remaining width
+  actions: '92px',      // Actions — narrow, right-aligned
+};
+
 // ---------------------------------------------------------------------------
 // TableToolbar
 // ---------------------------------------------------------------------------
@@ -634,6 +645,7 @@ export function FindingsTable() {
                       style={{
                         padding: '0 14px',
                         height: 36,
+                        width: COL_WIDTH[col.id],
                         textAlign: col.id === 'risk' ? 'center' : 'left',
                         fontSize: 11,
                         fontWeight: 600,
