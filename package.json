@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "generate-dataset": "go run ./cmd/generate",
+    "sync-dataset": "vite-node scripts/sync-dataset.ts",
+    "refresh-dataset": "npm run generate-dataset && npm run sync-dataset"
   },
   "dependencies": {
     "react": "^18.3.1",
