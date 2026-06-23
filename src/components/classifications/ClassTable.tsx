@@ -101,15 +101,15 @@ export function ClassTable() {
                     style={{
                       // Extra left gutter on the first column so it lines up
                       // cleanly with the icon chips below.
-                      padding: i === 0 ? '8px 12px 8px 16px' : '8px 12px',
+                      padding: i === 0 ? '9px 12px 9px 16px' : '9px 12px',
                       textAlign: 'left',
-                      fontSize: 11.5,
+                      fontSize: 11,
                       fontWeight: 600,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       color: 'var(--text-secondary)',
                       whiteSpace: 'nowrap',
-                      borderBottom: '1px solid var(--border-subtle)',
+                      borderBottom: '1px solid var(--border-primary)',
                     }}
                   >
                     {col}
@@ -135,7 +135,7 @@ export function ClassTable() {
                     }}
                   >
                     {/* Name */}
-                    <td style={{ padding: '14px 12px 14px 16px', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '12px 12px 12px 16px', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div
                           style={{
@@ -145,53 +145,55 @@ export function ClassTable() {
                             width: 28,
                             height: 28,
                             borderRadius: 7,
-                            background: 'var(--severity-safe-bg)',
-                            overflow: 'visible',
+                            background: 'var(--uw-blue-06)',
                             flexShrink: 0,
                           }}
                         >
-                          <Icon name="leaf" size={14} stroke="var(--uw-green-02)" />
+                          <Icon name="layers" size={15} stroke="var(--action-primary)" />
                         </div>
                         <span style={{ fontWeight: 500, fontSize: 13 }}>{c.name}</span>
                       </div>
                     </td>
 
                     {/* Category */}
-                    <td style={{ padding: '14px 12px', whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            width: 7,
-                            height: 7,
-                            borderRadius: 2,
-                            background: catStyle.fg,
-                            flexShrink: 0,
-                          }}
-                        />
-                        <span style={{ color: catStyle.fg, fontSize: 12, fontWeight: 500 }}>{c.category}</span>
-                      </div>
+                    <td style={{ padding: '12px 12px', whiteSpace: 'nowrap' }}>
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          height: 21,
+                          padding: '0 9px',
+                          borderRadius: 5,
+                          background: catStyle.bg,
+                          color: catStyle.fg,
+                          fontSize: 11.5,
+                          fontWeight: 600,
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {c.category}
+                      </span>
                     </td>
 
                     {/* Patterns */}
-                    <td style={{ padding: '14px 12px', color: 'var(--text-secondary)' }}>
+                    <td style={{ padding: '12px 12px', color: 'var(--text-secondary)' }}>
                       {c.patterns}
                     </td>
 
                     {/* Rule packs */}
-                    <td style={{ padding: '14px 12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '12px 12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
                       {c.rulePacks}
                     </td>
 
                     {/* Findings */}
-                    <td style={{ padding: '14px 12px', color: 'var(--text-secondary)' }}>
+                    <td style={{ padding: '12px 12px', color: 'var(--text-secondary)' }}>
                       {c.findings.toLocaleString()}
                     </td>
 
                     {/* Critical */}
                     <td
                       style={{
-                        padding: '14px 12px',
+                        padding: '12px 12px',
                         fontWeight: c.critical > 0 ? 600 : 400,
                         color:
                           c.critical > 0
@@ -203,7 +205,7 @@ export function ClassTable() {
                     </td>
 
                     {/* FP reduction */}
-                    <td style={{ padding: '14px 12px' }}>
+                    <td style={{ padding: '12px 12px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div
                           style={{
@@ -231,29 +233,37 @@ export function ClassTable() {
                     </td>
 
                     {/* Created by */}
-                    <td style={{ padding: '14px 12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '12px 12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
                       {c.createdBy}
                     </td>
 
                     {/* Status */}
-                    <td style={{ padding: '14px 12px', whiteSpace: 'nowrap' }}>
-                      <div
+                    <td style={{ padding: '12px 12px', whiteSpace: 'nowrap' }}>
+                      <span
                         style={{
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: 5,
-                          fontSize: 12,
+                          gap: 6,
+                          height: 21,
+                          padding: '0 9px',
+                          borderRadius: 5,
+                          background: enabled ? 'var(--severity-safe-bg)' : 'var(--severity-info-bg)',
                           color: enabled ? 'var(--severity-safe)' : 'var(--text-tertiary)',
-                          fontWeight: 500,
+                          fontSize: 11.5,
+                          fontWeight: 600,
                         }}
                       >
-                        <Icon
-                          name="check"
-                          size={13}
-                          stroke={enabled ? 'var(--severity-safe)' : 'var(--text-tertiary)'}
+                        <span
+                          style={{
+                            width: 6,
+                            height: 6,
+                            borderRadius: '50%',
+                            background: enabled ? 'var(--severity-safe)' : 'var(--text-tertiary)',
+                            flexShrink: 0,
+                          }}
                         />
                         {enabled ? 'Enabled' : 'Disabled'}
-                      </div>
+                      </span>
                     </td>
                   </tr>
                 );

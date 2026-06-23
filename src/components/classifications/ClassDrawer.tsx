@@ -1,6 +1,8 @@
 // ClassDrawer.tsx — slide-in drawer showing classification detail.
-// Matches the DetailDrawer pattern: backdrop + panel, inline styles with CSS vars.
+// Mirrors the findings DetailDrawer for a consistent light-theme look:
+// backdrop + panel, scrollable content with a sticky footer, inline styles.
 
+import React from 'react';
 import { useStore } from '../../state/StoreContext';
 import { CLASSIFICATIONS, classificationDetail } from '../../data';
 import { Icon } from '../common/Icon';
@@ -19,6 +21,92 @@ function ensureSlideKeyframes() {
     }
   `;
   document.head.appendChild(style);
+}
+
+function Section({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  return (
+    <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-subtle)', ...style }}>
+      {children}
+    </div>
+  );
+}
+
+function SectionLabel({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  return (
+    <div
+      style={{
+        fontSize: 11,
+        fontWeight: 700,
+        textTransform: 'uppercase',
+        letterSpacing: '0.06em',
+        color: 'var(--text-secondary)',
+        marginBottom: 10,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
+  return (
+    <div style={{ minWidth: 0 }}>
+      <div style={{ fontSize: 19, fontWeight: 700, color: color ?? 'var(--text-primary)', lineHeight: 1 }}>
+        {value}
+      </div>
+      <div
+        style={{
+          fontSize: 10.5,
+          fontWeight: 700,
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+          color: 'var(--text-tertiary)',
+          marginTop: 4,
+        }}
+      >
+        {label}
+      </div>
+    </div>
+  );
+}
+
+// One compact risk-signal group (increases / reduces).
+function RiskGroup({ title, color, items }: { title: string; color: string; items: string[] }) {
+  return (
+    <div>
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 700,
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+          color,
+          marginBottom: 8,
+        }}
+      >
+        {title}
+      </div>
+      <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 7 }}>
+        {items.map((r, i) => (
+          <li
+            key={i}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 9,
+              fontSize: 12.5,
+              color: 'var(--text-secondary)',
+              lineHeight: 1.4,
+            }}
+          >
+            <span style={{ flexShrink: 0, marginTop: 6, width: 5, height: 5, borderRadius: '50%', background: color }} />
+            {r}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 export function ClassDrawer() {
@@ -42,12 +130,7 @@ export function ClassDrawer() {
       <div
         aria-hidden="true"
         onClick={close}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.45)',
-          zIndex: 50,
-        }}
+        style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.35)', zIndex: 50 }}
       />
 
       {/* Drawer panel */}
@@ -61,281 +144,168 @@ export function ClassDrawer() {
           top: 0,
           right: 0,
           height: '100vh',
-          width: 460,
-          maxWidth: '92vw',
+          width: 420,
+          maxWidth: '94vw',
           zIndex: 51,
           background: 'var(--surface)',
           borderLeft: '1px solid var(--border-subtle)',
-          boxShadow: 'var(--shadow-lg, -8px 0 32px rgba(0,0,0,0.45))',
-          overflowY: 'auto',
+          boxShadow: 'var(--shadow-lg)',
           animation: 'uwslide 140ms ease',
           display: 'flex',
           flexDirection: 'column',
+          overflow: 'hidden',
         }}
       >
-        {/* ── Header ── */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: 12,
-            padding: '16px 20px',
-            borderBottom: '1px solid var(--border-subtle)',
-          }}
-        >
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 600,
-                color: 'var(--text-primary)',
-                lineHeight: 1.3,
-              }}
-            >
-              {c.name}
+        {/* Scrollable content */}
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          {/* ── Header ── */}
+          <Section style={{ padding: '20px 20px 16px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em', lineHeight: 1.2 }}>
+                  {c.name}
+                </div>
+                <div style={{ fontSize: 13, color: 'var(--text-tertiary)', marginTop: 4 }}>
+                  {c.category} classification
+                </div>
+              </div>
+              <button
+                aria-label="Close classification detail"
+                onClick={close}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 30,
+                  height: 30,
+                  borderRadius: 8,
+                  border: '1px solid var(--border-subtle)',
+                  background: 'transparent',
+                  color: 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                }}
+              >
+                <Icon name="x" size={14} />
+              </button>
             </div>
-          </div>
-          <button
-            aria-label="Close classification detail"
-            onClick={close}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 30,
-              height: 30,
-              borderRadius: 6,
-              border: '1px solid var(--border-subtle)',
-              background: 'transparent',
-              color: 'var(--text-secondary)',
-              cursor: 'pointer',
-              flexShrink: 0,
-            }}
-          >
-            <Icon name="x" size={14} />
-          </button>
-        </div>
+          </Section>
 
-        {/* ── Stats row: findings + FP reduction ── */}
-        <div
-          style={{
-            display: 'flex',
-            gap: 24,
-            padding: '14px 20px',
-            borderBottom: '1px solid var(--border-subtle)',
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontSize: 10.5,
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: 'var(--text-tertiary)',
-                marginBottom: 3,
-              }}
-            >
-              Findings
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' }}>
-              {c.findings.toLocaleString()}
-            </div>
-          </div>
-          <div>
-            <div
-              style={{
-                fontSize: 10.5,
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: 'var(--text-tertiary)',
-                marginBottom: 3,
-              }}
-            >
-              FP Reduction
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--uw-green-02, var(--severity-safe))' }}>
-              {c.fpReductionPct}%
-            </div>
-          </div>
-        </div>
-
-        {/* ── Description ── */}
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-subtle)' }}>
-          <p style={{ margin: 0, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            {det.description}
-          </p>
-        </div>
-
-        {/* ── Detection pattern ── */}
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-subtle)' }}>
-          <div
-            style={{
-              fontSize: 11.5,
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.06em',
-              color: 'var(--text-tertiary)',
-              marginBottom: 8,
-            }}
-          >
-            Detection pattern
-          </div>
-          <div
-            style={{
-              fontFamily: 'var(--font-mono-family, monospace)',
-              fontSize: 12.5,
-              color: 'var(--text-primary)',
-              background: 'var(--bg-secondary)',
-              borderRadius: 6,
-              padding: '10px 12px',
-              overflowX: 'auto',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {det.pattern}
-          </div>
-        </div>
-
-        {/* ── Increases risk ── */}
-        {det.up.length > 0 && (
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-subtle)' }}>
-            <div
-              style={{
-                fontSize: 11.5,
-                fontWeight: 700,
-                color: 'var(--severity-high)',
-                marginBottom: 8,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-              }}
-            >
-              Increases risk
-            </div>
-            <ul
-              style={{
-                margin: 0,
-                padding: 0,
-                listStyle: 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 4,
-              }}
-            >
-              {det.up.map((r, i) => (
-                <li
-                  key={i}
+          {/* ── Compact summary ── */}
+          <Section>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 26, flexWrap: 'wrap' }}>
+              <Stat label="Findings" value={c.findings.toLocaleString()} />
+              <Stat
+                label="Critical"
+                value={String(c.critical)}
+                color={c.critical > 0 ? 'var(--severity-critical)' : 'var(--text-primary)'}
+              />
+              <Stat label="FP reduction" value={`${c.fpReductionPct}%`} color="var(--severity-safe)" />
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  height: 22,
+                  padding: '0 9px',
+                  borderRadius: 6,
+                  background: enabled ? 'var(--severity-safe-bg)' : 'var(--severity-info-bg)',
+                  color: enabled ? 'var(--severity-safe)' : 'var(--text-tertiary)',
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  marginLeft: 'auto',
+                }}
+              >
+                <span
                   style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 6,
-                    fontSize: 12.5,
-                    color: 'var(--text-secondary)',
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    background: enabled ? 'var(--severity-safe)' : 'var(--text-tertiary)',
                   }}
-                >
-                  <span
-                    style={{ color: 'var(--severity-high)', flexShrink: 0, lineHeight: 1.5 }}
-                  >
-                    ▲
-                  </span>
-                  {r}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* ── Reduces risk ── */}
-        {det.down.length > 0 && (
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-subtle)' }}>
-            <div
-              style={{
-                fontSize: 11.5,
-                fontWeight: 700,
-                color: 'var(--severity-safe)',
-                marginBottom: 8,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-              }}
-            >
-              Reduces risk
+                />
+                {enabled ? 'Enabled' : 'Disabled'}
+              </span>
             </div>
-            <ul
-              style={{
-                margin: 0,
-                padding: 0,
-                listStyle: 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 4,
-              }}
-            >
-              {det.down.map((r, i) => (
-                <li
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 6,
-                    fontSize: 12.5,
-                    color: 'var(--text-secondary)',
-                  }}
-                >
-                  <span
-                    style={{ color: 'var(--severity-safe)', flexShrink: 0, lineHeight: 1.5 }}
-                  >
-                    ▼
-                  </span>
-                  {r}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+          </Section>
 
-        {/* ── Guardrail ── */}
-        {det.guardrail && (
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-subtle)' }}>
-            <div
-              style={{
-                fontSize: 11.5,
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: 'var(--text-tertiary)',
-                marginBottom: 8,
-              }}
-            >
-              Guardrail
-            </div>
-            <p
-              style={{
-                margin: 0,
-                fontSize: 12.5,
-                color: 'var(--text-secondary)',
-                lineHeight: 1.5,
-              }}
-            >
-              {det.guardrail}
+          {/* ── What this classification detects ── */}
+          <Section>
+            <SectionLabel>What this classification detects</SectionLabel>
+            <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+              {det.description}
             </p>
-          </div>
-        )}
+          </Section>
 
-        {/* ── Enable / Disable toggle ── */}
+          {/* ── Detection pattern ── */}
+          <Section>
+            <SectionLabel>Detection pattern</SectionLabel>
+            <div
+              style={{
+                fontFamily: 'var(--font-mono-family, monospace)',
+                fontSize: 12.5,
+                color: 'var(--text-primary)',
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 6,
+                padding: '9px 11px',
+                overflowX: 'auto',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {det.pattern}
+            </div>
+          </Section>
+
+          {/* ── Risk signals ── */}
+          {(det.up.length > 0 || det.down.length > 0) && (
+            <Section>
+              <SectionLabel>Risk signals</SectionLabel>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {det.up.length > 0 && (
+                  <RiskGroup title="Increases risk" color="var(--severity-high)" items={det.up} />
+                )}
+                {det.down.length > 0 && (
+                  <RiskGroup title="Reduces risk" color="var(--severity-safe)" items={det.down} />
+                )}
+              </div>
+            </Section>
+          )}
+
+          {/* ── Guardrail ── */}
+          {det.guardrail && (
+            <Section style={{ borderBottom: 'none' }}>
+              <SectionLabel>Guardrail</SectionLabel>
+              <div
+                style={{
+                  fontSize: 12.5,
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.5,
+                  background: 'var(--bg-secondary)',
+                  borderRadius: 8,
+                  padding: '10px 12px',
+                }}
+              >
+                {det.guardrail}
+              </div>
+            </Section>
+          )}
+        </div>
+
+        {/* ── Sticky footer: status ── */}
         <div
           style={{
-            padding: '16px 20px',
+            flexShrink: 0,
+            borderTop: '1px solid var(--border-subtle)',
+            background: 'var(--surface)',
+            padding: '14px 20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: 12,
           }}
         >
-          <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-            Classification status
-          </span>
+          <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Classification status</span>
           <button
             role="switch"
             aria-checked={enabled}
@@ -344,8 +314,8 @@ export function ClassDrawer() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: 6,
-              padding: '6px 14px',
-              borderRadius: 6,
+              padding: '7px 14px',
+              borderRadius: 8,
               border: `1px solid ${enabled ? 'var(--severity-safe)' : 'var(--border-primary)'}`,
               background: enabled ? 'var(--severity-safe-bg)' : 'transparent',
               color: enabled ? 'var(--severity-safe)' : 'var(--text-secondary)',
@@ -355,11 +325,7 @@ export function ClassDrawer() {
               transition: 'all 120ms',
             }}
           >
-            <Icon
-              name="check"
-              size={13}
-              stroke={enabled ? 'var(--severity-safe)' : 'var(--text-tertiary)'}
-            />
+            <Icon name="check" size={13} stroke={enabled ? 'var(--severity-safe)' : 'var(--text-tertiary)'} />
             {enabled ? 'Enabled' : 'Disabled'}
           </button>
         </div>
