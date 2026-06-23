@@ -14,8 +14,7 @@
     "enrich:slm": "vite-node scripts/enrich-slm.ts",
     "export:predictions": "vite-node scripts/export-predictions.ts",
     "train:semantic": "vite-node scripts/train-semantic.ts",
-    "trace:pipeline": "vite-node scripts/trace-pipeline.ts",
-    "build:tree": "vite-node scripts/build-file-tree.ts"
+    "trace:pipeline": "vite-node scripts/trace-pipeline.ts"
   },
   "dependencies": {
     "react": "^18.3.1",

@@ -23,8 +23,6 @@ import type {
   AssetCriticality,
   FindingContextObject,
   Sensitivity,
-  FileTreeNode,
-  AnnotatedTreeNode,
 } from '../types';
 import { extractFeatures, buildCorpusStats } from '../lib/features';
 import { evaluateRules } from '../lib/rules';
@@ -41,7 +39,6 @@ import { band, priorityRank } from '../lib/priority';
 
 import rawFindings from './evenup/findings.json';
 import rawAssets from './evenup/assets.json';
-import fileTreeRaw from './fileTree.json';
 
 // ---- Raw types ---------------------------------------------------------------
 
@@ -619,45 +616,3 @@ export const EXTERNAL_AI_NODES: ExternalAiNode[] = [
     ],
   },
 ];
-
-// ---- Repository file tree (real customer-data structure + findings) ---------
-// Join the structural snapshot (src/data/fileTree.json, from customer-data/evenup)
-// with the live FINDINGS by file path, so the UI can render the actual repo tree
-// with each file's findings + worst severity, aggregated up into folders.
-
-// findings grouped by their real file path (Finding.path === file.file_path).
-const FINDINGS_BY_PATH: Record<string, Finding[]> = {};
-for (const f of FINDINGS) {
-  (FINDINGS_BY_PATH[f.path] ??= []).push(f);
-}
-
-function annotateTree(node: FileTreeNode): AnnotatedTreeNode {
-  if (node.type === 'file') {
-    const here = FINDINGS_BY_PATH[node.path] ?? [];
-    const highestPriority = here.reduce<Priority | undefined>(
-      (best, f) => (best === undefined || priorityRank(f.basePriority) > priorityRank(best) ? f.basePriority : best),
-      undefined,
-    );
-    return {
-      name: node.name,
-      path: node.path,
-      type: 'file',
-      ext: node.ext,
-      findingCount: here.length,
-      highestPriority,
-      findingIds: here.map((f) => f.id),
-    };
-  }
-  const children = (node.children ?? []).map(annotateTree);
-  let findingCount = 0;
-  let highestPriority: Priority | undefined;
-  for (const c of children) {
-    findingCount += c.findingCount;
-    if (c.highestPriority && (highestPriority === undefined || priorityRank(c.highestPriority) > priorityRank(highestPriority))) {
-      highestPriority = c.highestPriority;
-    }
-  }
-  return { name: node.name, path: node.path, type: 'dir', children, findingCount, highestPriority, findingIds: [] };
-}
-
-export const FILE_TREE: AnnotatedTreeNode = annotateTree(fileTreeRaw as unknown as FileTreeNode);
