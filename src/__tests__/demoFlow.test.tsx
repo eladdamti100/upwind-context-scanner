@@ -64,7 +64,7 @@ test('demo flow: findings → drawer → settings → exposure map', async () =>
   fireEvent.click(settingsBtn);
 
   // Settings modal is visible
-  expect(await screen.findByText('Scanner sensitivity')).toBeInTheDocument();
+  expect(await screen.findByText('Detection sensitivity')).toBeInTheDocument();
 
   // Click the "Flexible" sensitivity option (segmented control button)
   fireEvent.click(screen.getByRole('button', { name: 'Flexible' }));
@@ -72,8 +72,8 @@ test('demo flow: findings → drawer → settings → exposure map', async () =>
   // Click "Done" to close — modal should disappear
   fireEvent.click(screen.getByRole('button', { name: 'Done' }));
 
-  // "Scanner sensitivity" is no longer visible
-  expect(screen.queryByText('Scanner sensitivity')).not.toBeInTheDocument();
+  // "Detection sensitivity" is no longer visible
+  expect(screen.queryByText('Detection sensitivity')).not.toBeInTheDocument();
 
   // ── 4. Exposure map tab ─────────────────────────────────────────────────
   clickText('Exposure map');

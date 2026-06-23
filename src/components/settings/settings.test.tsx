@@ -1,57 +1,49 @@
-// settings.test.tsx — integration tests for SettingsModal via App.
-// Render the full App, open the modal via the TopBar settings button,
-// exercise sensitivity + vertical selection, then close via Done.
+// settings.test.tsx — integration tests for the user-facing SettingsModal.
+// Opens the modal via the TopBar settings button and verifies the new
+// end-user sections are present and the internal/demo controls are gone.
 
 import { render, screen, fireEvent } from '@testing-library/react';
 import { test, expect } from 'vitest';
 import App from '../../App';
 
-test('Settings modal opens, shows all sections and vertical labels', () => {
+test('Settings modal shows user-facing sections, not internal demo controls', () => {
   render(<App />);
 
-  // Modal is closed initially
-  expect(screen.queryByText('Scanner sensitivity')).not.toBeInTheDocument();
+  // Closed initially
+  expect(screen.queryByText('Detection sensitivity')).not.toBeInTheDocument();
 
   // Open via TopBar settings button (title="Settings")
   fireEvent.click(screen.getByTitle('Settings'));
 
-  // Core section heading visible
-  expect(screen.getByText('Scanner sensitivity')).toBeInTheDocument();
+  // New user-facing sections
+  expect(screen.getByText('Detection sensitivity')).toBeInTheDocument();
+  expect(screen.getByText('User preferences')).toBeInTheDocument();
+  expect(screen.getByText('Display preferences')).toBeInTheDocument();
+  expect(screen.getByText('Notifications')).toBeInTheDocument();
+  expect(screen.getByText('Workspace context')).toBeInTheDocument();
 
-  // All five vertical labels must be visible
-  expect(screen.getByText('SaaS')).toBeInTheDocument();
-  expect(screen.getByText('Fintech')).toBeInTheDocument();
-  expect(screen.getByText('Retail')).toBeInTheDocument();
-  expect(screen.getByText('Healthcare')).toBeInTheDocument();
-  expect(screen.getByText('General / Default')).toBeInTheDocument();
+  // Internal/demo controls removed
+  expect(screen.queryByText('Customer vertical')).not.toBeInTheDocument();
+  expect(screen.queryByText('Rule packs')).not.toBeInTheDocument();
+  expect(screen.queryByText('SaaS')).not.toBeInTheDocument();
+  expect(screen.queryByText(/Mocked validation/i)).not.toBeInTheDocument();
+
+  // Workspace context is read-only / auto-managed (Customer + Cloud both "Auto-detected")
+  expect(screen.getAllByText('Auto-detected').length).toBeGreaterThan(0);
+  expect(screen.getByText('Managed automatically')).toBeInTheDocument();
 });
 
-test('Selecting Flexible sensitivity and Fintech vertical keeps modal open', () => {
+test('Selecting Flexible sensitivity keeps the modal open', () => {
   render(<App />);
-
   fireEvent.click(screen.getByTitle('Settings'));
-
-  // Click the "Flexible" segment
   fireEvent.click(screen.getByRole('button', { name: 'Flexible' }));
-
-  // Click the "Fintech" vertical chip
-  fireEvent.click(screen.getByRole('button', { name: 'Fintech' }));
-
-  // Modal must still be open
-  expect(screen.getByText('Scanner sensitivity')).toBeInTheDocument();
+  expect(screen.getByText('Detection sensitivity')).toBeInTheDocument();
 });
 
 test('Clicking Done closes the modal', () => {
   render(<App />);
-
   fireEvent.click(screen.getByTitle('Settings'));
-
-  // Modal open
-  expect(screen.getByText('Scanner sensitivity')).toBeInTheDocument();
-
-  // Click Done
+  expect(screen.getByText('Detection sensitivity')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Done' }));
-
-  // Modal closed
-  expect(screen.queryByText('Scanner sensitivity')).not.toBeInTheDocument();
+  expect(screen.queryByText('Detection sensitivity')).not.toBeInTheDocument();
 });
