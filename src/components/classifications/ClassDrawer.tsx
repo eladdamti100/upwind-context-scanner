@@ -237,23 +237,21 @@ export function ClassDrawer() {
             </p>
           </Section>
 
-          {/* ── Detection pattern ── */}
+          {/* ── Detection method ── */}
           <Section>
-            <SectionLabel>Detection pattern</SectionLabel>
+            <SectionLabel>Detection method</SectionLabel>
             <div
               style={{
-                fontFamily: 'var(--font-mono-family, monospace)',
                 fontSize: 12.5,
-                color: 'var(--text-primary)',
+                color: 'var(--text-secondary)',
+                lineHeight: 1.5,
                 background: 'var(--bg-secondary)',
                 border: '1px solid var(--border-subtle)',
                 borderRadius: 6,
                 padding: '9px 11px',
-                overflowX: 'auto',
-                whiteSpace: 'nowrap',
               }}
             >
-              {det.pattern}
+              {det.detectionNote}
             </div>
           </Section>
 

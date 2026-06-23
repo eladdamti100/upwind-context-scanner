@@ -106,9 +106,8 @@ const HEADER_INFO: Record<string, { text: string; label: string }> = {
 const SORT_OPTIONS: { key: string; label: string }[] = [
   { key: 'risk', label: 'Risk score' },
   { key: 'priority', label: 'Remediation priority' },
-  { key: 'created', label: 'Created at' },
+  { key: 'created', label: 'Detection order' },
   { key: 'line', label: 'Line number' },
-  { key: 'off', label: 'Line offset' },
 ];
 
 // Map col.id → sort key
@@ -850,13 +849,6 @@ export function FindingsTable() {
                           return (
                             <td key={col.id} style={railTdStyle}>
                               {f.line}
-                            </td>
-                          );
-
-                        case 'offset':
-                          return (
-                            <td key={col.id} style={railTdStyle}>
-                              {f.offset}
                             </td>
                           );
 

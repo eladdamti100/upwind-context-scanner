@@ -69,6 +69,18 @@ test('Overview funnel uses derived dataset values', () => {
   expect(text).toContain(String(expected.activeCredentials));
 });
 
+test('Overview exposure breakdown is derived, not the old fixed demo values', () => {
+  render(<App />);
+  const view = screen.getByTestId('overview-view');
+  const text = view.textContent ?? '';
+  // Derived exposure buckets are present…
+  expect(screen.getAllByText('Internet-facing').length).toBeGreaterThan(0);
+  expect(screen.getAllByText('Internal').length).toBeGreaterThan(0);
+  // …and the old fabricated labels are gone.
+  expect(text).not.toContain('Static exposed secrets');
+  expect(text).not.toContain('Shared with external AI service');
+});
+
 test('"View exposed findings" navigates to the findings table', () => {
   render(<App />);
   fireEvent.click(screen.getByText('View exposed findings'));

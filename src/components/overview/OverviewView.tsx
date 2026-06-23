@@ -23,11 +23,6 @@ import { CloudBadge } from '../common/CloudBadge';
 interface KpiCard { label: string; value: number; helper: string; icon: IconName; tileBg: string; iconColor: string }
 interface FunnelStageData { value: number; title: string; desc: string; icon: IconName; accent: string; tint: string }
 
-const EXPOSURE_BREAKDOWN: { label: string; count: number; color: string }[] = [
-  { label: 'Static exposed secrets', count: 14, color: 'var(--action-primary)' },
-  { label: 'Dynamic exposed secrets', count: 6, color: 'var(--uw-metal-blue-02)' },
-  { label: 'Shared with external AI service', count: 4, color: 'var(--uw-royal-purple-02)' },
-];
 const SUGGESTED_RULES = [
   'Detect Azure Storage Account Keys in configuration files',
   'Flag secrets in container images and build artifacts',
@@ -301,7 +296,14 @@ export function OverviewView() {
       .map(([provider, count]) => ({ provider, count }))
       .sort((a, b) => b.count - a.count);
 
-    return { total, activeCredentials, highPriority, noise, realFindings, publicAssets, riskByCloud };
+    // Exposure breakdown — findings grouped by their (derived) exposure level.
+    const exposureBreakdown = [
+      { label: 'Public', count: FINDINGS.filter(f => f.exposure === 'Public').length, color: 'var(--action-primary)' },
+      { label: 'Internet-facing', count: FINDINGS.filter(f => f.exposure === 'Internet-facing').length, color: 'var(--uw-metal-blue-02)' },
+      { label: 'Internal', count: FINDINGS.filter(f => f.exposure === 'Internal').length, color: 'var(--uw-royal-purple-02)' },
+    ];
+
+    return { total, activeCredentials, highPriority, noise, realFindings, publicAssets, riskByCloud, exposureBreakdown };
   }, [sensitivity, state.validations]);
 
   const kpis: KpiCard[] = [
@@ -510,8 +512,8 @@ export function OverviewView() {
           <Card style={{ padding: '16px 18px' }}>
             <CardTitle>Exposure breakdown</CardTitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 14 }}>
-              {EXPOSURE_BREAKDOWN.map(row => {
-                const max = Math.max(...EXPOSURE_BREAKDOWN.map(r => r.count));
+              {metrics.exposureBreakdown.map(row => {
+                const max = Math.max(...metrics.exposureBreakdown.map(r => r.count), 1);
                 return (
                   <div key={row.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, color: 'var(--text-secondary)' }}>{row.label}</span>

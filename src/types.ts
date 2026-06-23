@@ -260,7 +260,10 @@ export interface ClassificationRow {
 }
 export interface ClassificationDetail {
   description: string;
-  pattern: string;
+  // How the classification is detected, in plain language. NOT a regex — this is
+  // a truthful description of the rule source + pipeline, never a fabricated
+  // pattern or a secret-looking value.
+  detectionNote: string;
   up: string[];
   down: string[];
   guardrail: string;

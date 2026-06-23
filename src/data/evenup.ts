@@ -414,7 +414,7 @@ export const FINDINGS: Finding[] = RAW.map((raw, i) => {
     environment: features.environmentHint,
     cloud: toCloud(asset?.cloud_provider ?? 'aws'),
     owner: 'Unassigned',
-    createdAt: 'Jun 2026',
+    createdAt: 'Current scan',
     line: candidate.line_number,
     offset: 0,
     exposure: exp,
@@ -485,13 +485,124 @@ export const CLASSIFICATIONS: ClassificationRow[] = (() => {
     .sort((a, b) => b.findings - a.findings);
 })();
 
+// Category-based detail templates. These describe how a category is detected and
+// scored in plain, truthful language (no fabricated regex). The per-classification
+// risk signals are derived from the real pipeline reasons below and only fall
+// back to these template lists when a group produced no reasons.
+interface CategoryDetail {
+  blurb: string;
+  detection: string;
+  guardrail: string;
+  up: string[];
+  down: string[];
+}
+
+const CATEGORY_DETAIL_DEFAULT: CategoryDetail = {
+  blurb: 'sensitive-data candidates surfaced by the scanner.',
+  detection:
+    'Matched by the base sensitive-data profile, then scored by the context-aware pipeline (path, variable name, entropy, exposure, asset criticality).',
+  guardrail: 'Documentation and test matches are capped at Low unless validated active.',
+  up: ['Production or runtime path', 'High-risk exposure'],
+  down: ['Documentation or test path', 'Placeholder or example value'],
+};
+
+const CATEGORY_DETAIL: Record<string, CategoryDetail> = {
+  Secret: {
+    blurb: 'credentials and API tokens that grant direct system access if leaked.',
+    detection:
+      'Matched by the base secret-detection profile, then scored by the context-aware pipeline (path, variable name, entropy, exposure).',
+    guardrail:
+      'Secrets in production or internet-facing paths are never auto-suppressed; documentation and test matches are capped at Low unless validated active.',
+    up: ['Production or runtime path', 'Secret-like variable name', 'High-entropy value', 'Public or internet-facing exposure'],
+    down: ['Documentation or test path', 'Placeholder or example language', 'Known sample value'],
+  },
+  Fintech: {
+    blurb: 'payment-provider keys and financial credentials (Stripe, PayPal, Plaid, banking).',
+    detection:
+      'Matched by the Fintech rule pack and validated for provider key shape, then context-scored.',
+    guardrail: 'Live payment keys in production configs are floored to High; sandbox/test keys are downgraded.',
+    up: ['Production service configuration', 'Live payment-provider key prefix', 'Internet-facing asset'],
+    down: ['Sandbox or test key prefix', 'Example or placeholder value'],
+  },
+  PCI: {
+    blurb: 'cardholder data such as primary account numbers (PAN).',
+    detection: 'Matched by card-number patterns and a Luhn/structure check, then context-scored.',
+    guardrail: 'Values failing the Luhn/structure check are treated as non-card identifiers and suppressed.',
+    up: ['Structurally valid card number', 'Stored in an exported or shared location'],
+    down: ['Fails Luhn / structure check', 'Known test card number'],
+  },
+  Healthcare: {
+    blurb: 'protected health information such as medical-record and insurance identifiers.',
+    detection: 'Matched by healthcare identifier patterns and format validation, then context-scored.',
+    guardrail: 'Identifiers in documentation dictionaries or with invalid formats are suppressed.',
+    up: ['Valid identifier format', 'Stored with patient context'],
+    down: ['Documentation dictionary or mapping file', 'Invalid format for the claimed type'],
+  },
+  PII: {
+    blurb: 'personally identifiable information such as SSNs, emails, and government IDs.',
+    detection: 'Matched by PII patterns and range/format checks, then context-scored.',
+    guardrail: 'Out-of-range or placeholder identities are suppressed; synthetic test PII is downgraded.',
+    up: ['Valid identifier range/format', 'Real-looking record context'],
+    down: ['Placeholder identity (e.g. sample names)', 'Out-of-range or synthetic value'],
+  },
+  SaaS: {
+    blurb: 'SaaS application tokens and integration credentials.',
+    detection: 'Matched by SaaS token patterns, then scored by the context-aware pipeline.',
+    guardrail: 'Tokens in test or sample paths are capped at Low unless validated active.',
+    up: ['Production or runtime path', 'Token-shaped high-entropy value'],
+    down: ['Test or sample path', 'Placeholder language'],
+  },
+  Retail: {
+    blurb: 'retail and commerce credentials and customer data.',
+    detection: 'Matched by the retail rule pack, then context-scored.',
+    guardrail: 'Sample catalog or test data is downgraded.',
+    up: ['Production path', 'Customer-data context'],
+    down: ['Sample/catalog data', 'Test fixture'],
+  },
+  'Documentation Example': {
+    blurb: 'secret-shaped values that appear inside documentation and examples.',
+    detection: 'Identified as documentation/example context by path and surrounding placeholder language.',
+    guardrail: 'Capped at Low — surfaced for awareness, not treated as live secrets.',
+    up: ['Referenced from a non-doc runtime path'],
+    down: ['Documentation or README path', 'Example or placeholder language'],
+  },
+  'False Positive Pattern': {
+    blurb: 'regex matches that are not real secrets (IDs, hashes, structural tokens).',
+    detection:
+      'Flagged by structural and semantic checks (checksum, public-by-design, known-test) that a regex-only scanner cannot make.',
+    guardrail: 'Suppressed by the DomainRules agent when proven non-secret; never blocks triage.',
+    up: ['Unexpected production exposure'],
+    down: ['Fails structural/semantic validation', 'Public-by-design or known test value'],
+  },
+  'Test Value': {
+    blurb: 'intentional test and sandbox values.',
+    detection: 'Identified as test/fixture context by path and known sandbox values.',
+    guardrail: 'Downgraded to Low; excluded from critical alerting.',
+    up: ['Used outside test scope'],
+    down: ['Test or fixture path', 'Known sandbox value'],
+  },
+};
+
+// topReasons returns the most frequent distinct reasons across a group.
+function topReasons(reasons: string[], n: number): string[] {
+  const freq = new Map<string, number>();
+  for (const r of reasons) freq.set(r, (freq.get(r) ?? 0) + 1);
+  return [...freq.entries()].sort((a, b) => b[1] - a[1]).slice(0, n).map(e => e[0]);
+}
+
 export function classificationDetail(c: ClassificationRow): ClassificationDetail {
+  const t = CATEGORY_DETAIL[c.category] ?? CATEGORY_DETAIL_DEFAULT;
+  const group = FINDINGS.filter(f => f.classification === c.name);
+  // Prefer the real, pipeline-derived per-finding reasons for this classification;
+  // fall back to the category template only when the group produced none.
+  const up = topReasons(group.flatMap(f => f.riskUpReasons), 4);
+  const down = topReasons(group.flatMap(f => f.riskDownReasons), 3);
   return {
-    description: `${c.name} is a ${c.category.toLowerCase()} classification. Regex detects candidate matches; the context layer scores each one using path, variable name, entropy, exposure, asset criticality, and a LightGBM model to decide whether it is real, borderline, or a false positive.`,
-    pattern: `/${c.id.replace(/-/g, '[-_]?')}[a-z0-9/+]{16,}/`,
-    up: ['Production or runtime path', 'Secret-like variable name', 'High entropy value', 'Public or internet-facing exposure'],
-    down: ['Documentation or test path', 'Example / placeholder language', 'Known sample value'],
-    guardrail: 'Findings in documentation or test paths are capped at Low unless validated active.',
+    description: `${c.name} — ${t.blurb}`,
+    detectionNote: t.detection,
+    up: up.length ? up : t.up,
+    down: down.length ? down : t.down,
+    guardrail: t.guardrail,
   };
 }
 

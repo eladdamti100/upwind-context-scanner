@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { test, expect } from 'vitest';
 import App from '../../App';
-import { CLASSIFICATIONS } from '../../data';
+import { CLASSIFICATIONS, classificationDetail } from '../../data';
 
 // The first classification by findings count
 const firstClass = CLASSIFICATIONS[0];
@@ -18,7 +18,7 @@ test('classifications tab renders rows and shows first real classification name'
   expect(screen.getByText(firstClass.name)).toBeInTheDocument();
 });
 
-test('clicking a classification row opens the drawer with Detection pattern and Guardrail', async () => {
+test('clicking a classification row opens the drawer with Detection method and Guardrail', async () => {
   render(<App />);
 
   fireEvent.click(screen.getByText('Data classifications'));
@@ -26,11 +26,29 @@ test('clicking a classification row opens the drawer with Detection pattern and 
   // Click the first classification row
   fireEvent.click(screen.getByText(firstClass.name));
 
-  // Drawer should show Detection pattern section
-  expect(screen.getByText('Detection pattern')).toBeInTheDocument();
+  // Drawer should show Detection method section (truthful, not a fake regex)
+  expect(screen.getByText('Detection method')).toBeInTheDocument();
 
   // Drawer should show Guardrail section
   expect(screen.getByText('Guardrail')).toBeInTheDocument();
+});
+
+test('classification detail uses no fabricated regex and varies by category', () => {
+  const details = CLASSIFICATIONS.map(classificationDetail);
+
+  for (const d of details) {
+    // No fake regex / pattern-looking detection text.
+    expect(d.detectionNote.startsWith('/')).toBe(false);
+    expect(d.detectionNote).not.toMatch(/\[a-z0-9|\{\d+,\}|\[-_\]\?/);
+    // No secret-looking glyphs or fragments.
+    expect(d.detectionNote).not.toMatch(/[•*]/);
+  }
+
+  // Detail content is not identical boilerplate across every classification.
+  const distinctDetection = new Set(details.map(d => d.detectionNote));
+  const distinctGuardrail = new Set(details.map(d => d.guardrail));
+  expect(distinctDetection.size).toBeGreaterThan(1);
+  expect(distinctGuardrail.size).toBeGreaterThan(1);
 });
 
 test('searching a substring hides a different classification row', async () => {

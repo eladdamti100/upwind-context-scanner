@@ -1,12 +1,25 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { test, expect } from 'vitest';
 import App from '../../App';
+import { SUGGESTED_RULES, FINDINGS } from '../../data';
 
 function openAddRules() {
   render(<App />);
   fireEvent.click(screen.getByText('Data classifications'));
   fireEvent.click(screen.getByText('Add rules'));
 }
+
+test('suggested-rule counts are derived and never exceed the corpus', () => {
+  for (const r of SUGGESTED_RULES) {
+    expect(r.affectedFindingsCount).toBeLessThanOrEqual(FINDINGS.length);
+    expect(r.affectedFindingsCount).toBeGreaterThanOrEqual(0);
+  }
+  // The old fabricated counts must be gone everywhere.
+  openAddRules();
+  const text = document.body.textContent ?? '';
+  expect(text).not.toContain('4,310');
+  expect(text).not.toContain('1,902');
+});
 
 test('Add rules modal opens with Upwind recommended rules', () => {
   openAddRules();

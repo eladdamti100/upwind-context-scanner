@@ -86,7 +86,7 @@ const DEFAULT_COLS: ColumnState[] = [
   { id: 'environment',    label: 'Environment',          vis: false },
   { id: 'exposure',       label: 'Exposure',             vis: false },
   { id: 'cloud',          label: 'Cloud',                vis: false },
-  { id: 'createdAt',      label: 'Created at',           vis: false },
+  { id: 'createdAt',      label: 'Detected',             vis: false },
   { id: 'explanation',    label: 'Reason',               vis: false },
 ];
 
