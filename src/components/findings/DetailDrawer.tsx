@@ -11,6 +11,7 @@ import { explanationTitle, recommendedActions } from '../../lib/explain';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';
 import { SeverityBadge } from '../common/SeverityBadge';
+import { DomainRulesBanner } from './DomainRulesBanner';
 
 // Inject keyframes once into document head (no-op if already present)
 function ensureSlideKeyframes() {
@@ -369,6 +370,7 @@ export function DetailDrawer() {
         {/* ── 5. Score breakdown ────────────────────────────────────────── */}
         <Section>
           <SectionLabel>Score breakdown</SectionLabel>
+          <DomainRulesBanner finding={sel} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {breakdown.map(row => (
               <div key={row.label}>

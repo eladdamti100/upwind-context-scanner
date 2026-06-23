@@ -42,6 +42,13 @@ export function SummaryCards() {
 
   const totalCount = FINDINGS.length;
 
+  // Noise the context layer silenced vs. the real findings it surfaces.
+  const suppressedCount = FINDINGS.filter(
+    (f) => effPriority(f, sensitivity) === 'suppressed',
+  ).length;
+  const surfacedCount = totalCount - suppressedCount;
+  const reductionPct = totalCount ? Math.round((100 * suppressedCount) / totalCount) : 0;
+
   const criticalCount = FINDINGS.filter(
     (f) => effPriority(f, sensitivity) === 'critical',
   ).length;
@@ -58,16 +65,22 @@ export function SummaryCards() {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
         gap: 16,
         marginBottom: 24,
       }}
     >
       <Card
-        label="Total exposed findings"
-        value={totalCount}
+        label="Findings surfaced"
+        value={surfacedCount}
         color="var(--text-primary)"
-        helper="Context-aware findings"
+        helper={`of ${totalCount} regex candidates`}
+      />
+      <Card
+        label="Noise suppressed"
+        value={suppressedCount}
+        color="var(--severity-safe)"
+        helper={`${reductionPct}% cleared by the context layer`}
       />
       <Card
         label="Critical findings"

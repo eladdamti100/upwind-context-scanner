@@ -233,6 +233,10 @@ export interface Finding {
   activity: ActivitySignal;
   scores: RiskScoreBreakdown;
   isFalsePositive?: boolean;
+  // Set when the DomainRulesAgent hard-suppressed this candidate (structural /
+  // semantic proof it is not a live secret). `suppressReason` is the named cause.
+  suppressedByAgent?: boolean;
+  suppressReason?: string;
   riskUpReasons: string[];
   riskDownReasons: string[];
   explanation: string;

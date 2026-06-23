@@ -8,6 +8,7 @@ import { priStyle, priLabel } from '../../lib/classify';
 import { buildBreakdown } from '../../lib/scoring';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';
+import { DomainRulesBanner } from './DomainRulesBanner';
 
 export function RiskPopover() {
   const { state, dispatch } = useStore();
@@ -102,6 +103,9 @@ export function RiskPopover() {
             {priLabel(b)}
           </span>
         </div>
+
+        {/* DomainRulesAgent suppression banner (when applicable) */}
+        <DomainRulesBanner finding={f} />
 
         {/* Breakdown bars */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>

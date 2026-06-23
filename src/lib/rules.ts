@@ -233,33 +233,46 @@ const VERTICAL_RULES: Record<Vertical, Rule[]> = {
 // ---------------------------------------------------------------------------
 // Guardrails
 // ---------------------------------------------------------------------------
-// Guardrails are gated on `structurallyValid` so a structurally-impossible
-// value wearing a high-severity type (e.g. a low-entropy AKIA stub) can never be
-// force-floored — only a real, well-formed credential gets the floor.
+// Detected types arrive in either kebab ('aws-access-key') or the corpus's
+// underscore form ('cloud_key', 'database_password'); normalize before matching.
+const dt = (f: ContextFeatures): string => f.detectedType.toLowerCase().replace(/_/g, '-');
+
+// A guardrail must only ever FLOOR a genuine secret. `genuine` is the inverse of
+// every authoritative "not a live secret" signal the DomainRulesAgent suppresses
+// on — so a public-by-design / known-test / already-masked / structurally-invalid
+// value can never be accidentally elevated to Critical.
+const genuine = (f: ContextFeatures): boolean =>
+  f.structurallyValid &&
+  f.formatValidForType &&
+  !f.isPublicByDesign &&
+  !f.isKnownTestValue &&
+  !f.isKnownTestVector &&
+  !f.isAlreadyMasked &&
+  !f.isHighEntropySha &&
+  !f.shapeContradictsType;
+
+// High-severity credential types in the corpus + standard kebab vocabulary.
+const CLOUD_CRED_TYPES = ['aws-access-key', 'aws-secret-key', 'cloud-key'];
+const CRITICAL_FLOOR_TYPES = [
+  'aws-access-key', 'aws-secret-key', 'cloud-key', 'pem-private-key',
+  'database-password', 'db-connection-string', 'payment-secret', 'stripe-live-key',
+];
+
 const GUARDRAILS: Guardrail[] = [
   {
     id: 'private-key-floor',
     floor: 'high',
-    when: (f) => f.detectedType === 'pem-private-key' && f.structurallyValid,
+    when: (f) => dt(f) === 'pem-private-key' && genuine(f),
   },
   {
     id: 'cloud-cred-prod-floor',
     floor: 'high',
-    when: (f) =>
-      ['aws-access-key', 'aws-secret-key', 'cloud-key'].includes(f.detectedType) &&
-      f.isProdPath &&
-      f.isConfigFile &&
-      f.structurallyValid,
+    when: (f) => CLOUD_CRED_TYPES.includes(dt(f)) && f.isProdPath && f.isConfigFile && genuine(f),
   },
   {
     id: 'public-critical-floor',
     floor: 'critical',
-    when: (f) =>
-      f.isPubliclyAccessible &&
-      f.structurallyValid &&
-      ['aws-access-key', 'aws-secret-key', 'pem-private-key', 'database-password'].includes(
-        f.detectedType
-      ),
+    when: (f) => f.isPubliclyAccessible && genuine(f) && CRITICAL_FLOOR_TYPES.includes(dt(f)),
   },
 ];
 
