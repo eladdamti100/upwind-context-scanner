@@ -65,7 +65,12 @@ test('no raw secrets are ever rendered — only masked values', async () => {
 
   // ── 4. Classifications tab ──────────────────────────────────────────
   fireEvent.click(screen.getByText('Data classifications'));
-  await screen.findByText('Suggested rules'); // classifications tab landmark
+  await screen.findByText('Add rules'); // classifications tab landmark
+  textSnapshots.push(document.body.textContent ?? '');
+
+  // ── 5. Add rules modal (suggested rules content) ────────────────────
+  fireEvent.click(screen.getByText('Add rules'));
+  await screen.findByText('Recommended by Upwind');
   textSnapshots.push(document.body.textContent ?? '');
 
   // ── Assertions ──────────────────────────────────────────────────────

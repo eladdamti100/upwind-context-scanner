@@ -55,7 +55,11 @@ export interface AppState {
   settingsOpen: boolean;
   settings: SettingsState;
   suggestedRuleStatus: Record<string, 'suggested' | 'approved' | 'dismissed'>;
+  addRulesOpen: boolean;
   toast: string | null;
+  // Bumped on every SHOW_TOAST so consumers can re-trigger auto-dismiss even
+  // when the same message is shown twice in a row.
+  toastNonce: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -117,7 +121,9 @@ export const initialState: AppState = {
     validationEnabled: true,
   },
   suggestedRuleStatus: {},
+  addRulesOpen: false,
   toast: null,
+  toastNonce: 0,
 };
 
 // ---------------------------------------------------------------------------
@@ -308,9 +314,16 @@ export function reducer(state: AppState, action: Action): AppState {
         suggestedRuleStatus: { ...state.suggestedRuleStatus, [action.id]: action.status },
       };
 
+    // ---- Add rules modal -----------------------------------------------------
+    case 'OPEN_ADD_RULES':
+      return { ...state, addRulesOpen: true };
+
+    case 'CLOSE_ADD_RULES':
+      return { ...state, addRulesOpen: false };
+
     // ---- Toast ---------------------------------------------------------------
     case 'SHOW_TOAST':
-      return { ...state, toast: action.message };
+      return { ...state, toast: action.message, toastNonce: state.toastNonce + 1 };
 
     case 'HIDE_TOAST':
       return { ...state, toast: null };

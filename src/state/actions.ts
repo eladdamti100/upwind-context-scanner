@@ -49,5 +49,7 @@ export type Action =
   | { type: 'TOGGLE_RULE_PACK'; pack: 'default' | 'vertical' | 'customer' }
   | { type: 'SET_VALIDATION_ENABLED'; value: boolean }
   | { type: 'SET_SUGGESTED_RULE_STATUS'; id: string; status: 'suggested' | 'approved' | 'dismissed' }
+  | { type: 'OPEN_ADD_RULES' }
+  | { type: 'CLOSE_ADD_RULES' }
   | { type: 'SHOW_TOAST'; message: string }
   | { type: 'HIDE_TOAST' };
