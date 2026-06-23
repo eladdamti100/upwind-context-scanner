@@ -6,12 +6,14 @@ import type { Action } from './actions';
 // Sub-state shapes
 // ---------------------------------------------------------------------------
 
-export type TabKey = 'findings' | 'classifications' | 'map';
+export type TabKey = 'overview' | 'findings' | 'classifications' | 'map';
 
 export interface ColumnState {
   id: string;
   label: string;
   vis: boolean;
+  /** Required columns are always visible and cannot be toggled off. */
+  required?: boolean;
 }
 
 export interface SettingsState {
@@ -38,8 +40,11 @@ export interface AppState {
   sortDir: 'asc' | 'desc';
   cols: ColumnState[];
   rpp: number;
+  /** Zero-based index of the current findings-table page. */
+  pageIdx: number;
   menu: string | null;
   selectedId: number | null;
+  actionsId: number | null;
   riskId: number | null;
   valModalId: number | null;
   validatingId: number | null;
@@ -55,7 +60,11 @@ export interface AppState {
   settingsOpen: boolean;
   settings: SettingsState;
   suggestedRuleStatus: Record<string, 'suggested' | 'approved' | 'dismissed'>;
+  addRulesOpen: boolean;
   toast: string | null;
+  // Bumped on every SHOW_TOAST so consumers can re-trigger auto-dismiss even
+  // when the same message is shown twice in a row.
+  toastNonce: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -63,18 +72,22 @@ export interface AppState {
 // ---------------------------------------------------------------------------
 
 const DEFAULT_COLS: ColumnState[] = [
-  { id: 'priority',       label: 'Remediation priority', vis: true  },
-  { id: 'classification', label: 'Classification',       vis: true  },
-  { id: 'secretType',     label: 'Secret type',          vis: true  },
-  { id: 'file',           label: 'File name | path',     vis: true  },
-  { id: 'owner',          label: 'Owner',                vis: true  },
-  { id: 'risk',           label: 'Risk score',           vis: true  },
-  { id: 'validation',     label: 'Validation status',    vis: true  },
+  // Required columns — always visible, cannot be turned off.
+  // Actions leads the row so details/actions are reachable from the start.
+  { id: 'actions',        label: 'Actions',              vis: true,  required: true },
+  { id: 'risk',           label: '% Confidence',         vis: true,  required: true },
+  { id: 'priority',       label: 'Remediation priority', vis: true,  required: true },
+  { id: 'secretType',     label: 'Secret type',          vis: true,  required: true },
+  { id: 'classification', label: 'Classification',       vis: true,  required: true },
+  { id: 'validation',     label: 'Credential Check',     vis: true,  required: true },
+  { id: 'file',           label: 'File name | path',     vis: true,  required: true },
+  // Optional columns — user-configurable (hidden by default to keep it clean).
+  { id: 'owner',          label: 'Owner',                vis: false },
   { id: 'environment',    label: 'Environment',          vis: false },
   { id: 'exposure',       label: 'Exposure',             vis: false },
   { id: 'cloud',          label: 'Cloud',                vis: false },
   { id: 'createdAt',      label: 'Created at',           vis: false },
-  { id: 'actions',        label: 'Actions',              vis: true  },
+  { id: 'explanation',    label: 'Reason',               vis: false },
 ];
 
 // Deep-copy helper so RESET_COLS can restore defaults without aliasing
@@ -87,15 +100,17 @@ function cloneCols(cols: ColumnState[]): ColumnState[] {
 // ---------------------------------------------------------------------------
 
 export const initialState: AppState = {
-  tab: 'findings',
+  tab: 'overview',
   search: '',
   filters: [],
   sortKey: 'risk',
   sortDir: 'desc',
   cols: cloneCols(DEFAULT_COLS),
-  rpp: 15,
+  rpp: 10,
+  pageIdx: 0,
   menu: null,
   selectedId: null,
+  actionsId: null,
   riskId: null,
   valModalId: null,
   validatingId: null,
@@ -116,7 +131,9 @@ export const initialState: AppState = {
     validationEnabled: true,
   },
   suggestedRuleStatus: {},
+  addRulesOpen: false,
   toast: null,
+  toastNonce: 0,
 };
 
 // ---------------------------------------------------------------------------
@@ -130,21 +147,22 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, tab: action.tab, menu: null, mapKey: null };
 
     // ---- Search / filters ----------------------------------------------------
+    // Search / filter changes reset pagination back to the first page.
     case 'SET_SEARCH':
-      return { ...state, search: action.search };
+      return { ...state, search: action.search, pageIdx: 0 };
 
     case 'ADD_FILTER': {
       const withoutSameKey = state.filters.filter(f => f.key !== action.filter.key);
-      return { ...state, filters: [...withoutSameKey, action.filter] };
+      return { ...state, filters: [...withoutSameKey, action.filter], pageIdx: 0 };
     }
 
     case 'REMOVE_FILTER': {
       const filters = state.filters.filter((_, i) => i !== action.index);
-      return { ...state, filters };
+      return { ...state, filters, pageIdx: 0 };
     }
 
     case 'CLEAR_FILTERS':
-      return { ...state, filters: [] };
+      return { ...state, filters: [], pageIdx: 0 };
 
     // ---- Sort ----------------------------------------------------------------
     case 'SET_SORT': {
@@ -156,6 +174,8 @@ export function reducer(state: AppState, action: Action): AppState {
 
     // ---- Columns -------------------------------------------------------------
     case 'TOGGLE_COL': {
+      // Required columns are always visible and cannot be toggled off.
+      if (state.cols[action.index]?.required) return state;
       const cols = state.cols.map((c, i) =>
         i === action.index ? { ...c, vis: !c.vis } : c,
       );
@@ -178,7 +198,10 @@ export function reducer(state: AppState, action: Action): AppState {
 
     // ---- Pagination ----------------------------------------------------------
     case 'SET_RPP':
-      return { ...state, rpp: action.rpp };
+      return { ...state, rpp: action.rpp, pageIdx: 0 };
+
+    case 'SET_PAGE':
+      return { ...state, pageIdx: Math.max(0, action.page) };
 
     // ---- Dropdown menu -------------------------------------------------------
     case 'TOGGLE_MENU':
@@ -193,6 +216,13 @@ export function reducer(state: AppState, action: Action): AppState {
 
     case 'CLOSE_DETAIL':
       return { ...state, selectedId: null };
+
+    // ---- Row actions modal ---------------------------------------------------
+    case 'OPEN_ACTIONS':
+      return { ...state, actionsId: action.id, menu: null };
+
+    case 'CLOSE_ACTIONS':
+      return { ...state, actionsId: null };
 
     // ---- Risk popover --------------------------------------------------------
     case 'OPEN_RISK':
@@ -307,9 +337,16 @@ export function reducer(state: AppState, action: Action): AppState {
         suggestedRuleStatus: { ...state.suggestedRuleStatus, [action.id]: action.status },
       };
 
+    // ---- Add rules modal -----------------------------------------------------
+    case 'OPEN_ADD_RULES':
+      return { ...state, addRulesOpen: true };
+
+    case 'CLOSE_ADD_RULES':
+      return { ...state, addRulesOpen: false };
+
     // ---- Toast ---------------------------------------------------------------
     case 'SHOW_TOAST':
-      return { ...state, toast: action.message };
+      return { ...state, toast: action.message, toastNonce: state.toastNonce + 1 };
 
     case 'HIDE_TOAST':
       return { ...state, toast: null };

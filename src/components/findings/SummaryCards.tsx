@@ -1,37 +1,84 @@
 import { FINDINGS } from '../../data';
 import { effPriority } from '../../lib/priority';
 import { useStore } from '../../state/StoreContext';
+import { Icon, IconName } from '../common/Icon';
 
 interface CardProps {
   label: string;
   value: number;
-  color: string;
+  valueColor: string;
   helper: string;
+  iconName: IconName;
+  tileBg: string;
+  iconStroke: string;
 }
 
-function Card({ label, value, color, helper }: CardProps) {
+function Card({ label, value, valueColor, helper, iconName, tileBg, iconStroke }: CardProps) {
   return (
     <div
       style={{
         background: 'var(--surface)',
         border: '1px solid var(--border-subtle)',
-        borderRadius: 12,
+        borderRadius: 10,
         boxShadow: 'var(--shadow-sm)',
-        padding: 20,
+        padding: '14px 16px',
         display: 'flex',
-        flexDirection: 'column',
-        gap: 4,
+        alignItems: 'center',
+        gap: 12,
       }}
     >
-      <span style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-        {label}
-      </span>
-      <span style={{ fontSize: 32, fontWeight: 600, color, lineHeight: 1.1 }}>
-        {value}
-      </span>
-      <span style={{ fontSize: 11, color: 'var(--text-tertiary)', lineHeight: 1.4 }}>
-        {helper}
-      </span>
+      {/* Icon tile */}
+      <div
+        style={{
+          flexShrink: 0,
+          width: 38,
+          height: 38,
+          borderRadius: 9,
+          background: tileBg,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Icon name={iconName} size={18} stroke={iconStroke} strokeWidth={2} />
+      </div>
+
+      {/* Text stack */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
+        <span
+          style={{
+            fontSize: 26,
+            fontWeight: 700,
+            lineHeight: 1,
+            letterSpacing: '-0.02em',
+            color: valueColor,
+          }}
+        >
+          {value}
+        </span>
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: 'var(--text-primary)',
+            lineHeight: 1.3,
+          }}
+        >
+          {label}
+        </span>
+        <span
+          style={{
+            fontSize: 10.5,
+            color: 'var(--text-tertiary)',
+            lineHeight: 1.3,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {helper}
+        </span>
+      </div>
     </div>
   );
 }
@@ -41,13 +88,6 @@ export function SummaryCards() {
   const sensitivity = state.settings.sensitivity;
 
   const totalCount = FINDINGS.length;
-
-  // Noise the context layer silenced vs. the real findings it surfaces.
-  const suppressedCount = FINDINGS.filter(
-    (f) => effPriority(f, sensitivity) === 'suppressed',
-  ).length;
-  const surfacedCount = totalCount - suppressedCount;
-  const reductionPct = totalCount ? Math.round((100 * suppressedCount) / totalCount) : 0;
 
   const criticalCount = FINDINGS.filter(
     (f) => effPriority(f, sensitivity) === 'critical',
@@ -65,40 +105,46 @@ export function SummaryCards() {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: 16,
-        marginBottom: 24,
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: 12,
+        marginBottom: 12,
       }}
     >
       <Card
-        label="Findings surfaced"
-        value={surfacedCount}
-        color="var(--text-primary)"
-        helper={`of ${totalCount} regex candidates`}
-      />
-      <Card
-        label="Noise suppressed"
-        value={suppressedCount}
-        color="var(--severity-safe)"
-        helper={`${reductionPct}% cleared by the context layer`}
+        label="Total exposed findings"
+        value={totalCount}
+        valueColor="var(--text-primary)"
+        helper="Context-aware findings"
+        iconName="database"
+        tileBg="var(--uw-blue-06)"
+        iconStroke="var(--uw-blue-03)"
       />
       <Card
         label="Critical findings"
         value={criticalCount}
-        color="var(--severity-critical)"
+        valueColor="var(--severity-critical)"
         helper="Need immediate attention"
+        iconName="alert-triangle"
+        tileBg="var(--severity-critical-bg)"
+        iconStroke="var(--severity-critical)"
       />
       <Card
         label="Validated active"
         value={validatedActiveCount}
-        color="var(--severity-high)"
+        valueColor="var(--text-primary)"
         helper="Confirmed live credentials"
+        iconName="shield"
+        tileBg="var(--severity-safe-bg)"
+        iconStroke="var(--severity-safe)"
       />
       <Card
         label="Publicly exposed"
         value={publiclyExposedCount}
-        color="var(--uw-cyan-02)"
+        valueColor="var(--uw-cyan-02)"
         helper="Public or internet-facing assets"
+        iconName="globe"
+        tileBg="var(--uw-cyan-06, var(--severity-info-bg))"
+        iconStroke="var(--uw-cyan-02)"
       />
     </div>
   );

@@ -12,7 +12,7 @@ const FILTER_OPTIONS: FilterOption[] = [
   { label: 'Priority: High', filter: { key: 'priority', val: 'high', label: 'Priority is High' } },
   { label: 'Environment: Production', filter: { key: 'env', val: 'Production', label: 'Environment is Production' } },
   { label: 'Cloud: AWS', filter: { key: 'cloud', val: 'AWS', label: 'Cloud is AWS' } },
-  { label: 'Validation: Validated active', filter: { key: 'validation', val: 'validated-active', label: 'Validation is Validated active' } },
+  { label: 'Credential check: Active credential', filter: { key: 'validation', val: 'validated-active', label: 'Credential check is Active credential' } },
   { label: 'Exposure: Public', filter: { key: 'exposure', val: 'Public', label: 'Exposure is Public' } },
 ];
 
@@ -25,12 +25,14 @@ export function FilterToolbar() {
         background: 'var(--surface)',
         border: '1px solid var(--border-subtle)',
         borderRadius: 8,
-        padding: '13px 14px',
-        marginBottom: 14,
+        padding: '8px 12px',
+        marginBottom: 12,
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
-        gap: 8,
+        gap: 10,
+        minHeight: 44,
+        boxSizing: 'border-box',
       }}
     >
       {/* Filter & search label */}
@@ -40,7 +42,7 @@ export function FilterToolbar() {
           alignItems: 'center',
           gap: 4,
           color: 'var(--text-secondary)',
-          fontSize: 13,
+          fontSize: 12,
           fontWeight: 500,
           flexShrink: 0,
         }}
@@ -54,10 +56,14 @@ export function FilterToolbar() {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 6,
-          width: 230,
-          borderBottom: '1px solid var(--border-subtle)',
-          paddingBottom: 2,
+          gap: 5,
+          width: 220,
+          height: 32,
+          background: 'var(--bg-secondary)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 6,
+          padding: '0 8px',
+          boxSizing: 'border-box',
         }}
       >
         <Icon name="search" size={13} stroke="var(--text-secondary)" />
@@ -71,7 +77,7 @@ export function FilterToolbar() {
             border: 'none',
             outline: 'none',
             color: 'var(--text-primary)',
-            fontSize: 13.5,
+            fontSize: 13,
             width: '100%',
           }}
         />
@@ -88,8 +94,8 @@ export function FilterToolbar() {
             background: 'var(--uw-primary-06)',
             border: '1px solid var(--uw-primary-04)',
             borderRadius: 50,
-            padding: '2px 10px',
-            fontSize: 12.5,
+            padding: '2px 8px',
+            fontSize: 12,
             color: 'var(--uw-primary-01)',
           }}
         >
@@ -123,10 +129,10 @@ export function FilterToolbar() {
             background: 'none',
             border: '1px dashed var(--border-subtle)',
             borderRadius: 6,
-            padding: '3px 10px',
+            padding: '3px 8px',
             cursor: 'pointer',
             color: 'var(--text-secondary)',
-            fontSize: 12.5,
+            fontSize: 12,
           }}
         >
           <Icon name="plus" size={12} />
@@ -176,7 +182,7 @@ export function FilterToolbar() {
           background: 'none',
           border: 'none',
           cursor: 'pointer',
-          fontSize: 12.5,
+          fontSize: 12,
           color: 'var(--text-secondary)',
           padding: 0,
         }}
@@ -191,7 +197,7 @@ export function FilterToolbar() {
           background: 'none',
           border: 'none',
           cursor: 'pointer',
-          fontSize: 12.5,
+          fontSize: 12,
           color: 'var(--text-secondary)',
           padding: 0,
         }}

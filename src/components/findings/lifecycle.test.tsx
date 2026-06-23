@@ -4,18 +4,17 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { test, expect } from 'vitest';
 import App from '../../App';
 
-function getFirstDataRow(): HTMLElement {
-  const rows = document.querySelectorAll('tbody tr');
-  return rows[0] as HTMLElement;
+function openFirstDetail() {
+  // The drawer opens only via the eye ("View detail") icon, not a row click.
+  fireEvent.click(screen.getAllByTitle('View detail')[0]);
 }
 
 test('opens LifecycleDialog from drawer and shows "Manage finding" with a "Resolved" option', async () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
-  // Click the first data row
-  const row = getFirstDataRow();
-  expect(row).not.toBeNull();
-  fireEvent.click(row);
+  // Open the drawer via the eye icon
+  openFirstDetail();
 
   // The drawer should be open; click "Manage status"
   const manageBtn = screen.getByRole('button', { name: /manage status/i });
@@ -30,10 +29,10 @@ test('opens LifecycleDialog from drawer and shows "Manage finding" with a "Resol
 
 test('clicking "Resolved" closes the LifecycleDialog', async () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
-  // Open the drawer
-  const row = getFirstDataRow();
-  fireEvent.click(row);
+  // Open the drawer via the eye icon
+  openFirstDetail();
 
   // Open the lifecycle dialog
   const manageBtn = screen.getByRole('button', { name: /manage status/i });

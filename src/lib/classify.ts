@@ -73,12 +73,12 @@ interface ValStyle {
 }
 
 const VAL_STYLE: Record<ValidationStatus, ValStyle> = {
-  'not-validated':                  { label: 'Not validated',      fg: 'var(--text-tertiary)',     bg: 'var(--severity-info-bg)',     canValidate: true  },
-  'validated-active':               { label: 'Validated active',   fg: 'var(--severity-critical)', bg: 'var(--severity-critical-bg)', canValidate: false },
-  'validated-inactive':             { label: 'Validated inactive', fg: 'var(--severity-safe)',     bg: 'var(--severity-safe-bg)',     canValidate: false },
-  'validation-failed':              { label: 'Validation failed',  fg: 'var(--severity-medium)',   bg: 'var(--severity-medium-bg)',   canValidate: true  },
-  'validation-permission-required': { label: 'Permission required',fg: 'var(--text-tertiary)',     bg: 'var(--severity-info-bg)',     canValidate: false },
-  'validation-unsupported':         { label: 'Unsupported',        fg: 'var(--text-tertiary)',     bg: 'var(--severity-info-bg)',     canValidate: false },
+  'not-validated':                  { label: 'Not checked',       fg: 'var(--text-tertiary)',     bg: 'var(--severity-info-bg)',     canValidate: true  },
+  'validated-active':               { label: 'Active credential', fg: 'var(--severity-critical)', bg: 'var(--severity-critical-bg)', canValidate: false },
+  'validated-inactive':             { label: 'Inactive',          fg: 'var(--severity-safe)',     bg: 'var(--severity-safe-bg)',     canValidate: false },
+  'validation-failed':              { label: 'Check failed',      fg: 'var(--severity-medium)',   bg: 'var(--severity-medium-bg)',   canValidate: true  },
+  'validation-permission-required': { label: 'Needs permission',  fg: 'var(--severity-medium)',   bg: 'var(--severity-medium-bg)',   canValidate: false },
+  'validation-unsupported':         { label: 'Unsupported',       fg: 'var(--text-tertiary)',     bg: 'var(--severity-info-bg)',     canValidate: false },
 };
 
 export function valStyle(v: ValidationStatus): ValStyle {

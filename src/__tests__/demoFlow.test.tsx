@@ -24,9 +24,9 @@ function clickText(text: string) {
   fireEvent.click(screen.getByText(text));
 }
 
-function getFirstDataRow(): HTMLElement {
-  const rows = document.querySelectorAll('tbody tr');
-  return rows[0] as HTMLElement;
+function openFirstDetail() {
+  // The drawer opens only via the eye ("View detail") icon, not a row click.
+  fireEvent.click(screen.getAllByTitle('View detail')[0]);
 }
 
 // ---------------------------------------------------------------------------
@@ -37,20 +37,20 @@ test('demo flow: findings → drawer → settings → exposure map', async () =>
   render(<App />);
 
   // ── 1. Findings tab ──────────────────────────────────────────────────────
-  // The default tab is "findings". At least one data row must be present.
+  // App opens on Overview; navigate to the findings table first.
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   const rows = document.querySelectorAll('tbody tr');
   expect(rows.length).toBeGreaterThan(0);
 
   // ── 2. Open detail drawer for the first row ──────────────────────────────
-  const firstRow = getFirstDataRow();
-  fireEvent.click(firstRow);
+  openFirstDetail();
 
   // Drawer: "Score breakdown" section header
   expect(await screen.findByText('Score breakdown')).toBeInTheDocument();
 
-  // Drawer: a masked value is displayed (contains • or *)
-  const maskedEls = screen.getAllByText(/[•*]/);
-  expect(maskedEls.length).toBeGreaterThan(0);
+  // Drawer must NOT display any secret value — not even masked (no • / *).
+  const drawer = screen.getByRole('dialog', { name: /finding detail/i });
+  expect(drawer.textContent ?? '').not.toMatch(/[•*]/);
 
   // Close the drawer via its close button (aria-label="Close detail")
   fireEvent.click(screen.getByRole('button', { name: 'Close detail' }));
@@ -64,7 +64,7 @@ test('demo flow: findings → drawer → settings → exposure map', async () =>
   fireEvent.click(settingsBtn);
 
   // Settings modal is visible
-  expect(await screen.findByText('Scanner sensitivity')).toBeInTheDocument();
+  expect(await screen.findByText('Detection sensitivity')).toBeInTheDocument();
 
   // Click the "Flexible" sensitivity option (segmented control button)
   fireEvent.click(screen.getByRole('button', { name: 'Flexible' }));
@@ -72,8 +72,8 @@ test('demo flow: findings → drawer → settings → exposure map', async () =>
   // Click "Done" to close — modal should disappear
   fireEvent.click(screen.getByRole('button', { name: 'Done' }));
 
-  // "Scanner sensitivity" is no longer visible
-  expect(screen.queryByText('Scanner sensitivity')).not.toBeInTheDocument();
+  // "Detection sensitivity" is no longer visible
+  expect(screen.queryByText('Detection sensitivity')).not.toBeInTheDocument();
 
   // ── 4. Exposure map tab ─────────────────────────────────────────────────
   clickText('Exposure map');

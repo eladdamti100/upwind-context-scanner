@@ -52,7 +52,7 @@
   --uw-green-04: #BFF0D9; --uw-green-05: #e2fff4; --uw-green-06: #F3FFFB;
 
   /* ---------- accent hues ---------- */
-  --uw-metal-blue-01: #005DA0; --uw-metal-blue-02: #38acff; --uw-metal-blue-03: #6CCAFF;
+  --uw-metal-blue-01: #005DA0; --uw-metal-blue-02: #1C84C9; --uw-metal-blue-03: #6CCAFF;
   --uw-metal-blue-04: #A3DEFF; --uw-metal-blue-05: #D9F4FF; --uw-metal-blue-06: #EDF7FF;
 
   --uw-cyan-01: #008DAA; --uw-cyan-02: #00c3eb; --uw-cyan-03: #43d5f2;
@@ -80,47 +80,49 @@
   /* surfaces / backgrounds */
   --bg-primary: #ffffff;
   --bg-secondary: #F8FAFC;
-  --bg-tertiary: #F2F7FC;
+  --bg-tertiary: #EEF2F7;
   --surface: #ffffff;
   --surface-card: #ffffff;
   --surface-elevated: #ffffff;
 
-  /* borders */
-  --border-primary: #d0d5dd;
-  --border-subtle: #D8DFE9;
+  /* borders — subtle but deliberate */
+  --border-primary: #CBD5E1;
+  --border-subtle: #E2E8F0;
 
-  /* text */
-  --text-primary: #18202D;
-  --text-secondary: #75808E;
+  /* text — sharper slate hierarchy */
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
   --text-tertiary: #94A3B8;
   --text-disabled: #94A3B8;
   --text-inverse: #ffffff;
   --text-link: #2C72DD;
 
   /* interactive states */
-  --interactive-hover: #F2F7FC;
-  --interactive-double-hover: rgba(216, 223, 233, 0.4);
-  --interactive-active: #D8DFE9;
-  --side-pane-mask: #75808E;
+  --interactive-hover: #F1F5F9;
+  --interactive-double-hover: rgba(203, 213, 225, 0.4);
+  --interactive-active: #E2E8F0;
+  --side-pane-mask: #64748B;
+  --row-selected-bg: #F3F7FF;
 
   /* brand action */
   --action-primary: #2C72DD;
   --action-primary-hover: #205CB6;
   --action-primary-active: #1B4E9C;
 
-  /* severity scale (CNAPP findings) */
-  --severity-critical: #EC6850;
-  --severity-critical-bg: #FFE6E3;
-  --severity-high: #f2583c;
-  --severity-high-bg: #FFE3DE;
-  --severity-medium: #ff8710;
-  --severity-medium-bg: #ffeade;
-  --severity-low: #f0b100;
-  --severity-low-bg: #fff8e0;
-  --severity-info: #75808E;
-  --severity-info-bg: #F2F7FC;
-  --severity-safe: #1fa062;
-  --severity-safe-bg: #e2fff4;
+  /* severity scale (CNAPP findings) — balanced ramp, red reserved for critical
+     so the console reads as a calm workbench, not an alert wall. */
+  --severity-critical: #D92D20;     /* red — truly critical only */
+  --severity-critical-bg: #FDECEA;
+  --severity-high: #DC6803;         /* orange */
+  --severity-high-bg: #FCEEDD;
+  --severity-medium: #C2820A;       /* amber */
+  --severity-medium-bg: #FBF3D8;
+  --severity-low: #4E6E8E;          /* slate-blue */
+  --severity-low-bg: #EEF2F7;
+  --severity-info: #64748B;         /* slate */
+  --severity-info-bg: #F1F5F9;
+  --severity-safe: #1F9D5E;         /* green */
+  --severity-safe-bg: #E6F7EE;
 }
 
 /* =========================================================

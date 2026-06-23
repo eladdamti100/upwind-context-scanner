@@ -10,16 +10,32 @@ function getFirstDataRow() {
   return rows[0] as HTMLElement;
 }
 
-test('clicking the first data row opens the drawer with a masked value and score breakdown', () => {
+function openFirstDetail() {
+  const eyeButton = screen.getAllByTitle('View detail')[0];
+  fireEvent.click(eyeButton);
+}
+
+function getDrawer(): HTMLElement {
+  return screen.getByRole('dialog', { name: /finding detail/i });
+}
+
+test('clicking a data row does NOT open the drawer', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   const row = getFirstDataRow();
   expect(row).not.toBeNull();
   fireEvent.click(row);
 
-  // Drawer should show a masked value (contains • or *)
-  const maskedEls = screen.getAllByText(/[•*]/);
-  expect(maskedEls.length).toBeGreaterThan(0);
+  // The drawer must stay closed — its "Score breakdown" label should be absent.
+  expect(screen.queryByText('Score breakdown')).not.toBeInTheDocument();
+});
+
+test('the eye icon opens the drawer with score breakdown and a recommended action', () => {
+  render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
+
+  openFirstDetail();
 
   // Drawer should show the "Score breakdown" section label
   expect(screen.getByText('Score breakdown')).toBeInTheDocument();
@@ -28,11 +44,29 @@ test('clicking the first data row opens the drawer with a masked value and score
   expect(screen.getByText('Rotate this secret')).toBeInTheDocument();
 });
 
+test('the detail panel never renders a secret value — not even masked', () => {
+  render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
+
+  openFirstDetail();
+
+  // No secret value of any kind in the panel: no mask glyphs (• / *), and no
+  // raw/fragment secret patterns.
+  const text = getDrawer().textContent ?? '';
+  expect(text).not.toMatch(/[•*]/);
+  expect(text).not.toMatch(/AKIA/);
+  expect(text).not.toMatch(/sk_live_/);
+  expect(text).not.toMatch(/ghp_/);
+
+  // No reveal/copy-secret controls — the only copy action is for the file path.
+  expect(screen.queryByText(/reveal|show secret|copy secret/i)).not.toBeInTheDocument();
+});
+
 test('closing the drawer hides the score breakdown', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
-  const row = getFirstDataRow();
-  fireEvent.click(row);
+  openFirstDetail();
 
   // Confirm drawer is open
   expect(screen.getByText('Score breakdown')).toBeInTheDocument();

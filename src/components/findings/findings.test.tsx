@@ -10,6 +10,7 @@ function expectedCriticalCount() {
 
 test('SummaryCards shows Critical findings label and correct count', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   expect(screen.getByText('Critical findings')).toBeInTheDocument();
   const count = expectedCriticalCount();
   const allNums = screen.getAllByText(String(count));
@@ -18,6 +19,7 @@ test('SummaryCards shows Critical findings label and correct count', () => {
 
 test('search box reflects typed value', async () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   const input = screen.getByPlaceholderText('Search findings…') as HTMLInputElement;
   fireEvent.change(input, { target: { value: 'phi' } });
   expect(input.value).toBe('phi');
@@ -25,6 +27,7 @@ test('search box reflects typed value', async () => {
 
 test('Add filters → Cloud: AWS creates chip', async () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   const addBtn = screen.getByText('Add filters');
   fireEvent.click(addBtn);
   const awsOption = await screen.findByText('Cloud: AWS');

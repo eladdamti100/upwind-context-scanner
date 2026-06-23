@@ -9,7 +9,7 @@ export type { Sensitivity, Vertical, ValidationStatus, FindingStatus, SnoozeInfo
 // ---------------------------------------------------------------------------
 
 export type Action =
-  | { type: 'SET_TAB'; tab: 'findings' | 'classifications' | 'map' }
+  | { type: 'SET_TAB'; tab: 'overview' | 'findings' | 'classifications' | 'map' }
   | { type: 'SET_SEARCH'; search: string }
   | { type: 'ADD_FILTER'; filter: Filter }
   | { type: 'REMOVE_FILTER'; index: number }
@@ -19,10 +19,13 @@ export type Action =
   | { type: 'MOVE_COL'; index: number; dir: 'up' | 'down' }
   | { type: 'RESET_COLS' }
   | { type: 'SET_RPP'; rpp: number }
+  | { type: 'SET_PAGE'; page: number }
   | { type: 'TOGGLE_MENU'; menu: string }
   | { type: 'CLOSE_MENU' }
   | { type: 'OPEN_DETAIL'; id: number }
   | { type: 'CLOSE_DETAIL' }
+  | { type: 'OPEN_ACTIONS'; id: number }
+  | { type: 'CLOSE_ACTIONS' }
   | { type: 'OPEN_RISK'; id: number }
   | { type: 'CLOSE_RISK' }
   | { type: 'OPEN_VAL_MODAL'; id: number }
@@ -49,5 +52,7 @@ export type Action =
   | { type: 'TOGGLE_RULE_PACK'; pack: 'default' | 'vertical' | 'customer' }
   | { type: 'SET_VALIDATION_ENABLED'; value: boolean }
   | { type: 'SET_SUGGESTED_RULE_STATUS'; id: string; status: 'suggested' | 'approved' | 'dismissed' }
+  | { type: 'OPEN_ADD_RULES' }
+  | { type: 'CLOSE_ADD_RULES' }
   | { type: 'SHOW_TOAST'; message: string }
   | { type: 'HIDE_TOAST' };

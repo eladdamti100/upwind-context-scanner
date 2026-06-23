@@ -29,7 +29,20 @@ export type IconName =
   | 'external-link'
   | 'map'
   | 'layers'
-  | 'leaf';
+  | 'leaf'
+  | 'chevron-right'
+  | 'chevron-left'
+  | 'rotate'
+  | 'trash'
+  | 'lock'
+  | 'flag'
+  | 'bar-chart'
+  | 'cloud'
+  | 'grid'
+  | 'user'
+  | 'credit-card'
+  | 'landmark'
+  | 'activity';
 
 const PATHS: Record<IconName, string> = {
   'search':
@@ -88,6 +101,32 @@ const PATHS: Record<IconName, string> = {
     'M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5',
   'leaf':
     'M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l6-6a8 8 0 0 0-12-10.49C4.69 3.81 3 7 3 11c0 2.12.74 4.07 1.97 5.6L2.3 19.3a1 1 0 0 0 0 1.4l.6.6a1 1 0 0 0 1.4 0l2-2zM12 18l-2-2',
+  'chevron-right':
+    'M9 18l6-6-6-6',
+  'chevron-left':
+    'M15 18l-6-6 6-6',
+  'rotate':
+    'M21 12a9 9 0 1 1-2.64-6.36M21 4v4h-4',
+  'trash':
+    'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6',
+  'lock':
+    'M5 11a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-8zM8 11V7a4 4 0 0 1 8 0v4',
+  'flag':
+    'M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7',
+  'bar-chart':
+    'M3 3v18h18M8 17v-5M13 17V8M18 17v-9',
+  'cloud':
+    'M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z',
+  'grid':
+    'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z',
+  'user':
+    'M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+  'credit-card':
+    'M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM2 10h20',
+  'landmark':
+    'M3 22h18M6 18v-7M10 18v-7M14 18v-7M18 18v-7M12 2 3 8h18z',
+  'activity':
+    'M22 12h-4l-3 9L9 3l-3 9H2',
 };
 
 export function Icon({

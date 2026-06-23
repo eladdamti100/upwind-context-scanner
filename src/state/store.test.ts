@@ -16,16 +16,16 @@ function dispatch(state: AppState, action: Action): AppState {
 // ---------------------------------------------------------------------------
 
 describe('initialState defaults', () => {
-  test('tab is "findings"', () => {
-    expect(initialState.tab).toBe('findings');
+  test('tab is "overview"', () => {
+    expect(initialState.tab).toBe('overview');
   });
 
   test('sensitivity is "balanced"', () => {
     expect(initialState.settings.sensitivity).toBe('balanced');
   });
 
-  test('rpp is 15', () => {
-    expect(initialState.rpp).toBe(15);
+  test('rpp is 10', () => {
+    expect(initialState.rpp).toBe(10);
   });
 
   test('sortKey is "risk"', () => {
@@ -127,6 +127,24 @@ test('TOGGLE_COL flips column visibility', () => {
   // Toggle back
   const next2 = dispatch(next, { type: 'TOGGLE_COL', index });
   expect(next2.cols[index].vis).toBe(false);
+});
+
+test('TOGGLE_COL is a no-op for required columns', () => {
+  const index = initialState.cols.findIndex(c => c.id === 'risk'); // Confidence Level — required
+  expect(initialState.cols[index].required).toBe(true);
+  expect(initialState.cols[index].vis).toBe(true);
+
+  const next = dispatch(initialState, { type: 'TOGGLE_COL', index });
+  expect(next.cols[index].vis).toBe(true); // stays visible
+});
+
+test('the required columns are exactly the expected set, in order, leading the defaults', () => {
+  const requiredIds = initialState.cols.filter(c => c.required).map(c => c.id);
+  expect(requiredIds).toEqual(['actions', 'risk', 'priority', 'secretType', 'classification', 'validation', 'file']);
+  // Actions leads the row, Confidence Level follows
+  expect(initialState.cols[0].id).toBe('actions');
+  expect(initialState.cols[1].id).toBe('risk');
+  expect(initialState.cols[1].label).toBe('% Confidence');
 });
 
 // ---------------------------------------------------------------------------

@@ -2,40 +2,40 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { test, expect } from 'vitest';
 import App from '../../App';
 
-test('classifications tab shows Suggested rules heading and first rule title', () => {
+function openAddRules() {
   render(<App />);
-
-  // Click the "Data classifications" tab
   fireEvent.click(screen.getByText('Data classifications'));
+  fireEvent.click(screen.getByText('Add rules'));
+}
 
-  // The "Suggested rules" heading should be visible
-  expect(screen.getByText('Suggested rules')).toBeInTheDocument();
-
-  // The first rule title should be visible
+test('Add rules modal opens with Upwind recommended rules', () => {
+  openAddRules();
+  expect(screen.getByText('Recommended by Upwind')).toBeInTheDocument();
   expect(screen.getByText('Suppress placeholder tokens in documentation')).toBeInTheDocument();
 });
 
-test('dismissing a rule hides Approve/Dismiss buttons and shows Dismissed chip', () => {
-  render(<App />);
-
-  // Click the "Data classifications" tab
-  fireEvent.click(screen.getByText('Data classifications'));
-
-  // The Approve and Dismiss buttons for rule sr-1 should be visible initially
-  // Find the Dismiss button associated with "Suppress placeholder tokens in documentation"
-  // There may be multiple Dismiss buttons (one per rule), so we get all and click the first
+test('dismissing a recommended rule shows a Dismissed chip and removes its buttons', () => {
+  openAddRules();
   const dismissButtons = screen.getAllByText('Dismiss');
   expect(dismissButtons.length).toBeGreaterThan(0);
-
-  // Click the first Dismiss button (for "Suppress placeholder tokens in documentation")
   fireEvent.click(dismissButtons[0]);
-
-  // A "Dismissed" status chip should appear
   expect(screen.getByText('Dismissed')).toBeInTheDocument();
+  expect(screen.getAllByText('Dismiss').length).toBe(dismissButtons.length - 1);
+});
 
-  // The Approve and Dismiss buttons for sr-1 should be gone
-  // (the other rules still have their buttons, so we check that sr-1's section no longer has them)
-  // After dismiss, the count of Dismiss buttons should be reduced by 1
-  const remainingDismissButtons = screen.getAllByText('Dismiss');
-  expect(remainingDismissButtons.length).toBe(dismissButtons.length - 1);
+test('Create custom rule tab exposes manual and natural-language modes', () => {
+  openAddRules();
+  fireEvent.click(screen.getByText('Create custom rule'));
+  expect(screen.getByText('Manual form')).toBeInTheDocument();
+  expect(screen.getByText('Natural language')).toBeInTheDocument();
+});
+
+test('natural-language builder produces a mocked draft preview', () => {
+  openAddRules();
+  fireEvent.click(screen.getByText('Create custom rule'));
+  fireEvent.click(screen.getByText('Natural language'));
+  const textarea = screen.getByPlaceholderText(/Downgrade API-key/i);
+  fireEvent.change(textarea, { target: { value: 'Suppress example tokens in README documentation' } });
+  fireEvent.click(screen.getByText('Generate rule'));
+  expect(screen.getByText('Rule preview')).toBeInTheDocument();
 });

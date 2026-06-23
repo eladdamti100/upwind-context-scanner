@@ -6,6 +6,7 @@ import App from '../../App';
 
 test('clicking "Why this score?" button opens the risk breakdown modal', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   // Find the first "Why this score?" info button (one per risk cell row)
   const infoButtons = screen.getAllByRole('button', { name: 'Why this score?' });
@@ -23,6 +24,7 @@ test('clicking "Why this score?" button opens the risk breakdown modal', () => {
 
 test('risk breakdown modal shows authenticity score label', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   const infoButtons = screen.getAllByRole('button', { name: 'Why this score?' });
   fireEvent.click(infoButtons[0]);
@@ -32,6 +34,7 @@ test('risk breakdown modal shows authenticity score label', () => {
 
 test('closing the risk breakdown modal via backdrop click hides it', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   const infoButtons = screen.getAllByRole('button', { name: 'Why this score?' });
   fireEvent.click(infoButtons[0]);

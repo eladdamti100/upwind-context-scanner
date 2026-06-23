@@ -1,5 +1,44 @@
+import type { CSSProperties } from 'react';
 import { Icon } from '../common/Icon';
 import { useStore } from '../../state/StoreContext';
+
+/** Inline SVG: concentric broadcast arcs radiating from a center dot with a short downward stem */
+function SignalGlyph() {
+  return (
+    <svg
+      width={15}
+      height={15}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#ffffff"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {/* Center dot */}
+      <circle cx="12" cy="10" r="1.5" fill="#ffffff" stroke="none" />
+      {/* Inner arc */}
+      <path d="M9 7.5a4.24 4.24 0 0 1 6 0" />
+      {/* Outer arc */}
+      <path d="M6 4.5a8.49 8.49 0 0 1 12 0" />
+      {/* Downward stem */}
+      <line x1="12" y1="11.5" x2="12" y2="16" />
+    </svg>
+  );
+}
+
+const iconBtnStyle: CSSProperties = {
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  color: 'var(--text-tertiary)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 6,
+  borderRadius: 6,
+};
 
 export function TopBar() {
   const { dispatch } = useStore();
@@ -7,23 +46,24 @@ export function TopBar() {
   return (
     <div
       style={{
-        height: 58,
+        height: 52,
         borderBottom: '1px solid var(--border-subtle)',
         background: 'var(--surface)',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        padding: '0 32px',
-        gap: 18,
+        justifyContent: 'space-between',
+        padding: '0 20px',
+        gap: 16,
         flexShrink: 0,
       }}
     >
       {/* Brand */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
         <div
           style={{
-            width: 30,
-            height: 30,
+            width: 28,
+            height: 28,
             borderRadius: 8,
             background: 'linear-gradient(135deg,#2C72DD,#553BF1)',
             display: 'flex',
@@ -32,11 +72,11 @@ export function TopBar() {
             flexShrink: 0,
           }}
         >
-          <Icon name="shield" size={16} stroke="#ffffff" />
+          <SignalGlyph />
         </div>
         <span
           style={{
-            fontSize: 18,
+            fontSize: 15,
             fontWeight: 600,
             letterSpacing: '-0.02em',
             color: 'var(--text-primary)',
@@ -48,174 +88,80 @@ export function TopBar() {
         </span>
       </div>
 
-      {/* Divider after brand */}
-      <div
-        style={{
-          width: 1,
-          height: 24,
-          background: 'var(--border-subtle)',
-          flexShrink: 0,
-        }}
-      />
-
-      {/* Global scope selector */}
-      <button
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          color: 'var(--text-secondary)',
-          fontFamily: 'var(--font-default-family)',
-          fontSize: 13,
-          padding: '4px 6px',
-          borderRadius: 6,
-        }}
-      >
-        <Icon name="globe" size={15} />
-        <span>Global scope</span>
-        <Icon name="chevron-down" size={14} />
-      </button>
-
-      {/* Search box */}
-      <div
-        style={{
-          width: 240,
-          height: 32,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          border: '1px solid var(--border-subtle)',
-          borderRadius: 6,
-          padding: '0 10px',
-          background: 'var(--surface)',
-          color: 'var(--text-secondary)',
-          flexShrink: 0,
-        }}
-      >
-        <Icon name="search" size={14} />
-        <span
-          style={{
-            flex: 1,
-            fontSize: 13,
-            fontFamily: 'var(--font-default-family)',
-            color: 'var(--text-tertiary)',
-          }}
-        >
-          Search
-        </span>
-        <span
-          style={{
-            fontSize: 11,
-            fontFamily: 'var(--font-mono-family)',
-            color: 'var(--text-tertiary)',
-            background: 'var(--border-subtle)',
-            borderRadius: 4,
-            padding: '1px 5px',
-          }}
-        >
-          ⌘K
-        </span>
-      </div>
-
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
-
-      {/* Icons row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-        <button
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-tertiary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 6,
-            borderRadius: 6,
-          }}
-          aria-label="Notifications"
-        >
-          <Icon name="bell" size={17} />
-        </button>
-        <button
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-tertiary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 6,
-            borderRadius: 6,
-          }}
-          aria-label="New"
-        >
-          <Icon name="plus" size={17} />
-        </button>
+      {/* Right cluster: settings + profile */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
         <button
           title="Settings"
           onClick={() => dispatch({ type: 'OPEN_SETTINGS' })}
+          style={iconBtnStyle}
+          aria-label="Settings"
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--interactive-hover)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+        >
+          <Icon name="settings" size={19} />
+        </button>
+
+        {/* Profile chip */}
+        <button
+          type="button"
+          aria-label="Account"
           style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-tertiary)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            padding: 6,
-            borderRadius: 6,
+            gap: 10,
+            padding: '4px 10px 4px 4px',
+            borderRadius: 999,
+            border: '1px solid var(--border-subtle)',
+            background: 'transparent',
+            cursor: 'pointer',
           }}
-          aria-label="Settings"
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--interactive-hover)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         >
-          <Icon name="settings" size={17} />
+          <div
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: '50%',
+              background: 'var(--uw-primary-02)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 13,
+              fontWeight: 600,
+              color: '#ffffff',
+              flexShrink: 0,
+              userSelect: 'none',
+            }}
+          >
+            AM
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, textAlign: 'left' }}>
+            <span
+              style={{
+                fontSize: 13.5,
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-default-family)',
+                lineHeight: 1,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Alex Morgan
+            </span>
+            <span
+              style={{
+                fontSize: 11.5,
+                color: 'var(--text-tertiary)',
+                fontFamily: 'var(--font-default-family)',
+                lineHeight: 1,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Security Engineer
+            </span>
+          </div>
         </button>
-      </div>
-
-      {/* Org switcher chip */}
-      <button
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          background: 'none',
-          border: '1px solid var(--border-subtle)',
-          cursor: 'pointer',
-          color: 'var(--text-secondary)',
-          fontFamily: 'var(--font-default-family)',
-          fontSize: 13,
-          padding: '4px 10px',
-          borderRadius: 6,
-          whiteSpace: 'nowrap',
-        }}
-      >
-        <span>Acme Cloud</span>
-        <Icon name="chevron-down" size={13} />
-      </button>
-
-      {/* Avatar */}
-      <div
-        style={{
-          width: 30,
-          height: 30,
-          borderRadius: '50%',
-          background: '#0BC5C5',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 13,
-          fontWeight: 600,
-          color: '#ffffff',
-          flexShrink: 0,
-          userSelect: 'none',
-        }}
-      >
-        E
       </div>
     </div>
   );
