@@ -1,16 +1,18 @@
 /**
  * masking.test.tsx — Security backstop
  *
- * Product rule: full secrets MUST NEVER be displayed in the UI.
- * Only masked values (containing the bullet "•" glyph or asterisk "*") may be shown.
+ * Product rule: secret values MUST NEVER be displayed in the UI — not raw,
+ * not masked, not as prefix/suffix fragments. Only safe metadata is shown.
  *
  * This test renders the full App, navigates through every major view that
- * displays secret-related content, captures the rendered text from each
- * view, then asserts:
+ * displays finding content, captures the rendered text from each view, then
+ * asserts:
  *
  *   A) No raw secret patterns appear anywhere in the collected text.
- *   B) A masking glyph (• or *) IS present, proving the test actually
- *      inspected real rendered content rather than an empty page.
+ *   B) Real content was captured (landmarks present), not an empty page.
+ *
+ * It additionally enforces the stricter rule on the detail panel: that panel
+ * must contain no mask glyph (• / *) and no raw/fragment secret patterns.
  *
  * Raw secret patterns checked:
  *   /AKIA[A-Z0-9]{16}/              — AWS access key ID
@@ -55,6 +57,16 @@ test('no raw secrets are ever rendered — only masked values', async () => {
   await screen.findByText('Score breakdown');
   textSnapshots.push(document.body.textContent ?? '');
 
+  // Stricter rule for the detail panel: it must not render the secret in ANY
+  // form — no mask glyphs (• / *) and no raw/fragment secret patterns.
+  const drawerText = screen
+    .getByRole('dialog', { name: /finding detail/i })
+    .textContent ?? '';
+  expect(drawerText).not.toMatch(/[•*]/);
+  for (const pattern of RAW_SECRET_PATTERNS) {
+    expect(drawerText).not.toMatch(pattern);
+  }
+
   // Close the drawer before navigating.
   fireEvent.click(screen.getByRole('button', { name: 'Close detail' }));
 
@@ -85,8 +97,9 @@ test('no raw secrets are ever rendered — only masked values', async () => {
   // Concatenate all snapshots into one big string for a single scan.
   const allText = textSnapshots.join('\n');
 
-  // B) A masking glyph MUST be present — proves we captured real masked content.
-  expect(allText).toMatch(/[•*]/);
+  // B) Sanity-check that we captured real rendered content (not an empty page).
+  expect(allText).toMatch(/Score breakdown/);
+  expect(allText).toMatch(/Remediation priority/);
 
   // A) None of the raw-secret patterns should match anywhere.
   for (const pattern of RAW_SECRET_PATTERNS) {

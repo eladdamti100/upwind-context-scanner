@@ -47,9 +47,9 @@ test('demo flow: findings → drawer → settings → exposure map', async () =>
   // Drawer: "Score breakdown" section header
   expect(await screen.findByText('Score breakdown')).toBeInTheDocument();
 
-  // Drawer: a masked value is displayed (contains • or *)
-  const maskedEls = screen.getAllByText(/[•*]/);
-  expect(maskedEls.length).toBeGreaterThan(0);
+  // Drawer must NOT display any secret value — not even masked (no • / *).
+  const drawer = screen.getByRole('dialog', { name: /finding detail/i });
+  expect(drawer.textContent ?? '').not.toMatch(/[•*]/);
 
   // Close the drawer via its close button (aria-label="Close detail")
   fireEvent.click(screen.getByRole('button', { name: 'Close detail' }));
