@@ -471,8 +471,8 @@ export function FindingsTable() {
 
   // Shared TD style
   const tdStyle: React.CSSProperties = {
-    padding: '0 12px',
-    height: 44,
+    padding: '0 14px',
+    height: 42,
     borderBottom: '1px solid var(--border-subtle)',
     fontSize: 13,
     color: 'var(--text-primary)',
@@ -534,17 +534,17 @@ export function FindingsTable() {
                       key={col.id}
                       onClick={sortable ? () => handleHeaderClick(col.id) : undefined}
                       style={{
-                        padding: '0 12px',
-                        height: 34,
+                        padding: '0 14px',
+                        height: 36,
                         textAlign: col.id === 'risk' ? 'center' : 'left',
                         fontSize: 11,
                         fontWeight: 600,
                         textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
+                        letterSpacing: '0.05em',
                         color: isActive
                           ? 'var(--text-primary)'
                           : 'var(--text-secondary)',
-                        borderBottom: '1px solid var(--border-subtle)',
+                        borderBottom: '1px solid var(--border-primary)',
                         whiteSpace: 'nowrap',
                         cursor: sortable ? 'pointer' : 'default',
                         userSelect: 'none',
@@ -579,19 +579,22 @@ export function FindingsTable() {
                 const currentVal = curVal(f);
                 const vs = valStyle(currentVal);
                 const isValidating = state.validatingId === f.id;
+                const isSelected = state.selectedId === f.id;
+                const restBg = isSelected ? 'var(--row-selected-bg)' : 'transparent';
 
                 return (
                   <tr
                     key={f.id}
                     style={{
                       opacity: eff === 'suppressed' ? 0.55 : 1,
+                      background: restBg,
                     }}
                     onMouseEnter={e => {
                       (e.currentTarget as HTMLElement).style.background =
                         'var(--interactive-hover)';
                     }}
                     onMouseLeave={e => {
-                      (e.currentTarget as HTMLElement).style.background = 'transparent';
+                      (e.currentTarget as HTMLElement).style.background = restBg;
                     }}
                   >
                     {visCols.map((col, colIdx) => {

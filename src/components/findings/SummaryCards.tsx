@@ -44,12 +44,13 @@ function Card({ label, value, valueColor, helper, iconName, tileBg, iconStroke }
       </div>
 
       {/* Text stack */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
         <span
           style={{
-            fontSize: 24,
+            fontSize: 26,
             fontWeight: 700,
             lineHeight: 1,
+            letterSpacing: '-0.02em',
             color: valueColor,
           }}
         >
@@ -58,8 +59,8 @@ function Card({ label, value, valueColor, helper, iconName, tileBg, iconStroke }
         <span
           style={{
             fontSize: 12,
-            fontWeight: 500,
-            color: 'var(--text-secondary)',
+            fontWeight: 600,
+            color: 'var(--text-primary)',
             lineHeight: 1.3,
           }}
         >
@@ -106,7 +107,7 @@ export function SummaryCards() {
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
         gap: 12,
-        marginBottom: 16,
+        marginBottom: 12,
       }}
     >
       <Card

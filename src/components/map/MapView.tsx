@@ -6,7 +6,7 @@ import { AssetPanel } from './AssetPanel';
 
 export function MapView() {
   return (
-    <div data-testid="map-view" style={{ padding: '20px 32px 64px' }}>
+    <div data-testid="map-view" style={{ padding: '12px 24px 48px' }}>
       <p
         style={{
           margin: '0 0 14px',

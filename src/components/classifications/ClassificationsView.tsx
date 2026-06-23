@@ -9,7 +9,7 @@ export function ClassificationsView() {
   const { dispatch } = useStore();
 
   return (
-    <div data-testid="classifications-view" style={{ padding: '18px 32px 60px' }}>
+    <div data-testid="classifications-view" style={{ padding: '12px 24px 48px' }}>
       {/* Header row: title + Add rules entry point */}
       <div
         style={{

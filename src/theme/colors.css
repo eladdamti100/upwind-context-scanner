@@ -80,28 +80,29 @@
   /* surfaces / backgrounds */
   --bg-primary: #ffffff;
   --bg-secondary: #F8FAFC;
-  --bg-tertiary: #F2F7FC;
+  --bg-tertiary: #EEF2F7;
   --surface: #ffffff;
   --surface-card: #ffffff;
   --surface-elevated: #ffffff;
 
-  /* borders */
-  --border-primary: #D5DCE5;
-  --border-subtle: #E5EAF0;
+  /* borders — subtle but deliberate */
+  --border-primary: #CBD5E1;
+  --border-subtle: #E2E8F0;
 
-  /* text */
-  --text-primary: #18202D;
-  --text-secondary: #75808E;
+  /* text — sharper slate hierarchy */
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
   --text-tertiary: #94A3B8;
   --text-disabled: #94A3B8;
   --text-inverse: #ffffff;
   --text-link: #2C72DD;
 
   /* interactive states */
-  --interactive-hover: #F2F7FC;
-  --interactive-double-hover: rgba(216, 223, 233, 0.4);
-  --interactive-active: #D8DFE9;
-  --side-pane-mask: #75808E;
+  --interactive-hover: #F1F5F9;
+  --interactive-double-hover: rgba(203, 213, 225, 0.4);
+  --interactive-active: #E2E8F0;
+  --side-pane-mask: #64748B;
+  --row-selected-bg: #F3F7FF;
 
   /* brand action */
   --action-primary: #2C72DD;
@@ -118,8 +119,8 @@
   --severity-medium-bg: #FBF3D8;
   --severity-low: #4E6E8E;          /* slate-blue */
   --severity-low-bg: #EEF2F7;
-  --severity-info: #75808E;         /* slate */
-  --severity-info-bg: #F2F7FC;
+  --severity-info: #64748B;         /* slate */
+  --severity-info-bg: #F1F5F9;
   --severity-safe: #1F9D5E;         /* green */
   --severity-safe-bg: #E6F7EE;
 }

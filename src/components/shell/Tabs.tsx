@@ -30,17 +30,18 @@ export function Tabs() {
             style={{
               background: isActive ? 'var(--surface-elevated)' : 'transparent',
               border: isActive ? '1px solid var(--border-primary)' : '1px solid transparent',
+              boxShadow: isActive ? 'var(--shadow-sm)' : 'none',
               cursor: 'pointer',
               height: 32,
-              padding: '0 14px',
+              padding: '0 13px',
               fontSize: 13,
-              fontWeight: isActive ? 600 : 400,
+              fontWeight: isActive ? 600 : 500,
               color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
               fontFamily: 'var(--font-default-family)',
               borderRadius: 8,
               display: 'flex',
               alignItems: 'center',
-              gap: 6,
+              gap: 7,
               whiteSpace: 'nowrap',
               letterSpacing: '-0.01em',
             }}
@@ -55,7 +56,11 @@ export function Tabs() {
               }
             }}
           >
-            <Icon name={icon} size={13} />
+            <Icon
+              name={icon}
+              size={13}
+              stroke={isActive ? 'var(--action-primary)' : 'var(--text-tertiary)'}
+            />
             {label}
           </button>
         );

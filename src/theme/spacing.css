@@ -18,11 +18,11 @@
   --radius-circle: 50%;
 
   /* ---------- shadows ---------- */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-card: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
-  --menu-shadow: 0px 2px 8px 0px rgba(52, 64, 84, 0.2);
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 10px -2px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 28px -6px rgba(15, 23, 42, 0.16);
+  --shadow-card: 0 1px 2px 0 rgba(15, 23, 42, 0.06);
+  --menu-shadow: 0px 6px 18px -4px rgba(15, 23, 42, 0.14);
 
   /* ---------- signature gradient (hero / marketing only) ---------- */
   --upwind-theme-gradient: linear-gradient(94deg, #F2583C -1.2%, #9214C4 52.79%, #1E71ED 98.47%);
