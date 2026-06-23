@@ -3,8 +3,8 @@
 // existing finding data. SECURITY: shows only safe metadata — never a secret
 // value (raw, masked, or fragment).
 
-import React from 'react';
-import { FINDINGS, CLASSIFICATIONS } from '../../data';
+import React, { useMemo } from 'react';
+import { FINDINGS, CLASSIFICATIONS, SUGGESTED_RULES as SUGGESTED_RULES_DATA } from '../../data';
 import { effPriority } from '../../lib/priority';
 import { valStyle, envStyle } from '../../lib/classify';
 import { useStore } from '../../state/StoreContext';
@@ -14,72 +14,23 @@ import type { IconName } from '../common/Icon';
 import { CircularScore } from '../common/CircularScore';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { CloudBadge } from '../common/CloudBadge';
+import type { ValidationStatus, Sensitivity } from '../../types';
 
-// Curated landing-dashboard metrics (isolated Overview demo values; the
-// findings table reflects the real dataset). Keeps the headline narrative
-// coherent: 24 active credentials surfaced from 345 raw regex candidates.
-const HERO_ACTIVE = 24;
-const KPIS: { label: string; value: string; helper: string; icon: IconName; tileBg: string; iconColor: string }[] = [
-  { label: 'Active credentials', value: '24', helper: 'Confirmed live credentials', icon: 'shield', tileBg: 'var(--severity-safe-bg)', iconColor: 'var(--severity-safe)' },
-  { label: 'High priority findings', value: '18', helper: 'Need immediate attention', icon: 'alert-triangle', tileBg: 'var(--severity-critical-bg)', iconColor: 'var(--severity-critical)' },
-  { label: 'Publicly exposed assets', value: '188', helper: 'Public or internet-facing', icon: 'globe', tileBg: 'var(--uw-cyan-06, var(--severity-info-bg))', iconColor: 'var(--uw-cyan-02)' },
-  { label: 'Noise reduced', value: '1,248', helper: 'Downgraded or suppressed', icon: 'bar-chart', tileBg: 'var(--uw-royal-purple-06)', iconColor: 'var(--uw-royal-purple-02)' },
-];
+// All headline metrics are DERIVED from the live backend FINDINGS at render time
+// (see deriveStats below) — no hardcoded demo values. Only static presentation
+// metadata (titles / icons / colors) lives here.
 
-const EXPOSURE_BREAKDOWN: { label: string; count: number; color: string }[] = [
-  { label: 'Static exposed secrets', count: 14, color: 'var(--action-primary)' },
-  { label: 'Dynamic exposed secrets', count: 6, color: 'var(--uw-metal-blue-02)' },
-  { label: 'Shared with external AI service', count: 4, color: 'var(--uw-royal-purple-02)' },
-];
-const RISK_BY_CLOUD: { provider: string; count: number }[] = [
-  { provider: 'AWS', count: 18 },
-  { provider: 'Azure', count: 4 },
-  { provider: 'GCP', count: 2 },
-];
-const SUGGESTED_RULES = [
-  'Detect Azure Storage Account Keys in configuration files',
-  'Flag secrets in container images and build artifacts',
-  'Identify API tokens sent to external domains',
-];
-const SCAN_ANALYZED = 223;
-const NOISE_REDUCED = 1248;
-
-// Funnel: regex candidates → context filtering → noise removed → surfaced risk.
-const FUNNEL_STAGES: { value: number; title: string; desc: string; icon: IconName; accent: string; tint: string }[] = [
-  {
-    value: 345,
-    title: 'Raw regex candidates',
-    desc: 'Broad pattern matches across repos and assets. Includes docs, tests, and placeholders.',
-    icon: 'search',
-    accent: 'var(--action-primary)',
-    tint: 'var(--uw-blue-06)',
-  },
-  {
-    value: 221,
-    title: 'Context-aware filtering',
-    desc: 'Smart context analysis applied across identities, paths, file types, and context checks.',
-    icon: 'filter',
-    accent: 'var(--uw-cyan-02)',
-    tint: 'var(--uw-cyan-06, var(--severity-info-bg))',
-  },
-  {
-    value: 124,
-    title: 'Noise / false positives reduced',
-    desc: 'Filtered out documentation placeholders, test paths, dev keys, and synthetic values.',
-    icon: 'alert-triangle',
-    accent: 'var(--severity-medium)',
-    tint: 'var(--severity-medium-bg)',
-  },
-  {
-    value: 24,
-    title: 'High-value surfaced findings',
-    desc: 'Validated active credentials requiring immediate attention.',
-    icon: 'shield',
-    accent: 'var(--severity-safe)',
-    tint: 'var(--severity-safe-bg)',
-  },
+// Funnel stage presentation (values injected from live stats at render).
+const FUNNEL_META: { key: 'raw' | 'surfaced' | 'noise' | 'highValue'; title: string; desc: string; icon: IconName; accent: string; tint: string }[] = [
+  { key: 'raw', title: 'Raw regex candidates', desc: 'Broad pattern matches across repos and assets. Includes docs, tests, and placeholders.', icon: 'search', accent: 'var(--action-primary)', tint: 'var(--uw-blue-06)' },
+  { key: 'surfaced', title: 'Context-aware surfaced', desc: 'Smart context analysis (rules + tree model + spatial) kept these as real risk.', icon: 'filter', accent: 'var(--uw-cyan-02)', tint: 'var(--uw-cyan-06, var(--severity-info-bg))' },
+  { key: 'noise', title: 'Noise / false positives reduced', desc: 'Filtered out documentation placeholders, test paths, dev keys, and synthetic values.', icon: 'alert-triangle', accent: 'var(--severity-medium)', tint: 'var(--severity-medium-bg)' },
+  { key: 'highValue', title: 'Active credentials', desc: 'Validated, live credentials requiring immediate attention.', icon: 'shield', accent: 'var(--severity-safe)', tint: 'var(--severity-safe-bg)' },
 ];
 const BENEFITS = ['Fewer false positives', 'Faster triage', 'Better signal-to-noise', 'Focus on real risk'];
+
+// Suggested rules shown on the overview — derived from the shared dataset.
+const SUGGESTED_RULES = SUGGESTED_RULES_DATA.map(r => r.title);
 
 // Shared grid template for the "Needs attention now" table (header + rows).
 const NA_COLS = '52px minmax(0, 1fr) 78px 130px 168px 138px 96px';
@@ -178,7 +129,9 @@ function HeaderCell({ children, align = 'left' }: { children: React.ReactNode; a
 // Funnel
 // ---------------------------------------------------------------------------
 
-function FunnelStage({ stage, first, last }: { stage: (typeof FUNNEL_STAGES)[number]; first: boolean; last: boolean }) {
+interface FunnelStageView { value: number; title: string; desc: string; icon: IconName; accent: string; tint: string }
+
+function FunnelStage({ stage, first, last }: { stage: FunnelStageView; first: boolean; last: boolean }) {
   const clip = first
     ? 'polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%)'
     : last
@@ -220,7 +173,7 @@ function FunnelStage({ stage, first, last }: { stage: (typeof FUNNEL_STAGES)[num
   );
 }
 
-function FunnelCard() {
+function FunnelCard({ stages }: { stages: FunnelStageView[] }) {
   return (
     <Card style={{ gridArea: 'bottom', padding: '18px 20px' }}>
       <CardTitle>How SignalLens reduces noise to surface real risk</CardTitle>
@@ -231,10 +184,10 @@ function FunnelCard() {
 
       {/* Funnel stages with arrow connectors */}
       <div style={{ display: 'flex', alignItems: 'stretch' }}>
-        {FUNNEL_STAGES.map((s, i) => (
+        {stages.map((s, i) => (
           <React.Fragment key={s.title}>
-            <FunnelStage stage={s} first={i === 0} last={i === FUNNEL_STAGES.length - 1} />
-            {i < FUNNEL_STAGES.length - 1 && (
+            <FunnelStage stage={s} first={i === 0} last={i === stages.length - 1} />
+            {i < stages.length - 1 && (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, flexShrink: 0 }}>
                 <Icon name="chevron-right" size={18} stroke="var(--text-tertiary)" />
               </div>
@@ -275,6 +228,46 @@ function FunnelCard() {
 }
 
 // ---------------------------------------------------------------------------
+// Backend-derived metrics (no mock numbers — everything from live FINDINGS)
+// ---------------------------------------------------------------------------
+// "Surfaced" = the backend predicts a real secret (authenticityScore >= 50, the
+// same cutoff the evaluator uses). "Noise reduced" = everything it filtered out.
+const SURFACED_CUTOFF = 50;
+
+function deriveStats(validations: Record<number, ValidationStatus>, sensitivity: Sensitivity) {
+  const total = FINDINGS.length;
+  const surfacedList = FINDINGS.filter(f => f.scores.authenticityScore >= SURFACED_CUTOFF);
+  const surfaced = surfacedList.length;
+  const noiseReduced = total - surfaced;
+  const valOf = (f: typeof FINDINGS[number]) => validations[f.id] ?? f.validation;
+  const activeCreds = FINDINGS.filter(f => valOf(f) === 'validated-active').length;
+  const highPriority = FINDINGS.filter(f => {
+    const p = effPriority(f, sensitivity);
+    return p === 'critical' || p === 'high';
+  }).length;
+  const isPublic = (f: typeof FINDINGS[number]) => f.exposure === 'Public' || f.exposure === 'Internet-facing';
+  const publicExposed = surfacedList.filter(isPublic).length;
+
+  // exposure breakdown over surfaced findings
+  const exposure = { pub: 0, internal: 0, restricted: 0 };
+  for (const f of surfacedList) {
+    if (isPublic(f)) exposure.pub++;
+    else if (f.exposure === 'Internal') exposure.internal++;
+    else exposure.restricted++;
+  }
+
+  // risk by cloud over surfaced findings (top 3 providers actually present)
+  const cloudCounts: Record<string, number> = {};
+  for (const f of surfacedList) cloudCounts[f.cloud] = (cloudCounts[f.cloud] ?? 0) + 1;
+  const byCloud = Object.entries(cloudCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([provider, count]) => ({ provider, count }));
+
+  return { total, surfaced, noiseReduced, activeCreds, highPriority, publicExposed, exposure, byCloud };
+}
+
+// ---------------------------------------------------------------------------
 // Main view
 // ---------------------------------------------------------------------------
 
@@ -282,6 +275,24 @@ export function OverviewView() {
   const { state, dispatch } = useStore();
   const sensitivity = state.settings.sensitivity;
   const go = (tab: TabKey) => dispatch({ type: 'SET_TAB', tab });
+
+  const stats = useMemo(() => deriveStats(state.validations, sensitivity), [state.validations, sensitivity]);
+
+  const kpis: { label: string; value: string; helper: string; icon: IconName; tileBg: string; iconColor: string }[] = [
+    { label: 'Active credentials', value: String(stats.activeCreds), helper: 'Confirmed live credentials', icon: 'shield', tileBg: 'var(--severity-safe-bg)', iconColor: 'var(--severity-safe)' },
+    { label: 'High priority findings', value: String(stats.highPriority), helper: 'Need immediate attention', icon: 'alert-triangle', tileBg: 'var(--severity-critical-bg)', iconColor: 'var(--severity-critical)' },
+    { label: 'Publicly exposed', value: String(stats.publicExposed), helper: 'Surfaced on public / internet-facing', icon: 'globe', tileBg: 'var(--uw-cyan-06, var(--severity-info-bg))', iconColor: 'var(--uw-cyan-02)' },
+    { label: 'Noise reduced', value: stats.noiseReduced.toLocaleString(), helper: 'Downgraded or suppressed', icon: 'bar-chart', tileBg: 'var(--uw-royal-purple-06)', iconColor: 'var(--uw-royal-purple-02)' },
+  ];
+  const exposureBreakdown = [
+    { label: 'Public / internet-facing', count: stats.exposure.pub, color: 'var(--action-primary)' },
+    { label: 'Internal', count: stats.exposure.internal, color: 'var(--uw-metal-blue-02)' },
+    { label: 'Restricted / dev-test', count: stats.exposure.restricted, color: 'var(--uw-royal-purple-02)' },
+  ];
+  const funnelValues: Record<(typeof FUNNEL_META)[number]['key'], number> = {
+    raw: stats.total, surfaced: stats.surfaced, noise: stats.noiseReduced, highValue: stats.activeCreds,
+  };
+  const funnelStages: FunnelStageView[] = FUNNEL_META.map(m => ({ ...m, value: funnelValues[m.key] }));
 
   const topFindings = [...FINDINGS]
     .sort((a, b) => b.scores.remediationPriority - a.scores.remediationPriority)
@@ -316,7 +327,7 @@ export function OverviewView() {
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
-            {HERO_ACTIVE} active credentials are exposed across public or internet-facing assets
+            {stats.activeCreds} active credentials are exposed across public or internet-facing assets
           </div>
           <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 3 }}>
             SignalLens prioritized what needs attention first and reduced noisy findings.
@@ -347,7 +358,7 @@ export function OverviewView() {
 
       {/* ── 2. KPI cards ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
-        {KPIS.map(k => (
+        {kpis.map(k => (
           <Card key={k.label} style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
             <span
               style={{
@@ -477,8 +488,8 @@ export function OverviewView() {
           <Card style={{ padding: '16px 18px' }}>
             <CardTitle>Exposure breakdown</CardTitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 14 }}>
-              {EXPOSURE_BREAKDOWN.map(row => {
-                const max = Math.max(...EXPOSURE_BREAKDOWN.map(r => r.count));
+              {exposureBreakdown.map(row => {
+                const max = Math.max(...exposureBreakdown.map(r => r.count));
                 return (
                   <div key={row.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, color: 'var(--text-secondary)' }}>{row.label}</span>
@@ -498,7 +509,7 @@ export function OverviewView() {
           <Card style={{ padding: '16px 18px' }}>
             <CardTitle>Risk by cloud</CardTitle>
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: 16 }}>
-              {RISK_BY_CLOUD.map(c => (
+              {stats.byCloud.map(c => (
                 <div key={c.provider} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
                   <CloudBadge provider={c.provider} size={38} />
                   <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>{c.count}</span>
@@ -546,9 +557,9 @@ export function OverviewView() {
             <CardTitle>Recent scan summary</CardTitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 12 }}>
               {([
-                ['Findings analyzed', SCAN_ANALYZED.toLocaleString()],
+                ['Findings analyzed', stats.total.toLocaleString()],
                 ['Classifications', String(CLASSIFICATIONS.length)],
-                ['Noise reduced', NOISE_REDUCED.toLocaleString()],
+                ['Noise reduced', stats.noiseReduced.toLocaleString()],
               ] as [string, string][]).map(([label, value]) => (
                 <div key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
                   <span style={{ fontSize: 12.5, color: 'var(--text-secondary)' }}>{label}</span>
@@ -563,7 +574,7 @@ export function OverviewView() {
         </div>
 
         {/* ── Funnel card (lower-left, spans the main column) ── */}
-        <FunnelCard />
+        <FunnelCard stages={funnelStages} />
       </div>
     </div>
   );
