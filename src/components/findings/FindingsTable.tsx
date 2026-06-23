@@ -18,6 +18,7 @@ import { Icon } from '../common/Icon';
 import { Avatar } from '../common/Avatar';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { Popover } from '../common/Popover';
+import type { Finding } from '../../types';
 
 // ---------------------------------------------------------------------------
 // Small shared helpers
@@ -88,6 +89,83 @@ function IconBtn({
 // ---------------------------------------------------------------------------
 // Sort options
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Row actions menu (three-dot)
+// ---------------------------------------------------------------------------
+
+function RowMenuItem({
+  label,
+  onClick,
+  disabled,
+}: {
+  label: string;
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      disabled={disabled}
+      onClick={e => {
+        e.stopPropagation();
+        if (!disabled && onClick) onClick();
+      }}
+      onMouseEnter={e => {
+        if (!disabled) e.currentTarget.style.background = 'var(--interactive-hover)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.background = 'transparent';
+      }}
+      style={{
+        display: 'block',
+        width: '100%',
+        textAlign: 'left',
+        padding: '7px 10px',
+        border: 'none',
+        background: 'transparent',
+        color: disabled ? 'var(--text-disabled)' : 'var(--text-primary)',
+        fontSize: 13,
+        cursor: disabled ? 'default' : 'pointer',
+        borderRadius: 5,
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function RowActionsMenu({ finding, canValidate }: { finding: Finding; canValidate: boolean }) {
+  const { state, dispatch } = useStore();
+  const open = state.menu === 'row-' + finding.id;
+  const close = () => dispatch({ type: 'CLOSE_MENU' });
+
+  return (
+    <Popover open={open} onClose={close} style={{ top: 28, right: 0, minWidth: 196 }}>
+      <div style={{ padding: '4px 2px' }} onClick={e => e.stopPropagation()}>
+        <RowMenuItem label="Open details" onClick={() => { dispatch({ type: 'OPEN_DETAIL', id: finding.id }); close(); }} />
+        {canValidate ? (
+          <RowMenuItem label="Run validation" onClick={() => { dispatch({ type: 'OPEN_VAL_MODAL', id: finding.id }); close(); }} />
+        ) : (
+          <RowMenuItem label="Run validation (unavailable)" disabled />
+        )}
+        <RowMenuItem label="Change lifecycle status" onClick={() => { dispatch({ type: 'OPEN_LIFECYCLE', id: finding.id }); close(); }} />
+        <RowMenuItem label="Snooze finding" onClick={() => { dispatch({ type: 'OPEN_LIFECYCLE', id: finding.id }); close(); }} />
+        <RowMenuItem label="Assign owner" onClick={() => { dispatch({ type: 'SHOW_TOAST', message: 'Owner assignment is mocked in this demo' }); close(); }} />
+        <RowMenuItem label="Copy file path" onClick={() => {
+          try { navigator.clipboard?.writeText?.(finding.path); } catch { /* clipboard unavailable */ }
+          dispatch({ type: 'SHOW_TOAST', message: 'File path copied' });
+          close();
+        }} />
+      </div>
+    </Popover>
+  );
+}
+
+// Header info tooltips (shown via the native title attribute on a small info icon).
+const CONFIDENCE_TOOLTIP =
+  'Confidence Level estimates how likely this finding is to be a real secret or sensitive data, based on regex confidence, context features, deterministic rules, and the model signal.';
+const PRIORITY_TOOLTIP =
+  'Remediation Priority indicates how urgently this finding should be handled, based on confidence, access, exposure, secret type severity, and activity.';
 
 const SORT_OPTIONS: { key: string; label: string }[] = [
   { key: 'risk', label: 'Risk score' },
@@ -216,15 +294,47 @@ function TableToolbar({
                     borderRadius: 5,
                   }}
                 >
-                  {/* Checkbox */}
+                  {/* Checkbox — required columns are checked and disabled */}
                   <input
                     type="checkbox"
                     checked={col.vis}
+                    disabled={col.required}
                     onChange={() => dispatch({ type: 'TOGGLE_COL', index: idx })}
-                    style={{ cursor: 'pointer', accentColor: 'var(--action-primary)', flexShrink: 0 }}
+                    style={{
+                      cursor: col.required ? 'default' : 'pointer',
+                      accentColor: 'var(--action-primary)',
+                      flexShrink: 0,
+                      opacity: col.required ? 0.6 : 1,
+                    }}
                   />
-                  <span style={{ flex: 1, fontSize: 13, color: 'var(--text-primary)' }}>
+                  <span
+                    style={{
+                      flex: 1,
+                      fontSize: 13,
+                      color: 'var(--text-primary)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6,
+                    }}
+                  >
                     {col.label}
+                    {col.required && (
+                      <span
+                        title="Required column — always visible"
+                        style={{
+                          fontSize: 9.5,
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.04em',
+                          color: 'var(--text-tertiary)',
+                          border: '1px solid var(--border-subtle)',
+                          borderRadius: 4,
+                          padding: '1px 5px',
+                        }}
+                      >
+                        Required
+                      </span>
+                    )}
                   </span>
                   {/* Move up */}
                   <button
@@ -514,6 +624,15 @@ export function FindingsTable() {
                     >
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         {col.label}
+                        {(col.id === 'risk' || col.id === 'priority') && (
+                          <span
+                            title={col.id === 'risk' ? CONFIDENCE_TOOLTIP : PRIORITY_TOOLTIP}
+                            onClick={e => e.stopPropagation()}
+                            style={{ display: 'inline-flex', cursor: 'help', color: 'var(--text-tertiary)' }}
+                          >
+                            <Icon name="info" size={12} />
+                          </span>
+                        )}
                         {isActive && (
                           <Icon
                             name={state.sortDir === 'asc' ? 'chevron-up' : 'chevron-down'}
@@ -866,28 +985,28 @@ export function FindingsTable() {
                                 >
                                   <Icon name="eye" size={14} />
                                 </button>
-                                <button
-                                  onClick={e => {
-                                    e.stopPropagation();
-                                    dispatch({
-                                      type: 'SHOW_TOAST',
-                                      message: 'Row actions: open, validate, snooze, assign',
-                                    });
-                                  }}
-                                  style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    border: 'none',
-                                    background: 'transparent',
-                                    color: 'var(--text-secondary)',
-                                    cursor: 'pointer',
-                                    padding: 4,
-                                    borderRadius: 4,
-                                  }}
-                                  title="More actions"
-                                >
-                                  <Icon name="more-vertical" size={14} />
-                                </button>
+                                <span style={{ position: 'relative', display: 'inline-flex' }}>
+                                  <button
+                                    onClick={e => {
+                                      e.stopPropagation();
+                                      dispatch({ type: 'TOGGLE_MENU', menu: 'row-' + f.id });
+                                    }}
+                                    style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      border: 'none',
+                                      background: 'transparent',
+                                      color: 'var(--text-secondary)',
+                                      cursor: 'pointer',
+                                      padding: 4,
+                                      borderRadius: 4,
+                                    }}
+                                    title="More actions"
+                                  >
+                                    <Icon name="more-vertical" size={14} />
+                                  </button>
+                                  <RowActionsMenu finding={f} canValidate={vs.canValidate && state.settings.validationEnabled && !isValidating} />
+                                </span>
                               </span>
                             </td>
                           );

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { test, expect } from 'vitest';
 import App from '../../App';
 import { FINDINGS } from '../../data';
@@ -6,7 +6,17 @@ import { FINDINGS } from '../../data';
 test('FindingsTable renders column headers', () => {
   render(<App />);
   expect(screen.getByText('Remediation priority')).toBeInTheDocument();
-  expect(screen.getByText('Risk score')).toBeInTheDocument();
+  expect(screen.getByText('Confidence Level')).toBeInTheDocument();
+});
+
+test('row three-dot menu opens meaningful actions', () => {
+  render(<App />);
+  const moreButtons = screen.getAllByTitle('More actions');
+  expect(moreButtons.length).toBeGreaterThan(0);
+  fireEvent.click(moreButtons[0]);
+  expect(screen.getByText('Open details')).toBeInTheDocument();
+  expect(screen.getByText('Copy file path')).toBeInTheDocument();
+  expect(screen.getByText('Change lifecycle status')).toBeInTheDocument();
 });
 
 test('FindingsTable renders at least one row', () => {

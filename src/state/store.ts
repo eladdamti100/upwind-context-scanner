@@ -12,6 +12,8 @@ export interface ColumnState {
   id: string;
   label: string;
   vis: boolean;
+  /** Required columns are always visible and cannot be toggled off. */
+  required?: boolean;
 }
 
 export interface SettingsState {
@@ -67,19 +69,22 @@ export interface AppState {
 // ---------------------------------------------------------------------------
 
 const DEFAULT_COLS: ColumnState[] = [
-  { id: 'priority',       label: 'Remediation priority', vis: true  },
-  { id: 'classification', label: 'Classification',       vis: true  },
-  { id: 'secretType',     label: 'Secret type',          vis: true  },
-  { id: 'file',           label: 'File name | path',     vis: true  },
-  { id: 'owner',          label: 'Owner',                vis: true  },
-  { id: 'risk',           label: 'Risk score',           vis: true  },
-  { id: 'validation',     label: 'Validation status',    vis: true  },
+  // Required columns — always visible, cannot be turned off.
+  { id: 'risk',           label: 'Confidence Level',     vis: true,  required: true },
+  { id: 'priority',       label: 'Remediation priority', vis: true,  required: true },
+  { id: 'secretType',     label: 'Secret type',          vis: true,  required: true },
+  { id: 'classification', label: 'Classification',       vis: true,  required: true },
+  { id: 'validation',     label: 'Validation status',    vis: true,  required: true },
+  { id: 'file',           label: 'File name | path',     vis: true,  required: true },
+  // Optional columns — user-configurable (hidden by default to keep it clean).
+  { id: 'owner',          label: 'Owner',                vis: false },
   { id: 'environment',    label: 'Environment',          vis: false },
   { id: 'exposure',       label: 'Exposure',             vis: false },
   { id: 'cloud',          label: 'Cloud',                vis: false },
   { id: 'createdAt',      label: 'Created at',           vis: false },
   { id: 'explanation',    label: 'Reason',               vis: false },
-  { id: 'actions',        label: 'Actions',              vis: true  },
+  // Actions stays last so enabling an optional column never pushes it out of place.
+  { id: 'actions',        label: 'Actions',              vis: true,  required: true },
 ];
 
 // Deep-copy helper so RESET_COLS can restore defaults without aliasing
@@ -163,6 +168,8 @@ export function reducer(state: AppState, action: Action): AppState {
 
     // ---- Columns -------------------------------------------------------------
     case 'TOGGLE_COL': {
+      // Required columns are always visible and cannot be toggled off.
+      if (state.cols[action.index]?.required) return state;
       const cols = state.cols.map((c, i) =>
         i === action.index ? { ...c, vis: !c.vis } : c,
       );

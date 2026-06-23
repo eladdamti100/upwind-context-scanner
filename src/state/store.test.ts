@@ -129,6 +129,23 @@ test('TOGGLE_COL flips column visibility', () => {
   expect(next2.cols[index].vis).toBe(false);
 });
 
+test('TOGGLE_COL is a no-op for required columns', () => {
+  const index = initialState.cols.findIndex(c => c.id === 'risk'); // Confidence Level — required
+  expect(initialState.cols[index].required).toBe(true);
+  expect(initialState.cols[index].vis).toBe(true);
+
+  const next = dispatch(initialState, { type: 'TOGGLE_COL', index });
+  expect(next.cols[index].vis).toBe(true); // stays visible
+});
+
+test('the required columns are exactly the expected set, in order, leading the defaults', () => {
+  const requiredIds = initialState.cols.filter(c => c.required).map(c => c.id);
+  expect(requiredIds).toEqual(['risk', 'priority', 'secretType', 'classification', 'validation', 'file', 'actions']);
+  // Confidence Level (risk) is first
+  expect(initialState.cols[0].id).toBe('risk');
+  expect(initialState.cols[0].label).toBe('Confidence Level');
+});
+
 // ---------------------------------------------------------------------------
 // MOVE_COL — up swaps adjacent
 // ---------------------------------------------------------------------------
