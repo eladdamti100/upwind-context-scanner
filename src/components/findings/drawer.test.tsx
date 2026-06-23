@@ -54,6 +54,9 @@ test('the detail panel never renders a secret value — not even masked', () => 
   expect(text).not.toMatch(/AKIA/);
   expect(text).not.toMatch(/sk_live_/);
   expect(text).not.toMatch(/ghp_/);
+
+  // No reveal/copy-secret controls — the only copy action is for the file path.
+  expect(screen.queryByText(/reveal|show secret|copy secret/i)).not.toBeInTheDocument();
 });
 
 test('closing the drawer hides the score breakdown', () => {
