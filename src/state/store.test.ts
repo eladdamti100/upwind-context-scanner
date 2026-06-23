@@ -144,7 +144,7 @@ test('the required columns are exactly the expected set, in order, leading the d
   // Actions leads the row, Confidence Level follows
   expect(initialState.cols[0].id).toBe('actions');
   expect(initialState.cols[1].id).toBe('risk');
-  expect(initialState.cols[1].label).toBe('Confidence Level');
+  expect(initialState.cols[1].label).toBe('% Confidence');
 });
 
 // ---------------------------------------------------------------------------

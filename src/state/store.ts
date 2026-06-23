@@ -75,7 +75,7 @@ const DEFAULT_COLS: ColumnState[] = [
   // Required columns — always visible, cannot be turned off.
   // Actions leads the row so details/actions are reachable from the start.
   { id: 'actions',        label: 'Actions',              vis: true,  required: true },
-  { id: 'risk',           label: 'Confidence Level',     vis: true,  required: true },
+  { id: 'risk',           label: '% Confidence',         vis: true,  required: true },
   { id: 'priority',       label: 'Remediation priority', vis: true,  required: true },
   { id: 'secretType',     label: 'Secret type',          vis: true,  required: true },
   { id: 'classification', label: 'Classification',       vis: true,  required: true },

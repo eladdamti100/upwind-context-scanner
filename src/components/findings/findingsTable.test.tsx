@@ -6,15 +6,15 @@ import { FINDINGS } from '../../data';
 test('FindingsTable renders column headers', () => {
   render(<App />);
   expect(screen.getByText('Remediation priority')).toBeInTheDocument();
-  expect(screen.getByText('Confidence Level')).toBeInTheDocument();
+  expect(screen.getByText('% Confidence')).toBeInTheDocument();
 });
 
 test('header info icons reveal their tooltips', () => {
   render(<App />);
 
-  // Confidence Level
-  fireEvent.click(screen.getByLabelText('What is Confidence Level?'));
-  expect(screen.getByText(/Confidence Level estimates how likely/)).toBeInTheDocument();
+  // % Confidence
+  fireEvent.click(screen.getByLabelText('What is Confidence?'));
+  expect(screen.getByText(/Confidence estimates how likely/)).toBeInTheDocument();
 
   // Remediation Priority (clicking it closes the first via outside-click)
   fireEvent.click(screen.getByLabelText('What is Remediation Priority?'));

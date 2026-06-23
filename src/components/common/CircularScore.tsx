@@ -27,7 +27,7 @@ export function CircularScore({
   return (
     <span
       role="img"
-      aria-label={label ?? `Confidence Level ${s} out of 100`}
+      aria-label={label ?? `Confidence ${s} out of 100`}
       style={{
         position: 'relative',
         display: 'inline-flex',

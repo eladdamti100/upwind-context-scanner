@@ -89,7 +89,7 @@ function IconBtn({
 
 // Header info tooltips (shown via the native title attribute on a small info icon).
 const CONFIDENCE_TOOLTIP =
-  'Confidence Level estimates how likely this finding is to be a real secret or sensitive data, based on regex confidence, context features, deterministic rules, and the model signal.';
+  'Confidence estimates how likely this finding is to be a real secret or sensitive data, based on regex confidence, context features, deterministic rules, and the model signal.';
 const PRIORITY_TOOLTIP =
   'Remediation Priority indicates how urgently this finding should be handled, based on confidence, access, exposure, secret type severity, and activity.';
 const CREDENTIAL_CHECK_TOOLTIP =
@@ -97,7 +97,7 @@ const CREDENTIAL_CHECK_TOOLTIP =
 
 // Header columns that get an info tooltip, keyed by column id.
 const HEADER_INFO: Record<string, { text: string; label: string }> = {
-  risk: { text: CONFIDENCE_TOOLTIP, label: 'What is Confidence Level?' },
+  risk: { text: CONFIDENCE_TOOLTIP, label: 'What is Confidence?' },
   priority: { text: PRIORITY_TOOLTIP, label: 'What is Remediation Priority?' },
   validation: { text: CREDENTIAL_CHECK_TOOLTIP, label: 'What is Credential Check?' },
 };
@@ -122,7 +122,7 @@ const COL_SORT_MAP: Record<string, string> = {
 // Columns not listed size to their content.
 const COL_WIDTH: Record<string, string> = {
   actions: '76px',      // Actions — narrow, leads the row
-  risk: '160px',        // Confidence Level — header + icons + centered ring
+  risk: '130px',        // % Confidence — header + icons + centered ring
   priority: '184px',    // Remediation priority — header + info + badge
   validation: '152px',  // Credential Check
   file: '100%',         // File name | path — flexible, absorbs remaining width
