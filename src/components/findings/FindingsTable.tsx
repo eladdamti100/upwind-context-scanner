@@ -255,7 +255,7 @@ function TableToolbar({
                     style={{
                       flex: 1,
                       fontSize: 12,
-                      color: col.required ? 'var(--text-secondary)' : 'var(--text-primary)',
+                      color: 'var(--text-primary)',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: 6,
@@ -263,9 +263,6 @@ function TableToolbar({
                     }}
                   >
                     {col.label}
-                    {col.required && (
-                      <span style={{ fontSize: 10.5, color: 'var(--text-disabled)' }}>Fixed</span>
-                    )}
                   </span>
                   {/* Move up */}
                   <button

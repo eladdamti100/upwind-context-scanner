@@ -77,6 +77,7 @@ const DEFAULT_COLS: ColumnState[] = [
   { id: 'classification', label: 'Classification',       vis: true,  required: true },
   { id: 'validation',     label: 'Credential Check',     vis: true,  required: true },
   { id: 'file',           label: 'File name | path',     vis: true,  required: true },
+  { id: 'actions',        label: 'Actions',              vis: true,  required: true },
   // Optional columns — user-configurable (hidden by default to keep it clean).
   { id: 'owner',          label: 'Owner',                vis: false },
   { id: 'environment',    label: 'Environment',          vis: false },
@@ -84,8 +85,6 @@ const DEFAULT_COLS: ColumnState[] = [
   { id: 'cloud',          label: 'Cloud',                vis: false },
   { id: 'createdAt',      label: 'Created at',           vis: false },
   { id: 'explanation',    label: 'Reason',               vis: false },
-  // Actions stays last so enabling an optional column never pushes it out of place.
-  { id: 'actions',        label: 'Actions',              vis: true,  required: true },
 ];
 
 // Deep-copy helper so RESET_COLS can restore defaults without aliasing

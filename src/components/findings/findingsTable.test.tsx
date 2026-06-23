@@ -50,10 +50,10 @@ test('column picker locks required columns (no checkbox) and toggles optional on
   // Open the column picker.
   fireEvent.click(screen.getByTitle('Columns'));
 
-  // The word "Required" must no longer appear; locked columns read "Fixed".
+  // No "Required"/"Fixed" labels — required columns are simply checkbox-less.
   expect(screen.queryByText('REQUIRED')).not.toBeInTheDocument();
   expect(screen.queryByText('Required')).not.toBeInTheDocument();
-  expect(screen.getAllByText('Fixed').length).toBeGreaterThan(0);
+  expect(screen.queryByText('Fixed')).not.toBeInTheDocument();
 
   // There are 7 required columns → at most (total − 7) checkboxes for optional ones.
   const checkboxes = screen.getAllByRole('checkbox');
