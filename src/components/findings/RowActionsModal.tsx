@@ -21,13 +21,21 @@ function ActionRow({
   hint,
   onClick,
   disabled,
+  accent = 'var(--text-secondary)',
+  accentBg = 'var(--bg-secondary)',
 }: {
   icon: IconName;
   label: string;
   hint?: string;
   onClick?: () => void;
   disabled?: boolean;
+  /** Icon color for this action's semantics. */
+  accent?: string;
+  /** Tinted icon-box background. */
+  accentBg?: string;
 }) {
+  const iconColor = disabled ? 'var(--text-disabled)' : accent;
+  const boxBg = disabled ? 'var(--bg-secondary)' : accentBg;
   return (
     <button
       disabled={disabled}
@@ -41,16 +49,17 @@ function ActionRow({
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 11,
+        gap: 12,
         width: '100%',
         textAlign: 'left',
-        padding: '10px 12px',
+        padding: '8px 10px',
         border: 'none',
-        borderRadius: 8,
+        borderRadius: 9,
         background: 'transparent',
         color: disabled ? 'var(--text-disabled)' : 'var(--text-primary)',
         fontSize: 13.5,
         cursor: disabled ? 'default' : 'pointer',
+        transition: 'background 0.12s',
       }}
     >
       <span
@@ -58,21 +67,19 @@ function ActionRow({
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: 28,
-          height: 28,
-          borderRadius: 7,
-          background: 'var(--bg-secondary)',
+          width: 32,
+          height: 32,
+          borderRadius: 8,
+          background: boxBg,
           flexShrink: 0,
         }}
       >
-        <Icon
-          name={icon}
-          size={14}
-          stroke={disabled ? 'var(--text-disabled)' : 'var(--text-secondary)'}
-        />
+        <Icon name={icon} size={15} stroke={iconColor} />
       </span>
       <span style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
-        <span style={{ fontWeight: 500 }}>{label}</span>
+        <span style={{ fontWeight: 500, color: disabled ? 'var(--text-disabled)' : 'var(--text-primary)' }}>
+          {label}
+        </span>
         {hint && (
           <span style={{ fontSize: 11.5, color: 'var(--text-tertiary)' }}>{hint}</span>
         )}
@@ -126,7 +133,7 @@ export function RowActionsModal() {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0,0,0,0.45)',
+        background: 'rgba(15,23,42,0.35)',
         zIndex: 55,
         display: 'flex',
         alignItems: 'center',
@@ -148,37 +155,41 @@ export function RowActionsModal() {
           overflowY: 'auto',
         }}
       >
-        {/* Header — X lives in the top-left */}
+        {/* Header — defined bar, X lives in the top-left */}
         <div
           style={{
             display: 'flex',
-            alignItems: 'flex-start',
+            alignItems: 'center',
             gap: 12,
             padding: '16px 18px',
+            background: 'var(--bg-secondary)',
             borderBottom: '1px solid var(--border-subtle)',
           }}
         >
           <button
             aria-label="Close finding actions"
             onClick={close}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--interactive-hover)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface)')}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 28,
-              height: 28,
-              borderRadius: 7,
+              width: 30,
+              height: 30,
+              borderRadius: 8,
               border: '1px solid var(--border-subtle)',
-              background: 'transparent',
+              background: 'var(--surface)',
               color: 'var(--text-secondary)',
               cursor: 'pointer',
               flexShrink: 0,
+              transition: 'background 0.12s',
             }}
           >
-            <Icon name="x" size={13} />
+            <Icon name="x" size={14} />
           </button>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
               Finding actions
             </div>
             <div
@@ -201,12 +212,12 @@ export function RowActionsModal() {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 10,
+            gap: 12,
             padding: '14px 18px',
             borderBottom: '1px solid var(--border-subtle)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
             <span
               style={{
                 fontSize: 11,
@@ -222,21 +233,30 @@ export function RowActionsModal() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: 5,
-                height: 20,
-                padding: '0 8px',
-                borderRadius: 5,
+                gap: 6,
+                height: 22,
+                padding: '0 9px',
+                borderRadius: 6,
                 background: vs.bg,
-                fontSize: 11,
+                fontSize: 11.5,
                 fontWeight: 600,
                 color: vs.fg,
                 lineHeight: 1,
               }}
             >
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  background: isValidating ? 'var(--text-tertiary)' : vs.fg,
+                  flexShrink: 0,
+                }}
+              />
               {isValidating ? 'Checking…' : vs.label}
             </span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
             <span
               style={{
                 fontSize: 11,
@@ -249,11 +269,17 @@ export function RowActionsModal() {
               File path
             </span>
             <span
+              title={f.path}
               style={{
                 fontSize: 12.5,
                 color: 'var(--text-primary)',
                 fontFamily: 'var(--font-mono-family, monospace)',
-                overflowX: 'auto',
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 6,
+                padding: '6px 9px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
               }}
             >
@@ -267,12 +293,16 @@ export function RowActionsModal() {
           <ActionRow
             icon="eye"
             label="Open details"
+            accent="var(--action-primary)"
+            accentBg="var(--uw-blue-06)"
             onClick={() => run(() => dispatch({ type: 'OPEN_DETAIL', id: f.id }))}
           />
           {canValidate ? (
             <ActionRow
               icon="shield"
               label="Run credential check"
+              accent="var(--action-primary)"
+              accentBg="var(--uw-blue-06)"
               onClick={() => run(() => dispatch({ type: 'OPEN_VAL_MODAL', id: f.id }))}
             />
           ) : (
@@ -290,11 +320,15 @@ export function RowActionsModal() {
           <ActionRow
             icon="clock"
             label="Change lifecycle status"
+            accent="var(--uw-royal-purple-02)"
+            accentBg="var(--uw-royal-purple-06)"
             onClick={() => run(() => dispatch({ type: 'OPEN_LIFECYCLE', id: f.id }))}
           />
           <ActionRow
             icon="snooze"
             label="Snooze finding"
+            accent="var(--severity-medium)"
+            accentBg="var(--severity-medium-bg)"
             onClick={() => run(() => dispatch({ type: 'OPEN_LIFECYCLE', id: f.id }))}
           />
           <ActionRow
@@ -323,6 +357,8 @@ export function RowActionsModal() {
           <ActionRow
             icon="x"
             label="Mark as false positive"
+            accent="var(--severity-high)"
+            accentBg="var(--severity-high-bg)"
             onClick={() =>
               run(() => {
                 dispatch({ type: 'SET_LIFECYCLE_STATUS', id: f.id, status: 'false-positive' });
