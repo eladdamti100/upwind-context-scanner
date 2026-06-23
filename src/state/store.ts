@@ -40,6 +40,8 @@ export interface AppState {
   sortDir: 'asc' | 'desc';
   cols: ColumnState[];
   rpp: number;
+  /** Zero-based index of the current findings-table page. */
+  pageIdx: number;
   menu: string | null;
   selectedId: number | null;
   actionsId: number | null;
@@ -103,7 +105,8 @@ export const initialState: AppState = {
   sortKey: 'risk',
   sortDir: 'desc',
   cols: cloneCols(DEFAULT_COLS),
-  rpp: 15,
+  rpp: 10,
+  pageIdx: 0,
   menu: null,
   selectedId: null,
   actionsId: null,
@@ -143,21 +146,22 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, tab: action.tab, menu: null, mapKey: null };
 
     // ---- Search / filters ----------------------------------------------------
+    // Search / filter changes reset pagination back to the first page.
     case 'SET_SEARCH':
-      return { ...state, search: action.search };
+      return { ...state, search: action.search, pageIdx: 0 };
 
     case 'ADD_FILTER': {
       const withoutSameKey = state.filters.filter(f => f.key !== action.filter.key);
-      return { ...state, filters: [...withoutSameKey, action.filter] };
+      return { ...state, filters: [...withoutSameKey, action.filter], pageIdx: 0 };
     }
 
     case 'REMOVE_FILTER': {
       const filters = state.filters.filter((_, i) => i !== action.index);
-      return { ...state, filters };
+      return { ...state, filters, pageIdx: 0 };
     }
 
     case 'CLEAR_FILTERS':
-      return { ...state, filters: [] };
+      return { ...state, filters: [], pageIdx: 0 };
 
     // ---- Sort ----------------------------------------------------------------
     case 'SET_SORT': {
@@ -193,7 +197,10 @@ export function reducer(state: AppState, action: Action): AppState {
 
     // ---- Pagination ----------------------------------------------------------
     case 'SET_RPP':
-      return { ...state, rpp: action.rpp };
+      return { ...state, rpp: action.rpp, pageIdx: 0 };
+
+    case 'SET_PAGE':
+      return { ...state, pageIdx: Math.max(0, action.page) };
 
     // ---- Dropdown menu -------------------------------------------------------
     case 'TOGGLE_MENU':

@@ -31,6 +31,7 @@ export type IconName =
   | 'layers'
   | 'leaf'
   | 'chevron-right'
+  | 'chevron-left'
   | 'rotate'
   | 'trash'
   | 'lock'
@@ -96,6 +97,8 @@ const PATHS: Record<IconName, string> = {
     'M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l6-6a8 8 0 0 0-12-10.49C4.69 3.81 3 7 3 11c0 2.12.74 4.07 1.97 5.6L2.3 19.3a1 1 0 0 0 0 1.4l.6.6a1 1 0 0 0 1.4 0l2-2zM12 18l-2-2',
   'chevron-right':
     'M9 18l6-6-6-6',
+  'chevron-left':
+    'M15 18l-6-6 6-6',
   'rotate':
     'M21 12a9 9 0 1 1-2.64-6.36M21 4v4h-4',
   'trash':

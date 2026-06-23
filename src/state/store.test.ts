@@ -24,8 +24,8 @@ describe('initialState defaults', () => {
     expect(initialState.settings.sensitivity).toBe('balanced');
   });
 
-  test('rpp is 15', () => {
-    expect(initialState.rpp).toBe(15);
+  test('rpp is 10', () => {
+    expect(initialState.rpp).toBe(10);
   });
 
   test('sortKey is "risk"', () => {

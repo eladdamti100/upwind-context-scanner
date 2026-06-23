@@ -14,6 +14,7 @@ import {
 } from '../../lib/classify';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';
+import type { IconName } from '../common/Icon';
 import { Avatar } from '../common/Avatar';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { Popover } from '../common/Popover';
@@ -367,9 +368,75 @@ function TableToolbar({
 
 const RPP_OPTIONS = [10, 15, 25, 50, 100, 'All'] as const;
 
-function Pagination({ filteredCount }: { filteredCount: number }) {
+function PageNavButton({
+  label,
+  icon,
+  iconSide,
+  disabled,
+  onClick,
+}: {
+  label: string;
+  icon: IconName;
+  iconSide: 'left' | 'right';
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 4,
+        padding: '4px 9px',
+        borderRadius: 6,
+        border: '1px solid var(--border-subtle)',
+        background: 'transparent',
+        color: disabled ? 'var(--text-disabled)' : 'var(--text-primary)',
+        fontSize: 12,
+        fontWeight: 500,
+        cursor: disabled ? 'default' : 'pointer',
+      }}
+      onMouseEnter={e => {
+        if (!disabled) e.currentTarget.style.background = 'var(--interactive-hover)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.background = 'transparent';
+      }}
+    >
+      {iconSide === 'left' && <Icon name={icon} size={13} stroke="currentColor" />}
+      {label}
+      {iconSide === 'right' && <Icon name={icon} size={13} stroke="currentColor" />}
+    </button>
+  );
+}
+
+function Pagination({
+  total,
+  start,
+  end,
+  currentPage,
+  totalPages,
+}: {
+  total: number;
+  start: number;
+  end: number;
+  currentPage: number;
+  totalPages: number;
+}) {
   const { state, dispatch } = useStore();
   const rppLabel = state.rpp >= 999 ? 'All' : state.rpp;
+
+  const startNum = total === 0 ? 0 : start + 1;
+  const endNum = Math.min(end, total);
+  const rangeText =
+    total === 0
+      ? 'Showing 0 of 0 findings'
+      : `Showing ${startNum}–${endNum} of ${total} findings`;
+  const pageText = total === 0 ? 'Page 0 of 0' : `Page ${currentPage + 1} of ${totalPages}`;
+  const prevDisabled = total === 0 || currentPage <= 0;
+  const nextDisabled = total === 0 || currentPage >= totalPages - 1;
 
   return (
     <div
@@ -380,69 +447,92 @@ function Pagination({ filteredCount }: { filteredCount: number }) {
         padding: '8px 14px',
         borderTop: '1px solid var(--border-subtle)',
         flexWrap: 'wrap',
-        gap: 8,
+        gap: 10,
       }}
     >
-      <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-        Showing {filteredCount} findings
-      </span>
+      {/* Left: item range */}
+      <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{rangeText}</span>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, position: 'relative' }}>
-        <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Rows per page</span>
-        <div style={{ position: 'relative' }}>
-          <button
-            onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'rpp' })}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 4,
-              padding: '4px 8px',
-              borderRadius: 5,
-              border: '1px solid var(--border-subtle)',
-              background: 'transparent',
-              color: 'var(--text-primary)',
-              fontSize: 12,
-              cursor: 'pointer',
-            }}
-          >
-            {rppLabel}
-            <Icon name="chevron-down" size={11} />
-          </button>
-          <Popover
-            open={state.menu === 'rpp'}
-            onClose={() => dispatch({ type: 'CLOSE_MENU' })}
-            style={{ bottom: 34, right: 0, minWidth: 90 }}
-          >
-            <div style={{ padding: '4px 2px' }}>
-              {RPP_OPTIONS.map(opt => {
-                const val = opt === 'All' ? 999 : opt;
-                const isActive = state.rpp === val;
-                return (
-                  <button
-                    key={opt}
-                    onClick={() => {
-                      dispatch({ type: 'SET_RPP', rpp: val });
-                      dispatch({ type: 'CLOSE_MENU' });
-                    }}
-                    style={{
-                      display: 'block',
-                      width: '100%',
-                      padding: '5px 10px',
-                      border: 'none',
-                      background: isActive ? 'var(--interactive-hover)' : 'transparent',
-                      color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                      fontSize: 12,
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      borderRadius: 4,
-                    }}
-                  >
-                    {opt}
-                  </button>
-                );
-              })}
-            </div>
-          </Popover>
+      {/* Right: rows-per-page, page indicator, prev/next */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, position: 'relative' }}>
+          <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Rows per page</span>
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'rpp' })}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                padding: '4px 8px',
+                borderRadius: 6,
+                border: '1px solid var(--border-subtle)',
+                background: 'transparent',
+                color: 'var(--text-primary)',
+                fontSize: 12,
+                cursor: 'pointer',
+              }}
+            >
+              {rppLabel}
+              <Icon name="chevron-down" size={11} />
+            </button>
+            <Popover
+              open={state.menu === 'rpp'}
+              onClose={() => dispatch({ type: 'CLOSE_MENU' })}
+              style={{ bottom: 34, right: 0, minWidth: 90 }}
+            >
+              <div style={{ padding: '4px 2px' }}>
+                {RPP_OPTIONS.map(opt => {
+                  const val = opt === 'All' ? 999 : opt;
+                  const isActive = state.rpp === val;
+                  return (
+                    <button
+                      key={opt}
+                      onClick={() => {
+                        dispatch({ type: 'SET_RPP', rpp: val });
+                        dispatch({ type: 'CLOSE_MENU' });
+                      }}
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        padding: '5px 10px',
+                        border: 'none',
+                        background: isActive ? 'var(--interactive-hover)' : 'transparent',
+                        color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                        fontSize: 12,
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        borderRadius: 4,
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </Popover>
+          </div>
+        </div>
+
+        {/* Page indicator */}
+        <span style={{ fontSize: 12, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>{pageText}</span>
+
+        {/* Prev / Next */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <PageNavButton
+            label="Previous"
+            icon="chevron-left"
+            iconSide="left"
+            disabled={prevDisabled}
+            onClick={() => dispatch({ type: 'SET_PAGE', page: currentPage - 1 })}
+          />
+          <PageNavButton
+            label="Next"
+            icon="chevron-right"
+            iconSide="right"
+            disabled={nextDisabled}
+            onClick={() => dispatch({ type: 'SET_PAGE', page: currentPage + 1 })}
+          />
         </div>
       </div>
     </div>
@@ -463,7 +553,15 @@ export function FindingsTable() {
   );
   const sorted = sortRows(filtered, state.sortKey, state.sortDir, sensitivity);
   const visCols = state.cols.filter(c => c.vis);
-  const page = state.rpp >= 999 ? sorted : sorted.slice(0, state.rpp);
+
+  // Pagination derivation. `rpp >= 999` is the "All" option (single page).
+  const rpp = state.rpp;
+  const total = filtered.length;
+  const totalPages = rpp >= 999 ? (total > 0 ? 1 : 0) : Math.ceil(total / rpp);
+  const safePage = Math.min(state.pageIdx, Math.max(0, totalPages - 1));
+  const start = rpp >= 999 ? 0 : safePage * rpp;
+  const end = rpp >= 999 ? total : start + rpp;
+  const page = sorted.slice(start, end);
 
   // Current validation for a finding
   const curVal = (f: (typeof FINDINGS)[0]) =>
@@ -900,7 +998,7 @@ export function FindingsTable() {
         </div>
       )}
 
-      <Pagination filteredCount={filtered.length} />
+      <Pagination total={total} start={start} end={end} currentPage={safePage} totalPages={totalPages} />
     </div>
   );
 }

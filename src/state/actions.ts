@@ -19,6 +19,7 @@ export type Action =
   | { type: 'MOVE_COL'; index: number; dir: 'up' | 'down' }
   | { type: 'RESET_COLS' }
   | { type: 'SET_RPP'; rpp: number }
+  | { type: 'SET_PAGE'; page: number }
   | { type: 'TOGGLE_MENU'; menu: string }
   | { type: 'CLOSE_MENU' }
   | { type: 'OPEN_DETAIL'; id: number }
