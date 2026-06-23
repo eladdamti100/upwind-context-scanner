@@ -35,7 +35,6 @@ const COLUMNS = [
   'Category',
   'Findings',
   'Critical',
-  'FP reduction',
   'Status',
   'Patterns',
   'Rule packs',
@@ -226,38 +225,6 @@ export function ClassTable() {
                       }}
                     >
                       {c.critical}
-                    </td>
-
-                    {/* FP reduction — dash for 0%, subtle green bar otherwise */}
-                    <td style={{ padding: '11px 12px' }}>
-                      {c.fpReductionPct === 0 ? (
-                        <span style={{ color: 'var(--text-tertiary)' }}>—</span>
-                      ) : (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <div
-                            style={{
-                              width: 54,
-                              height: 6,
-                              borderRadius: 3,
-                              background: 'var(--bg-tertiary)',
-                              overflow: 'hidden',
-                              flexShrink: 0,
-                            }}
-                          >
-                            <div
-                              style={{
-                                width: `${c.fpReductionPct}%`,
-                                height: '100%',
-                                background: 'var(--severity-safe)',
-                                borderRadius: 3,
-                              }}
-                            />
-                          </div>
-                          <span style={{ width: 32, fontSize: 12, fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
-                            {c.fpReductionPct}%
-                          </span>
-                        </div>
-                      )}
                     </td>
 
                     {/* Status */}

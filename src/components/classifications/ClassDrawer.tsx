@@ -200,7 +200,6 @@ export function ClassDrawer() {
                 value={String(c.critical)}
                 color={c.critical > 0 ? 'var(--severity-critical)' : 'var(--text-primary)'}
               />
-              <Stat label="FP reduction" value={`${c.fpReductionPct}%`} color="var(--severity-safe)" />
               <span
                 style={{
                   display: 'inline-flex',

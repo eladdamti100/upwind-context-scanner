@@ -256,15 +256,7 @@ function deriveStats(validations: Record<number, ValidationStatus>, sensitivity:
     else exposure.restricted++;
   }
 
-  // risk by cloud over surfaced findings (top 3 providers actually present)
-  const cloudCounts: Record<string, number> = {};
-  for (const f of surfacedList) cloudCounts[f.cloud] = (cloudCounts[f.cloud] ?? 0) + 1;
-  const byCloud = Object.entries(cloudCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([provider, count]) => ({ provider, count }));
-
-  return { total, surfaced, noiseReduced, activeCreds, highPriority, publicExposed, exposure, byCloud };
+  return { total, surfaced, noiseReduced, activeCreds, highPriority, publicExposed, exposure };
 }
 
 // ---------------------------------------------------------------------------
@@ -282,7 +274,6 @@ export function OverviewView() {
     { label: 'Active credentials', value: String(stats.activeCreds), helper: 'Confirmed live credentials', icon: 'shield', tileBg: 'var(--severity-safe-bg)', iconColor: 'var(--severity-safe)' },
     { label: 'High priority findings', value: String(stats.highPriority), helper: 'Need immediate attention', icon: 'alert-triangle', tileBg: 'var(--severity-critical-bg)', iconColor: 'var(--severity-critical)' },
     { label: 'Publicly exposed', value: String(stats.publicExposed), helper: 'Surfaced on public / internet-facing', icon: 'globe', tileBg: 'var(--uw-cyan-06, var(--severity-info-bg))', iconColor: 'var(--uw-cyan-02)' },
-    { label: 'Noise reduced', value: stats.noiseReduced.toLocaleString(), helper: 'Downgraded or suppressed', icon: 'bar-chart', tileBg: 'var(--uw-royal-purple-06)', iconColor: 'var(--uw-royal-purple-02)' },
   ];
   const exposureBreakdown = [
     { label: 'Public / internet-facing', count: stats.exposure.pub, color: 'var(--action-primary)' },
@@ -357,7 +348,7 @@ export function OverviewView() {
       </Card>
 
       {/* ── 2. KPI cards ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
         {kpis.map(k => (
           <Card key={k.label} style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
             <span
@@ -502,19 +493,6 @@ export function OverviewView() {
                   </div>
                 );
               })}
-            </div>
-          </Card>
-
-          {/* Risk by cloud */}
-          <Card style={{ padding: '16px 18px' }}>
-            <CardTitle>Risk by cloud</CardTitle>
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: 16 }}>
-              {stats.byCloud.map(c => (
-                <div key={c.provider} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-                  <CloudBadge provider={c.provider} size={38} />
-                  <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>{c.count}</span>
-                </div>
-              ))}
             </div>
           </Card>
 
