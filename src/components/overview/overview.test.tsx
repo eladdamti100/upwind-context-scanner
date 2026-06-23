@@ -26,16 +26,13 @@ test('"View exposed findings" navigates to the findings table', () => {
   expect(screen.getByText(/context-aware findings/)).toBeInTheDocument();
 });
 
-test('"Open exposure map" navigates to the map tab', () => {
+test('Overview shows the noise-reduction funnel with its four stages', () => {
   render(<App />);
-  fireEvent.click(screen.getByText('Open exposure map'));
-  expect(screen.getByTestId('map-view')).toBeInTheDocument();
-});
-
-test('"View data classifications" navigates to the classifications tab', () => {
-  render(<App />);
-  fireEvent.click(screen.getByText('View data classifications'));
-  expect(screen.getByTestId('classifications-view')).toBeInTheDocument();
+  expect(screen.getByText('How SignalLens reduces noise to surface real risk')).toBeInTheDocument();
+  expect(screen.getByText('Raw regex candidates')).toBeInTheDocument();
+  expect(screen.getByText('Context-aware filtering')).toBeInTheDocument();
+  expect(screen.getByText('Noise / false positives reduced')).toBeInTheDocument();
+  expect(screen.getByText('High-value surfaced findings')).toBeInTheDocument();
 });
 
 test('Overview renders no secret-like values (no mask glyphs)', () => {

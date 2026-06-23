@@ -15,13 +15,17 @@ import { CircularScore } from '../common/CircularScore';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { CloudBadge } from '../common/CloudBadge';
 
-// Demo-derived metrics used only on this dashboard (isolated; no dataset change).
-const NOISE_REDUCED = 1248;
-const NOISE_REASONS: { label: string; count: number }[] = [
-  { label: 'Documentation or test paths', count: 612 },
-  { label: 'Example or placeholder values', count: 396 },
-  { label: 'Known sample values', count: 240 },
+// Curated landing-dashboard metrics (isolated Overview demo values; the
+// findings table reflects the real dataset). Keeps the headline narrative
+// coherent: 24 active credentials surfaced from 345 raw regex candidates.
+const HERO_ACTIVE = 24;
+const KPIS: { label: string; value: string; helper: string; icon: IconName; tileBg: string; iconColor: string }[] = [
+  { label: 'Active credentials', value: '24', helper: 'Confirmed live credentials', icon: 'shield', tileBg: 'var(--severity-safe-bg)', iconColor: 'var(--severity-safe)' },
+  { label: 'High priority findings', value: '18', helper: 'Need immediate attention', icon: 'alert-triangle', tileBg: 'var(--severity-critical-bg)', iconColor: 'var(--severity-critical)' },
+  { label: 'Publicly exposed assets', value: '188', helper: 'Public or internet-facing', icon: 'globe', tileBg: 'var(--uw-cyan-06, var(--severity-info-bg))', iconColor: 'var(--uw-cyan-02)' },
+  { label: 'Noise reduced', value: '1,248', helper: 'Downgraded or suppressed', icon: 'bar-chart', tileBg: 'var(--uw-royal-purple-06)', iconColor: 'var(--uw-royal-purple-02)' },
 ];
+
 const EXPOSURE_BREAKDOWN: { label: string; count: number; color: string }[] = [
   { label: 'Static exposed secrets', count: 14, color: 'var(--action-primary)' },
   { label: 'Dynamic exposed secrets', count: 6, color: 'var(--uw-metal-blue-02)' },
@@ -37,6 +41,48 @@ const SUGGESTED_RULES = [
   'Flag secrets in container images and build artifacts',
   'Identify API tokens sent to external domains',
 ];
+const SCAN_ANALYZED = 223;
+const NOISE_REDUCED = 1248;
+
+// Funnel: regex candidates → context filtering → noise removed → surfaced risk.
+const FUNNEL_STAGES: { value: number; title: string; desc: string; icon: IconName; accent: string; tint: string }[] = [
+  {
+    value: 345,
+    title: 'Raw regex candidates',
+    desc: 'Broad pattern matches across repos and assets. Includes docs, tests, and placeholders.',
+    icon: 'search',
+    accent: 'var(--action-primary)',
+    tint: 'var(--uw-blue-06)',
+  },
+  {
+    value: 221,
+    title: 'Context-aware filtering',
+    desc: 'Smart context analysis applied across identities, paths, file types, and context checks.',
+    icon: 'filter',
+    accent: 'var(--uw-cyan-02)',
+    tint: 'var(--uw-cyan-06, var(--severity-info-bg))',
+  },
+  {
+    value: 124,
+    title: 'Noise / false positives reduced',
+    desc: 'Filtered out documentation placeholders, test paths, dev keys, and synthetic values.',
+    icon: 'alert-triangle',
+    accent: 'var(--severity-medium)',
+    tint: 'var(--severity-medium-bg)',
+  },
+  {
+    value: 24,
+    title: 'High-value surfaced findings',
+    desc: 'Validated active credentials requiring immediate attention.',
+    icon: 'shield',
+    accent: 'var(--severity-safe)',
+    tint: 'var(--severity-safe-bg)',
+  },
+];
+const BENEFITS = ['Fewer false positives', 'Faster triage', 'Better signal-to-noise', 'Focus on real risk'];
+
+// Shared grid template for the "Needs attention now" table (header + rows).
+const NA_COLS = '52px minmax(0, 1fr) 78px 130px 168px 138px 96px';
 
 // ---------------------------------------------------------------------------
 // Shared presentational helpers
@@ -111,6 +157,123 @@ function LinkButton({ label, onClick }: { label: string; onClick: () => void }) 
   );
 }
 
+function HeaderCell({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'center' | 'right' }) {
+  return (
+    <span
+      style={{
+        fontSize: 10.5,
+        fontWeight: 700,
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        color: 'var(--text-tertiary)',
+        textAlign: align,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Funnel
+// ---------------------------------------------------------------------------
+
+function FunnelStage({ stage, first, last }: { stage: (typeof FUNNEL_STAGES)[number]; first: boolean; last: boolean }) {
+  const clip = first
+    ? 'polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%)'
+    : last
+      ? 'polygon(0 0, 100% 0, 100% 100%, 0 100%, 16px 50%)'
+      : 'polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%, 16px 50%)';
+  return (
+    <div
+      style={{
+        flex: 1,
+        minWidth: 0,
+        background: stage.tint,
+        clipPath: clip,
+        padding: `16px ${last ? 18 : 30}px 18px ${first ? 18 : 30}px`,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
+      }}
+    >
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 30,
+          height: 30,
+          borderRadius: '50%',
+          background: stage.accent,
+          flexShrink: 0,
+        }}
+      >
+        <Icon name={stage.icon} size={15} stroke="#fff" />
+      </span>
+      <span style={{ fontSize: 26, fontWeight: 700, lineHeight: 1, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+        {stage.value}
+      </span>
+      <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.25 }}>{stage.title}</span>
+      <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.45 }}>{stage.desc}</span>
+    </div>
+  );
+}
+
+function FunnelCard() {
+  return (
+    <Card style={{ gridArea: 'bottom', padding: '18px 20px' }}>
+      <CardTitle>How SignalLens reduces noise to surface real risk</CardTitle>
+      <p style={{ margin: '8px 0 18px', fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.55, maxWidth: 720 }}>
+        Our context-aware layer filters documentation patterns, placeholder values, test paths, and other low-risk
+        findings so you can focus on what truly matters.
+      </p>
+
+      {/* Funnel stages with arrow connectors */}
+      <div style={{ display: 'flex', alignItems: 'stretch' }}>
+        {FUNNEL_STAGES.map((s, i) => (
+          <React.Fragment key={s.title}>
+            <FunnelStage stage={s} first={i === 0} last={i === FUNNEL_STAGES.length - 1} />
+            {i < FUNNEL_STAGES.length - 1 && (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, flexShrink: 0 }}>
+                <Icon name="chevron-right" size={18} stroke="var(--text-tertiary)" />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+
+      {/* Benefit chips */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 16 }}>
+        {BENEFITS.map(b => (
+          <span
+            key={b}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 7,
+              flex: '1 1 0',
+              minWidth: 150,
+              justifyContent: 'center',
+              padding: '8px 12px',
+              borderRadius: 8,
+              border: '1px solid var(--border-subtle)',
+              background: 'var(--bg-secondary)',
+              fontSize: 12.5,
+              fontWeight: 500,
+              color: 'var(--text-primary)',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Icon name="check" size={14} stroke="var(--severity-safe)" />
+            {b}
+          </span>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Main view
 // ---------------------------------------------------------------------------
@@ -120,27 +283,9 @@ export function OverviewView() {
   const sensitivity = state.settings.sensitivity;
   const go = (tab: TabKey) => dispatch({ type: 'SET_TAB', tab });
 
-  const activeCredentials = FINDINGS.filter(
-    f => (state.validations[f.id] ?? f.validation) === 'validated-active',
-  ).length;
-  const publiclyExposed = FINDINGS.filter(
-    f => f.exposure === 'Public' || f.exposure === 'Internet-facing',
-  ).length;
-  const highPriority = FINDINGS.filter(f => {
-    const p = effPriority(f, sensitivity);
-    return p === 'critical' || p === 'high';
-  }).length;
-
   const topFindings = [...FINDINGS]
     .sort((a, b) => b.scores.remediationPriority - a.scores.remediationPriority)
     .slice(0, 4);
-
-  const kpis: { label: string; value: string; helper: string; icon: IconName; tileBg: string; iconColor: string }[] = [
-    { label: 'Active credentials', value: String(activeCredentials), helper: 'Confirmed live credentials', icon: 'shield', tileBg: 'var(--severity-safe-bg)', iconColor: 'var(--severity-safe)' },
-    { label: 'High priority findings', value: String(highPriority), helper: 'Need immediate attention', icon: 'alert-triangle', tileBg: 'var(--severity-critical-bg)', iconColor: 'var(--severity-critical)' },
-    { label: 'Publicly exposed assets', value: String(publiclyExposed), helper: 'Public or internet-facing', icon: 'globe', tileBg: 'var(--uw-cyan-06, var(--severity-info-bg))', iconColor: 'var(--uw-cyan-02)' },
-    { label: 'Noise reduced', value: NOISE_REDUCED.toLocaleString(), helper: 'Downgraded or suppressed', icon: 'bar-chart', tileBg: 'var(--uw-royal-purple-06)', iconColor: 'var(--uw-royal-purple-02)' },
-  ];
 
   return (
     <div data-testid="overview-view" style={{ padding: '12px 24px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -171,7 +316,7 @@ export function OverviewView() {
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
-            {activeCredentials} active credentials are exposed across public or internet-facing assets
+            {HERO_ACTIVE} active credentials are exposed across public or internet-facing assets
           </div>
           <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 3 }}>
             SignalLens prioritized what needs attention first and reduced noisy findings.
@@ -202,7 +347,7 @@ export function OverviewView() {
 
       {/* ── 2. KPI cards ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
-        {kpis.map(k => (
+        {KPIS.map(k => (
           <Card key={k.label} style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
             <span
               style={{
@@ -229,9 +374,7 @@ export function OverviewView() {
         ))}
       </div>
 
-      {/* ── 3 + 4 + 5. Single grid: main + right column + bottom cards.
-          Areas keep the bottom cards directly under the main card and let the
-          right column span the full height — no large mid-page gap. ── */}
+      {/* ── 3 + 4 + funnel. One grid: main + right column + funnel below main ── */}
       <div
         style={{
           display: 'grid',
@@ -248,58 +391,80 @@ export function OverviewView() {
             Top prioritized findings based on confidence, priority, and exposure.
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {topFindings.map(f => {
-              const p = effPriority(f, sensitivity);
-              const vs = valStyle(state.validations[f.id] ?? f.validation);
-              const es = envStyle(f.environment);
-              return (
-                <div
-                  key={f.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    padding: '10px 0',
-                    borderTop: '1px solid var(--border-subtle)',
-                  }}
-                >
+          {/* Column headers */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: NA_COLS,
+              gap: 12,
+              alignItems: 'center',
+              padding: '0 0 8px',
+            }}
+          >
+            <HeaderCell align="center">Confidence</HeaderCell>
+            <HeaderCell>Finding</HeaderCell>
+            <HeaderCell>Priority</HeaderCell>
+            <HeaderCell>Credential check</HeaderCell>
+            <HeaderCell>File | path</HeaderCell>
+            <HeaderCell>Cloud &amp; env</HeaderCell>
+            <HeaderCell align="right">Action</HeaderCell>
+          </div>
+
+          {topFindings.map(f => {
+            const p = effPriority(f, sensitivity);
+            const vs = valStyle(state.validations[f.id] ?? f.validation);
+            const es = envStyle(f.environment);
+            return (
+              <div
+                key={f.id}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: NA_COLS,
+                  gap: 12,
+                  alignItems: 'center',
+                  padding: '10px 0',
+                  borderTop: '1px solid var(--border-subtle)',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <CircularScore score={f.risk} size={34} stroke={3.5} />
-                  <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Icon name="key" size={14} stroke="var(--uw-royal-purple-02)" />
-                    <span style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
-                      {f.classification}
-                    </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                  <Icon name="key" size={14} stroke="var(--uw-royal-purple-02)" />
+                  <span style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {f.classification}
+                  </span>
+                </div>
+                <SeverityBadge priority={p} />
+                <Chip label={vs.label} fg={vs.fg} bg={vs.bg} />
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 12.5, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {f.file}
                   </div>
-                  <SeverityBadge priority={p} />
-                  <Chip label={vs.label} fg={vs.fg} bg={vs.bg} />
-                  <div style={{ width: 150, minWidth: 0 }}>
-                    <div style={{ fontSize: 12.5, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {f.file}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 11,
-                        color: 'var(--text-tertiary)',
-                        fontFamily: 'var(--font-mono-family, monospace)',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                      title={f.path}
-                    >
-                      {f.path}
-                    </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: 'var(--text-tertiary)',
+                      fontFamily: 'var(--font-mono-family, monospace)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                    title={f.path}
+                  >
+                    {f.path}
                   </div>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, width: 130 }}>
-                    <CloudBadge provider={f.cloud} size={20} />
-                    <Chip label={f.environment} fg={es.fg} bg={es.bg} />
-                  </div>
+                </div>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, minWidth: 0 }}>
+                  <CloudBadge provider={f.cloud} size={20} />
+                  <Chip label={f.environment} fg={es.fg} bg={es.bg} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <LinkButton label="Open details" onClick={() => dispatch({ type: 'OPEN_DETAIL', id: f.id })} />
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
 
           <div style={{ borderTop: '1px solid var(--border-subtle)', marginTop: 4, paddingTop: 14, textAlign: 'center' }}>
             <LinkButton label="View all exposed findings" onClick={() => go('findings')} />
@@ -364,7 +529,7 @@ export function OverviewView() {
                       color: 'var(--text-primary)',
                     }}
                   >
-                    <Icon name="plus" size={13} stroke="var(--action-primary)" />
+                    <Icon name="check" size={13} stroke="var(--severity-safe)" />
                     <span style={{ flex: 1, minWidth: 0 }}>{r}</span>
                     <Icon name="chevron-right" size={13} stroke="var(--text-tertiary)" />
                   </button>
@@ -381,7 +546,7 @@ export function OverviewView() {
             <CardTitle>Recent scan summary</CardTitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 12 }}>
               {([
-                ['Findings analyzed', FINDINGS.length.toLocaleString()],
+                ['Findings analyzed', SCAN_ANALYZED.toLocaleString()],
                 ['Classifications', String(CLASSIFICATIONS.length)],
                 ['Noise reduced', NOISE_REDUCED.toLocaleString()],
               ] as [string, string][]).map(([label, value]) => (
@@ -391,116 +556,14 @@ export function OverviewView() {
                 </div>
               ))}
             </div>
+            <div style={{ marginTop: 14 }}>
+              <LinkButton label="View scan history" onClick={() => dispatch({ type: 'SHOW_TOAST', message: 'Scan history is coming soon' })} />
+            </div>
           </Card>
         </div>
 
-        {/* ── 5. Bottom cards — directly under the main card ── */}
-        <div style={{ gridArea: 'bottom', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 16 }}>
-          {/* Noise reduced */}
-        <Card style={{ padding: '16px 18px' }}>
-          <CardTitle>Noise reduced</CardTitle>
-          <p style={{ margin: '10px 0 14px', fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-            We downgraded or suppressed {NOISE_REDUCED.toLocaleString()} findings because they matched documentation,
-            tests, or other low-risk context.
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {NOISE_REASONS.map(r => (
-              <div key={r.label} style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-                <Icon name="check" size={14} stroke="var(--severity-safe)" />
-                <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, color: 'var(--text-secondary)' }}>{r.label}</span>
-                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{r.count}</span>
-              </div>
-            ))}
-          </div>
-          <div style={{ marginTop: 14 }}>
-            <LinkButton label="View data classifications" onClick={() => go('classifications')} />
-          </div>
-        </Card>
-
-        {/* Exposure map preview */}
-        <Card style={{ padding: '16px 18px' }}>
-          <CardTitle>Exposure map preview</CardTitle>
-          <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', marginTop: 4, marginBottom: 14 }}>
-            See how data and secrets flow across your environments.
-          </div>
-          <MapPreview />
-          <div style={{ marginTop: 14 }}>
-            <LinkButton label="Open exposure map" onClick={() => go('map')} />
-          </div>
-        </Card>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Lightweight exposure-map preview (visual only, no graph engine)
-// ---------------------------------------------------------------------------
-
-function NodePill({ icon, label, iconColor }: { icon: IconName; label: string; iconColor?: string }) {
-  return (
-    <div
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 6,
-        padding: '6px 10px',
-        borderRadius: 8,
-        border: '1px solid var(--border-subtle)',
-        background: 'var(--surface)',
-        fontSize: 12,
-        color: 'var(--text-primary)',
-        whiteSpace: 'nowrap',
-      }}
-    >
-      <Icon name={icon} size={13} stroke={iconColor ?? 'var(--text-secondary)'} />
-      {label}
-    </div>
-  );
-}
-
-function MapPreview() {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-      {/* Left: providers */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <CloudBadge provider="AWS" size={28} />
-        <CloudBadge provider="Azure" size={28} />
-        <CloudBadge provider="GCP" size={28} />
-      </div>
-
-      {/* connector */}
-      <div style={{ flex: 1, height: 1, background: 'var(--border-primary)', minWidth: 16 }} />
-
-      {/* Center node */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 2,
-          width: 56,
-          height: 56,
-          borderRadius: 12,
-          border: '1px solid var(--uw-royal-purple-04, var(--border-primary))',
-          background: 'var(--uw-royal-purple-06)',
-          flexShrink: 0,
-        }}
-      >
-        <Icon name="key" size={16} stroke="var(--uw-royal-purple-02)" />
-        <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>24</span>
-      </div>
-
-      {/* connector */}
-      <div style={{ flex: 1, height: 1, background: 'var(--border-primary)', minWidth: 16 }} />
-
-      {/* Right: destinations */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <NodePill icon="globe" label="Internet" iconColor="var(--uw-cyan-02)" />
-        <NodePill icon="external-link" label="External Services" />
-        <NodePill icon="layers" label="AI Services" iconColor="var(--uw-royal-purple-02)" />
+        {/* ── Funnel card (lower-left, spans the main column) ── */}
+        <FunnelCard />
       </div>
     </div>
   );
