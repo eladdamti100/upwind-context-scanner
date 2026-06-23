@@ -4,10 +4,9 @@
 import React from 'react';
 import { FINDINGS } from '../../data';
 import { rankFilter, sortRows } from '../../lib/query';
-import { effPriority, band } from '../../lib/priority';
+import { effPriority } from '../../lib/priority';
 import {
   priStyle,
-  priLabel,
   categoryStyle,
   envStyle,
   valStyle,
@@ -19,6 +18,7 @@ import { Avatar } from '../common/Avatar';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { Popover } from '../common/Popover';
 import { InfoTooltip } from '../common/InfoTooltip';
+import { CircularScore } from '../common/CircularScore';
 import type { Finding } from '../../types';
 
 // ---------------------------------------------------------------------------
@@ -842,51 +842,26 @@ export function FindingsTable() {
                         }
 
                         case 'risk': {
-                          const b = band(f.risk);
-                          const ps = priStyle(b);
                           return (
                             <td key={col.id} style={railTdStyle}>
-                              <span
-                                style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
-                                onClick={e => e.stopPropagation()}
+                              <button
+                                aria-label="Why this score?"
+                                title="Why this score?"
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  dispatch({ type: 'OPEN_RISK', id: f.id });
+                                }}
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  border: 'none',
+                                  background: 'transparent',
+                                  cursor: 'pointer',
+                                  padding: 0,
+                                }}
                               >
-                                <span
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: 600,
-                                    color: ps.fg,
-                                  }}
-                                >
-                                  {f.risk}
-                                </span>
-                                <span
-                                  style={{
-                                    fontSize: 11,
-                                    color: 'var(--text-tertiary)',
-                                  }}
-                                >
-                                  {priLabel(b)}
-                                </span>
-                                <button
-                                  aria-label="Why this score?"
-                                  onClick={e => {
-                                    e.stopPropagation();
-                                    dispatch({ type: 'OPEN_RISK', id: f.id });
-                                  }}
-                                  style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    border: 'none',
-                                    background: 'transparent',
-                                    color: 'var(--text-tertiary)',
-                                    cursor: 'pointer',
-                                    padding: 1,
-                                  }}
-                                  title="Risk details"
-                                >
-                                  <Icon name="info" size={12} />
-                                </button>
-                              </span>
+                                <CircularScore score={f.risk} size={40} stroke={4} />
+                              </button>
                             </td>
                           );
                         }
