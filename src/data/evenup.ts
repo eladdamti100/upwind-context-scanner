@@ -26,7 +26,7 @@ import type {
 } from '../types';
 import { extractFeatures, buildCorpusStats } from '../lib/features';
 import { evaluateRules } from '../lib/rules';
-import { mockLightGBM } from '../lib/lgbm';
+import { forestSpatialEngine, type SemanticEngineInput } from '../lib/semanticEngine';
 import {
   authenticityScore,
   accessScore,
@@ -111,34 +111,11 @@ interface RawAsset {
 const RAW = rawFindings as unknown as RawFinding[];
 const RAW_ASSETS = rawAssets as unknown as RawAsset[];
 
-// ---- Offline SLM predictions (DSPM Semantic Guardrail) ----------------------
-// The async SLM layer (src/lib/lgbm.ts) runs offline via scripts/enrich-slm.ts
-// and writes DB/slm-predictions.json. The live (synchronous) pipeline reads
-// those verdicts here and uses the SLM's secret_probability in place of the
-// mock LightGBM probability when a prediction exists for a finding.
-//
-// DB/ is gitignored generator output, so we load it DEFENSIVELY with
-// import.meta.glob: when the file is absent (fresh checkout / CI), the glob
-// resolves to an empty map and every finding falls back to the mock — the build
-// never breaks and live scoring is unchanged.
-interface SlmPredictionRow {
-  finding_id: string;
-  secret_probability: number;
-  model_classification: string;
-  reason: string;
-  model: string;
-}
-const slmPredictionModules = import.meta.glob<{ default: SlmPredictionRow[] }>(
-  '../../DB/slm-predictions.json',
-  { eager: true },
-);
-const SLM_PREDICTIONS: Record<string, SlmPredictionRow> = (() => {
-  const map: Record<string, SlmPredictionRow> = {};
-  for (const mod of Object.values(slmPredictionModules)) {
-    for (const row of mod.default ?? []) map[row.finding_id] = row;
-  }
-  return map;
-})();
+// The Semantic Guardrail model term now comes from the IN-PROCESS spatial engine
+// (src/lib/semanticEngine.ts) — a data-fit Random Forest + file/folder spatial
+// aggregation, run synchronously over the whole corpus below. The legacy offline
+// Ollama SLM (src/lib/lgbm.ts + scripts/enrich-slm.ts) is retained but no longer
+// wired into the live path.
 
 // ---- Mapping helpers ---------------------------------------------------------
 
@@ -323,6 +300,32 @@ function buildContext(raw: RawFinding): FindingContextObject {
 const CONTEXTS: FindingContextObject[] = RAW.map(buildContext);
 const CORPUS_STATS = buildCorpusStats(CONTEXTS);
 
+// Per-finding asset context, computed once.
+const ASSET_CTXS = RAW.map((raw) => {
+  const asset = ASSET_MAP[raw.ground_truth.asset_id];
+  return {
+    storageExposure: toExposure(asset?.storage_exposure ?? raw.ground_truth.storage_exposure),
+    assetCriticality: toCriticality(asset?.asset_criticality ?? raw.ground_truth.asset_criticality),
+    cloudProvider: toCloud(asset?.cloud_provider ?? 'aws'),
+  };
+});
+
+// Extract features for the whole corpus, then run the IN-PROCESS spatial semantic
+// engine once (synchronously) so it can see every finding's file/folder context
+// before scoring. The engine's per-finding probability replaces the old model
+// term; its reason + spatial note flow into the UI.
+const FEATURES = CONTEXTS.map((ctx, i) => extractFeatures(ctx, ASSET_CTXS[i], CORPUS_STATS));
+const SEMANTIC_INPUTS: SemanticEngineInput[] = CONTEXTS.map((ctx, i) => ({
+  findingId: ctx.findingId,
+  detectedType: ctx.candidate.detectedType,
+  filePath: `${ctx.file.filePath}/${ctx.file.fileName}`,
+  maskedLineContext: ctx.localContext.lineTextMasked,
+  features: FEATURES[i],
+}));
+const SEMANTIC_VERDICTS = new Map(
+  forestSpatialEngine.classifyCorpus(SEMANTIC_INPUTS).map((v) => [v.findingId, v]),
+);
+
 export const FINDINGS: Finding[] = RAW.map((raw, i) => {
   const { file, candidate, regex, scan_metadata, ground_truth: gt } = raw;
 
@@ -332,31 +335,19 @@ export const FINDINGS: Finding[] = RAW.map((raw, i) => {
   const displayName = toDisplayName(detectedType, candidate.detected_type);
   const category = toCategory(candidate.detected_type, gt.label);
 
-  // Look up asset
+  // Look up asset (for display: kind/cloud)
   const asset = ASSET_MAP[gt.asset_id];
-  const assetCtx = {
-    storageExposure: toExposure(asset?.storage_exposure ?? gt.storage_exposure),
-    assetCriticality: toCriticality(asset?.asset_criticality ?? gt.asset_criticality),
-    cloudProvider: toCloud(asset?.cloud_provider ?? 'aws'),
-  };
 
-  // Masked context assembled above; reuse it so feature extraction sees the
-  // same object that fed the corpus-frequency map.
-  const ctx = CONTEXTS[i];
-
-  // Run pipeline
-  const features = extractFeatures(ctx, assetCtx, CORPUS_STATS);
+  // Features computed in the corpus pre-pass; rules read the same object.
+  const features = FEATURES[i];
   const rules = evaluateRules(features);
-  const lgbm = mockLightGBM.predict(features);
   const acc = toAccessScope(gt);
   const exp = toExposure(gt.storage_exposure);
 
-  // Model probability: prefer the offline SLM verdict when one exists for this
-  // finding, otherwise fall back to the deterministic mock LightGBM. (With no
-  // SLM endpoint configured the offline run uses the same scorer as the mock,
-  // so this is a no-op until a real local SLM produces non-mock probabilities.)
-  const slmPred = SLM_PREDICTIONS[raw.finding_id];
-  const modelProbability = slmPred ? slmPred.secret_probability : lgbm.secretProbability;
+  // Model probability comes from the in-process spatial semantic engine (data-fit
+  // forest + file/folder spatial down-weighting). Replaces the legacy SLM term.
+  const verdict = SEMANTIC_VERDICTS.get(raw.finding_id);
+  const modelProbability = verdict ? verdict.secretProbability : 0.5;
 
   // A fired guardrail means a real, well-formed credential → it is floored and
   // NEVER suppressed (recall guard). Otherwise the DomainRulesAgent's structural
@@ -437,13 +428,13 @@ export const FINDINGS: Finding[] = RAW.map((raw, i) => {
     riskUpReasons: rules.triggered
       .filter(t => t.direction === 'increase')
       .map(t => t.label),
-    // Deterministic decrease rules, plus the SLM's own reason when it judged the
-    // candidate to be a non-secret — so any SLM-driven downgrade is explained in
-    // the UI alongside the rule-based reasons.
+    // Deterministic decrease rules, plus the semantic engine's own reason when it
+    // judged the candidate a non-secret (incl. spatial group-downgrades) — so any
+    // model-driven downgrade is explained in the UI alongside the rule reasons.
     riskDownReasons: [
       ...rules.triggered.filter(t => t.direction === 'decrease').map(t => t.label),
-      ...(slmPred && slmPred.model_classification !== 'true_secret'
-        ? [`SLM (${slmPred.model_classification.replace(/_/g, ' ')}): ${slmPred.reason}`]
+      ...(verdict && verdict.modelClassification !== 'true_secret'
+        ? [`Engine (${verdict.modelClassification.replace(/_/g, ' ')}): ${verdict.reason}`]
         : []),
     ],
     explanation,

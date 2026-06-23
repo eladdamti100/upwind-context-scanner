@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "enrich:slm": "vite-node scripts/enrich-slm.ts",
-    "export:predictions": "vite-node scripts/export-predictions.ts"
+    "export:predictions": "vite-node scripts/export-predictions.ts",
+    "train:semantic": "vite-node scripts/train-semantic.ts"
   },
   "dependencies": {
     "react": "^18.3.1",
