@@ -36,6 +36,6 @@ test('natural-language builder produces a mocked draft preview', () => {
   fireEvent.click(screen.getByText('Natural language'));
   const textarea = screen.getByPlaceholderText(/Downgrade API-key/i);
   fireEvent.change(textarea, { target: { value: 'Suppress example tokens in README documentation' } });
-  fireEvent.click(screen.getByText('Generate rule draft'));
-  expect(screen.getByText('Draft preview')).toBeInTheDocument();
+  fireEvent.click(screen.getByText('Generate rule'));
+  expect(screen.getByText('Rule preview')).toBeInTheDocument();
 });

@@ -100,7 +100,7 @@ function mockDraftFromText(text: string): DraftPreview {
     scope,
     condition: text.trim() || '—',
     action,
-    reason: 'Derived from a natural-language description (draft).',
+    reason: 'Derived from a natural-language description.',
   };
 }
 
@@ -164,15 +164,15 @@ export function AddRulesModal() {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           zIndex: 56,
-          width: 560,
+          width: 820,
           maxWidth: '94vw',
-          maxHeight: '86vh',
+          maxHeight: '88vh',
           overflowY: 'auto',
           background: 'var(--surface)',
           border: '1px solid var(--border-subtle)',
           borderRadius: 12,
           boxShadow: 'var(--shadow-lg, 0 10px 30px rgba(0,0,0,0.5))',
-          padding: 22,
+          padding: 28,
         }}
       >
         {/* header */}
@@ -334,18 +334,22 @@ export function AddRulesModal() {
                       dispatch({ type: 'CLOSE_ADD_RULES' });
                     }}
                   >
-                    Create draft rule
+                    Create rule
                   </button>
                 </div>
               </div>
             )}
 
             {customMode === 'natural' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                  Describe the rule in plain language and SignalLens will convert it into a structured
+                  customer rule.
+                </div>
                 <div>
-                  <label style={FIELD_LABEL}>Describe the rule in plain language</label>
+                  <label style={FIELD_LABEL}>Rule description</label>
                   <textarea
-                    style={{ ...INPUT, minHeight: 84, resize: 'vertical', lineHeight: 1.5 }}
+                    style={{ ...INPUT, minHeight: 140, resize: 'vertical', lineHeight: 1.55 }}
                     value={nlText}
                     placeholder="e.g. Downgrade API-key-looking values in README files when the surrounding text says example or placeholder."
                     onChange={e => setNlText(e.target.value)}
@@ -353,17 +357,17 @@ export function AddRulesModal() {
                 </div>
                 <div>
                   <button
-                    style={{ ...GHOST_BTN, opacity: nlText.trim() ? 1 : 0.5, display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                    style={{ ...PRIMARY_BTN, opacity: nlText.trim() ? 1 : 0.5, display: 'inline-flex', alignItems: 'center', gap: 6 }}
                     disabled={!nlText.trim()}
                     onClick={() => setDraft(mockDraftFromText(nlText))}
                   >
-                    <Icon name="shield" size={13} /> Generate rule draft
+                    <Icon name="shield" size={13} stroke="#fff" /> Generate rule
                   </button>
                 </div>
 
                 {draft && (
-                  <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)', borderRadius: 8, padding: 14 }}>
-                    <div style={SECTION_LABEL}>Draft preview</div>
+                  <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)', borderRadius: 8, padding: 16 }}>
+                    <div style={SECTION_LABEL}>Rule preview</div>
                     {([
                       ['Title', draft.title],
                       ['Scope', draft.scope],
@@ -385,11 +389,11 @@ export function AddRulesModal() {
                     <button
                       style={PRIMARY_BTN}
                       onClick={() => {
-                        dispatch({ type: 'SHOW_TOAST', message: 'Draft rule created — pending approval' });
+                        dispatch({ type: 'SHOW_TOAST', message: 'Rule created — pending review' });
                         dispatch({ type: 'CLOSE_ADD_RULES' });
                       }}
                     >
-                      Save draft for approval
+                      Save rule
                     </button>
                   </div>
                 )}
@@ -412,10 +416,10 @@ function DraftNote() {
         border: '1px solid var(--border-subtle)', borderRadius: 6, padding: '8px 10px',
       }}
     >
-      <span style={{ flexShrink: 0, marginTop: 1, color: 'var(--severity-medium)' }}>
+      <span style={{ flexShrink: 0, marginTop: 1, color: 'var(--severity-safe)' }}>
         <Icon name="info" size={12} />
       </span>
-      <span>This creates a <strong>draft</strong> rule. It requires review and approval before it affects any findings.</span>
+      <span>Generated rules can be reviewed before activation.</span>
     </div>
   );
 }

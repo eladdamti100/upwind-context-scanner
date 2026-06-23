@@ -52,6 +52,7 @@ export function TopBar() {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         padding: '0 20px',
         gap: 16,
         flexShrink: 0,
@@ -87,81 +88,46 @@ export function TopBar() {
         </span>
       </div>
 
-      {/* Search box — centered, flexible */}
-      <div
-        style={{
-          flex: 1,
-          maxWidth: 440,
-          margin: '0 auto',
-          height: 34,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          border: '1px solid var(--border-subtle)',
-          borderRadius: 8,
-          padding: '0 12px',
-          background: 'var(--bg-tertiary)',
-          color: 'var(--text-secondary)',
-        }}
-      >
-        <Icon name="search" size={14} />
-        <span
-          style={{
-            flex: 1,
-            fontSize: 13,
-            fontFamily: 'var(--font-default-family)',
-            color: 'var(--text-tertiary)',
-          }}
-        >
-          Search findings, assets, keys, severity…
-        </span>
-        <span
-          style={{
-            fontSize: 11,
-            fontFamily: 'var(--font-mono-family)',
-            color: 'var(--text-tertiary)',
-            background: 'var(--border-subtle)',
-            borderRadius: 4,
-            padding: '1px 5px',
-          }}
-        >
-          ⌘K
-        </span>
-      </div>
-
-      {/* Right cluster: bell + gear + profile */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-        <button style={iconBtnStyle} aria-label="Notifications">
-          <Icon name="bell" size={16} />
-        </button>
+      {/* Right cluster: settings + profile */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
         <button
           title="Settings"
           onClick={() => dispatch({ type: 'OPEN_SETTINGS' })}
           style={iconBtnStyle}
           aria-label="Settings"
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--interactive-hover)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         >
-          <Icon name="settings" size={16} />
+          <Icon name="settings" size={19} />
         </button>
 
         {/* Profile chip */}
-        <div
+        <button
+          type="button"
+          aria-label="Account"
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 8,
-            marginLeft: 4,
+            gap: 10,
+            padding: '4px 10px 4px 4px',
+            borderRadius: 999,
+            border: '1px solid var(--border-subtle)',
+            background: 'transparent',
+            cursor: 'pointer',
           }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--interactive-hover)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         >
           <div
             style={{
-              width: 32,
-              height: 32,
+              width: 34,
+              height: 34,
               borderRadius: '50%',
               background: 'var(--uw-primary-02)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: 600,
               color: '#ffffff',
               flexShrink: 0,
@@ -170,10 +136,10 @@ export function TopBar() {
           >
             AM
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, textAlign: 'left' }}>
             <span
               style={{
-                fontSize: 13,
+                fontSize: 13.5,
                 fontWeight: 600,
                 color: 'var(--text-primary)',
                 fontFamily: 'var(--font-default-family)',
@@ -185,7 +151,7 @@ export function TopBar() {
             </span>
             <span
               style={{
-                fontSize: 11,
+                fontSize: 11.5,
                 color: 'var(--text-tertiary)',
                 fontFamily: 'var(--font-default-family)',
                 lineHeight: 1,
@@ -195,7 +161,7 @@ export function TopBar() {
               Security Engineer
             </span>
           </div>
-        </div>
+        </button>
       </div>
     </div>
   );
