@@ -13,6 +13,7 @@ import { supportsCredentialCheck } from '../../lib/validation';
 import { explanationTitle, recommendedActions } from '../../lib/explain';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';
+import type { IconName } from '../common/Icon';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { CircularScore } from '../common/CircularScore';
 
@@ -39,13 +40,22 @@ const PRIMARY_METRICS = new Set([
   'Remediation priority',
 ]);
 
+// Pick a leading icon for a recommended action from its wording.
+function actionIcon(text: string, idx: number): IconName {
+  const t = text.toLowerCase();
+  if (/rotate|revoke|reissue|regenerate/.test(t)) return 'rotate';
+  if (/remove|delete|strip|purge/.test(t)) return 'trash';
+  if (/manager|vault|secret store|store it|move it/.test(t)) return 'lock';
+  return (['rotate', 'trash', 'lock'] as IconName[])[idx] ?? 'check';
+}
+
 // ---------------------------------------------------------------------------
 // Small layout helpers
 // ---------------------------------------------------------------------------
 
 function Section({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
-    <div style={{ padding: '13px 18px', borderBottom: '1px solid var(--border-subtle)', ...style }}>
+    <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-subtle)', ...style }}>
       {children}
     </div>
   );
@@ -55,12 +65,11 @@ function SectionLabel({ children, style }: { children: React.ReactNode; style?: 
   return (
     <div
       style={{
-        fontSize: 10.5,
+        fontSize: 11,
         fontWeight: 700,
         textTransform: 'uppercase',
-        letterSpacing: '0.06em',
-        color: 'var(--text-tertiary)',
-        marginBottom: 9,
+        letterSpacing: '0.05em',
+        color: 'var(--text-secondary)',
         ...style,
       }}
     >
@@ -125,8 +134,8 @@ export function DetailDrawer() {
   const reasons = sel.riskUpReasons.slice(0, 3);
   const actions = recommendedActions(sel, p).slice(0, 3);
 
-  // Directory portion of the path (filename shown separately for a compact row).
-  const dir = sel.path.includes('/') ? sel.path.slice(0, sel.path.lastIndexOf('/')) : '';
+  // Breadcrumb segments for the path (filename shown separately, no secret value).
+  const segments = sel.path.includes('/') ? sel.path.slice(0, sel.path.lastIndexOf('/')).split('/').filter(Boolean) : [];
 
   function close() {
     dispatch({ type: 'CLOSE_DETAIL' });
@@ -142,20 +151,23 @@ export function DetailDrawer() {
   }
 
   // Shared compact metadata-chip style.
-  const chip = (bg: string, fg: string): React.CSSProperties => ({
+  const chip = (bg: string, fg: string, withDot: boolean): React.CSSProperties => ({
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 5,
-    height: 21,
-    padding: '0 8px',
-    borderRadius: 5,
+    gap: withDot ? 6 : 0,
+    height: 24,
+    padding: '0 10px',
+    borderRadius: 6,
     background: bg,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 600,
     color: fg,
     lineHeight: 1,
     whiteSpace: 'nowrap',
   });
+  const dot = (c: string) => (
+    <span style={{ width: 6, height: 6, borderRadius: '50%', background: c, flexShrink: 0 }} />
+  );
 
   return (
     <>
@@ -163,10 +175,10 @@ export function DetailDrawer() {
       <div
         aria-hidden="true"
         onClick={close}
-        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 50 }}
+        style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.35)', zIndex: 50 }}
       />
 
-      {/* Drawer panel */}
+      {/* Drawer panel — flex column so the footer can stick to the bottom */}
       <div
         role="dialog"
         aria-modal="true"
@@ -177,305 +189,350 @@ export function DetailDrawer() {
           top: 0,
           right: 0,
           height: '100vh',
-          width: 400,
-          maxWidth: '92vw',
+          width: 420,
+          maxWidth: '94vw',
           zIndex: 51,
           background: 'var(--surface)',
           borderLeft: '1px solid var(--border-subtle)',
-          boxShadow: 'var(--shadow-lg, -8px 0 32px rgba(0,0,0,0.45))',
-          overflowY: 'auto',
+          boxShadow: 'var(--shadow-lg)',
           animation: 'uwslide 140ms ease',
           display: 'flex',
           flexDirection: 'column',
+          overflow: 'hidden',
         }}
       >
-        {/* ── 1. Header ─────────────────────────────────────────────────── */}
-        <Section>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div
-                style={{
-                  fontSize: 15.5,
-                  fontWeight: 600,
-                  color: 'var(--text-primary)',
-                  lineHeight: 1.3,
-                  marginBottom: 2,
-                }}
-              >
-                {sel.classification}
+        {/* Scrollable content */}
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          {/* ── 1. Header ───────────────────────────────────────────────── */}
+          <Section style={{ padding: '20px 20px 16px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em', lineHeight: 1.2 }}>
+                  {sel.classification}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: 'var(--text-tertiary)',
+                    fontFamily: 'var(--font-mono-family, monospace)',
+                    marginTop: 4,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {sel.detectedType}
+                </div>
               </div>
-              <div
+              <button
+                aria-label="Close detail"
+                onClick={close}
                 style={{
-                  fontSize: 12,
-                  color: 'var(--text-tertiary)',
-                  fontFamily: 'var(--font-mono-family, monospace)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 30,
+                  height: 30,
+                  borderRadius: 8,
+                  border: '1px solid var(--border-subtle)',
+                  background: 'transparent',
+                  color: 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  flexShrink: 0,
                 }}
               >
-                {sel.detectedType}
+                <Icon name="x" size={14} />
+              </button>
+            </div>
+          </Section>
+
+          {/* ── 2. Compact risk summary ─────────────────────────────────── */}
+          <Section>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
+              {/* Confidence */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+                <CircularScore score={sel.risk} size={60} stroke={5} />
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: 'var(--text-secondary)',
+                  }}
+                >
+                  Confidence
+                </span>
+              </div>
+
+              {/* Status chips */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignContent: 'flex-start', paddingTop: 2 }}>
+                <SeverityBadge priority={p} label={`Priority · ${priLabel(p)}`} />
+                <span style={chip(vs.bg, vs.fg, true)}>
+                  {dot(isValidating ? 'var(--text-tertiary)' : vs.fg)}
+                  {isValidating ? 'Checking…' : vs.label}
+                </span>
+                {sel.cloud && <span style={chip('var(--bg-secondary)', 'var(--text-secondary)', false)}>{sel.cloud}</span>}
+                {sel.environment && <span style={chip('var(--bg-secondary)', 'var(--text-secondary)', false)}>{sel.environment}</span>}
+                <span style={chip(ps.bg, ps.fg, false)}>Remediation · {sel.scores.remediationPriority}</span>
               </div>
             </div>
+          </Section>
+
+          {/* ── 3. Location ─────────────────────────────────────────────── */}
+          <Section>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 10 }}>
+              <SectionLabel>Location</SectionLabel>
+              <button
+                onClick={copyPath}
+                style={{
+                  border: 'none',
+                  background: 'transparent',
+                  color: 'var(--text-link)',
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  padding: 0,
+                  flexShrink: 0,
+                }}
+              >
+                Copy
+              </button>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 9 }}>
+              <Icon name="file" size={16} stroke="var(--text-tertiary)" />
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div
+                  title={sel.path}
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: 'var(--text-primary)',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {sel.file}
+                </div>
+                {segments.length > 0 && (
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: 'var(--text-tertiary)',
+                      marginTop: 3,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {segments.join(' / ')}
+                  </div>
+                )}
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    marginTop: 8,
+                    height: 22,
+                    padding: '0 9px',
+                    borderRadius: 6,
+                    background: 'var(--bg-secondary)',
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    fontFamily: 'var(--font-mono-family, monospace)',
+                    color: 'var(--text-secondary)',
+                  }}
+                >
+                  L{sel.line}
+                </span>
+              </div>
+            </div>
+          </Section>
+
+          {/* ── 4. Why it matters ───────────────────────────────────────── */}
+          <Section>
+            <SectionLabel style={{ marginBottom: 12 }}>Why it matters</SectionLabel>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: reasons.length ? 12 : 0 }}>
+              <Icon name="shield" size={16} stroke={ps.fg} />
+              <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{expTitle}</span>
+            </div>
+            {reasons.length > 0 && (
+              <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 9 }}>
+                {reasons.map((r, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: 10,
+                      fontSize: 13,
+                      color: 'var(--text-secondary)',
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    <span style={{ flexShrink: 0, marginTop: 6, width: 5, height: 5, borderRadius: '50%', background: ps.fg }} />
+                    {r}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Section>
+
+          {/* ── 5. Recommended actions ──────────────────────────────────── */}
+          <Section>
+            <SectionLabel style={{ marginBottom: 10 }}>Recommended actions</SectionLabel>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {actions.map((action, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    padding: '6px 0',
+                  }}
+                >
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 34,
+                      height: 34,
+                      borderRadius: 8,
+                      background: 'var(--uw-blue-06)',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon name={actionIcon(action, idx)} size={15} stroke="var(--action-primary)" />
+                  </span>
+                  <span style={{ flex: 1, minWidth: 0, fontSize: 13.5, fontWeight: 500, color: 'var(--text-primary)' }}>
+                    {action}
+                  </span>
+                  <Icon name="chevron-right" size={15} stroke="var(--text-tertiary)" />
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          {/* ── 6. Score breakdown — collapsed row ──────────────────────── */}
+          <Section style={{ borderBottom: showBreakdown ? '1px solid var(--border-subtle)' : 'none' }}>
             <button
-              aria-label="Close detail"
-              onClick={close}
+              onClick={() => setShowBreakdown(s => !s)}
+              aria-expanded={showBreakdown}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                padding: 0,
+              }}
+            >
+              <Icon name="bar-chart" size={16} stroke="var(--text-secondary)" />
+              <span style={{ flex: 1, textAlign: 'left', fontSize: 13.5, fontWeight: 600, color: 'var(--text-primary)' }}>
+                Score breakdown
+              </span>
+              <Icon name={showBreakdown ? 'chevron-down' : 'chevron-right'} size={15} stroke="var(--text-tertiary)" />
+            </button>
+
+            {showBreakdown && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 14 }}>
+                {primaryRows.map(row => (
+                  <ScoreBar key={row.label} row={row} />
+                ))}
+                {showMore && moreRows.map(row => <ScoreBar key={row.label} row={row} />)}
+                {moreRows.length > 0 && (
+                  <button
+                    onClick={() => setShowMore(s => !s)}
+                    style={{
+                      alignSelf: 'flex-start',
+                      border: 'none',
+                      background: 'transparent',
+                      color: 'var(--text-link)',
+                      fontSize: 11.5,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      padding: 0,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                  >
+                    {showMore ? 'Less detail' : 'More details'}
+                    <Icon name={showMore ? 'chevron-up' : 'chevron-down'} size={12} stroke="var(--text-link)" />
+                  </button>
+                )}
+              </div>
+            )}
+          </Section>
+        </div>
+
+        {/* ── 7. Sticky footer ──────────────────────────────────────────── */}
+        <div
+          style={{
+            flexShrink: 0,
+            borderTop: '1px solid var(--border-subtle)',
+            background: 'var(--surface)',
+            padding: '16px 20px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 10,
+          }}
+        >
+          {supportsCredentialCheck(sel.detectedType) && state.settings.validationEnabled && (
+            <button
+              onClick={() => dispatch({ type: 'OPEN_VAL_MODAL', id: sel.id })}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 28,
-                height: 28,
-                borderRadius: 6,
-                border: '1px solid var(--border-subtle)',
-                background: 'transparent',
-                color: 'var(--text-secondary)',
-                cursor: 'pointer',
-                flexShrink: 0,
-              }}
-            >
-              <Icon name="x" size={13} />
-            </button>
-          </div>
-        </Section>
-
-        {/* ── 2. Compact risk summary ───────────────────────────────────── */}
-        <Section>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-            {/* Confidence */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 4 }}>
-              <CircularScore score={sel.risk} size={44} stroke={4} />
-              <span
-                style={{
-                  fontSize: 10.5,
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  color: 'var(--text-tertiary)',
-                  maxWidth: 56,
-                  lineHeight: 1.3,
-                }}
-              >
-                Confidence
-              </span>
-            </div>
-
-            {/* Priority + status badges */}
-            <SeverityBadge priority={p} label={`Priority · ${priLabel(p)}`} />
-            <span style={chip(vs.bg, vs.fg)}>
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: '50%',
-                  background: isValidating ? 'var(--text-tertiary)' : vs.fg,
-                  flexShrink: 0,
-                }}
-              />
-              {isValidating ? 'Checking…' : vs.label}
-            </span>
-            {sel.cloud && <span style={chip('var(--bg-secondary)', 'var(--text-secondary)')}>{sel.cloud}</span>}
-            {sel.environment && <span style={chip('var(--bg-secondary)', 'var(--text-secondary)')}>{sel.environment}</span>}
-          </div>
-        </Section>
-
-        {/* ── 3. Compact location ───────────────────────────────────────── */}
-        <Section>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 5 }}>
-            <SectionLabel style={{ marginBottom: 0 }}>Location</SectionLabel>
-            <button
-              onClick={copyPath}
-              style={{
+                gap: 8,
+                width: '100%',
+                padding: '11px 14px',
+                borderRadius: 10,
                 border: 'none',
-                background: 'transparent',
-                color: 'var(--text-link)',
-                fontSize: 11.5,
+                background: 'var(--action-primary)',
+                color: '#fff',
+                fontSize: 14,
                 fontWeight: 600,
                 cursor: 'pointer',
-                padding: 0,
-                flexShrink: 0,
               }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'var(--action-primary-hover)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'var(--action-primary)')}
             >
-              Copy
+              <Icon name="shield" size={15} stroke="#fff" />
+              Run credential check
             </button>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <Icon name="file" size={14} stroke="var(--text-tertiary)" />
-            <span
-              title={sel.path}
-              style={{
-                flex: 1,
-                minWidth: 0,
-                fontSize: 12.5,
-                fontFamily: 'var(--font-mono-family, monospace)',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <span style={{ color: 'var(--text-primary)' }}>{sel.file}</span>
-              {dir && <span style={{ color: 'var(--text-tertiary)' }}> · {dir}</span>}
-              <span style={{ color: 'var(--text-tertiary)' }}> · L{sel.line}</span>
-            </span>
-          </div>
-        </Section>
-
-        {/* ── 4. Why it matters ─────────────────────────────────────────── */}
-        <Section>
-          <SectionLabel>Why it matters</SectionLabel>
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: 'var(--text-primary)',
-              marginBottom: reasons.length ? 8 : 0,
-              lineHeight: 1.4,
-            }}
-          >
-            {expTitle}
-          </div>
-          {reasons.length > 0 && (
-            <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 5 }}>
-              {reasons.map((r, i) => (
-                <li
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 8,
-                    fontSize: 12.5,
-                    color: 'var(--text-secondary)',
-                    lineHeight: 1.4,
-                  }}
-                >
-                  <span style={{ flexShrink: 0, marginTop: 5, width: 4, height: 4, borderRadius: '50%', background: ps.fg }} />
-                  {r}
-                </li>
-              ))}
-            </ul>
           )}
-        </Section>
 
-        {/* ── 5. Recommended actions ────────────────────────────────────── */}
-        <Section>
-          <SectionLabel>Recommended actions</SectionLabel>
-          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 7 }}>
-            {actions.map((action, idx) => (
-              <li
-                key={idx}
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: 9,
-                  fontSize: 12.5,
-                  color: 'var(--text-primary)',
-                  lineHeight: 1.4,
-                }}
-              >
-                <Icon name="check" size={14} stroke={idx === 0 ? ps.fg : 'var(--text-tertiary)'} />
-                {action}
-              </li>
-            ))}
-          </ul>
-        </Section>
-
-        {/* ── 6. Score breakdown — collapsed by default ─────────────────── */}
-        <Section>
           <button
-            onClick={() => setShowBreakdown(s => !s)}
-            aria-expanded={showBreakdown}
+            onClick={() => dispatch({ type: 'OPEN_LIFECYCLE', id: sel.id })}
             style={{
-              width: '100%',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              justifyContent: 'space-between',
-              border: 'none',
-              background: 'transparent',
+              justifyContent: 'center',
+              gap: 8,
+              width: '100%',
+              padding: '11px 14px',
+              borderRadius: 10,
+              border: '1px solid var(--border-primary)',
+              background: 'var(--surface)',
+              color: 'var(--text-primary)',
+              fontSize: 14,
+              fontWeight: 600,
               cursor: 'pointer',
-              padding: 0,
             }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--interactive-hover)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface)')}
           >
-            <SectionLabel style={{ marginBottom: 0 }}>Score breakdown</SectionLabel>
-            <Icon name={showBreakdown ? 'chevron-up' : 'chevron-down'} size={14} stroke="var(--text-secondary)" />
+            <Icon name="flag" size={15} stroke="var(--text-secondary)" />
+            Manage status
           </button>
 
-          {showBreakdown && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
-              {primaryRows.map(row => (
-                <ScoreBar key={row.label} row={row} />
-              ))}
-              {showMore && moreRows.map(row => <ScoreBar key={row.label} row={row} />)}
-              {moreRows.length > 0 && (
-                <button
-                  onClick={() => setShowMore(s => !s)}
-                  style={{
-                    alignSelf: 'flex-start',
-                    border: 'none',
-                    background: 'transparent',
-                    color: 'var(--text-link)',
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    padding: 0,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 4,
-                  }}
-                >
-                  {showMore ? 'Less detail' : 'More details'}
-                  <Icon name={showMore ? 'chevron-up' : 'chevron-down'} size={12} stroke="var(--text-link)" />
-                </button>
-              )}
-            </div>
-          )}
-        </Section>
-
-        {/* ── 7. Footer workflow actions ────────────────────────────────── */}
-        <Section style={{ borderBottom: 'none', paddingTop: 14, paddingBottom: 18, marginTop: 'auto' }}>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {supportsCredentialCheck(sel.detectedType) && state.settings.validationEnabled && (
-              <button
-                onClick={() => dispatch({ type: 'OPEN_VAL_MODAL', id: sel.id })}
-                style={{
-                  flex: 1,
-                  padding: '8px 12px',
-                  borderRadius: 6,
-                  border: 'none',
-                  background: 'var(--action-primary)',
-                  color: '#fff',
-                  fontSize: 13,
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'var(--action-primary-hover)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'var(--action-primary)')}
-              >
-                Run credential check
-              </button>
-            )}
-
-            <button
-              onClick={() => dispatch({ type: 'OPEN_LIFECYCLE', id: sel.id })}
-              style={{
-                flex: 1,
-                padding: '8px 12px',
-                borderRadius: 6,
-                border: '1px solid var(--border-primary)',
-                background: 'transparent',
-                color: 'var(--text-primary)',
-                fontSize: 13,
-                fontWeight: 500,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              Manage status
-            </button>
-          </div>
-
-          {/* Secondary, low-emphasis actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 12 }}>
+          {/* Low-emphasis text actions */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 2 }}>
             <button
               onClick={() => {
                 dispatch({ type: 'SET_LIFECYCLE_STATUS', id: sel.id, status: 'false-positive' });
@@ -493,6 +550,7 @@ export function DetailDrawer() {
             >
               Mark false positive
             </button>
+            <span style={{ color: 'var(--text-tertiary)', fontSize: 12 }}>·</span>
             <button
               onClick={() => {
                 dispatch({ type: 'SET_LIFECYCLE_STATUS', id: sel.id, status: 'accepted-risk' });
@@ -511,7 +569,7 @@ export function DetailDrawer() {
               Accept risk
             </button>
           </div>
-        </Section>
+        </div>
       </div>
     </>
   );
