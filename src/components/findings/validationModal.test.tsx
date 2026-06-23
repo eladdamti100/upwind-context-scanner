@@ -35,14 +35,17 @@ test('running a credential check from the row menu updates the chip', async () =
   const runItem = openRunnableCheck();
   expect(runItem).not.toBeNull();
 
-  // Menu item opens the modal
+  // The action opens the confirmation modal with context + safety copy
   fireEvent.click(runItem!);
-  const runBtn = screen.getByRole('button', { name: 'Run credential check' });
+  expect(screen.getByText('Run credential check?')).toBeInTheDocument();
+  expect(screen.getByText('Checks against')).toBeInTheDocument();
+  expect(screen.getByText('The raw secret is not stored.')).toBeInTheDocument();
+  const runBtn = screen.getByRole('button', { name: 'Run check' });
   expect(runBtn).toBeInTheDocument();
 
   // Run it — modal closes immediately (START_VALIDATION clears valModalId)
   fireEvent.click(runBtn);
-  expect(screen.queryByRole('button', { name: 'Run credential check' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Run check' })).not.toBeInTheDocument();
 
   // Advance past VALIDATION_DELAY_MS (1500ms) — check resolves
   await act(async () => {
@@ -60,9 +63,9 @@ test('Cancel closes the credential-check modal without running it', () => {
   expect(runItem).not.toBeNull();
   fireEvent.click(runItem!);
 
-  expect(screen.getByRole('button', { name: 'Run credential check' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Run check' })).toBeInTheDocument();
 
   fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
 
-  expect(screen.queryByRole('button', { name: 'Run credential check' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Run check' })).not.toBeInTheDocument();
 });

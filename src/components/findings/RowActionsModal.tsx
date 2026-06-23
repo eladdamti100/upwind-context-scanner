@@ -6,6 +6,7 @@
 import React, { useEffect } from 'react';
 import { FINDINGS } from '../../data';
 import { valStyle } from '../../lib/classify';
+import { supportsCredentialCheck } from '../../lib/validation';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';
 import type { IconName } from '../common/Icon';
@@ -105,7 +106,10 @@ export function RowActionsModal() {
 
   const vs = valStyle(state.validations[f.id] ?? f.validation);
   const isValidating = state.validatingId === f.id;
-  const canValidate = vs.canValidate && state.settings.validationEnabled && !isValidating;
+  // Availability is determined by the credential TYPE, not its current check
+  // status — supported credentials can always be (re-)checked.
+  const supportsCheck = supportsCredentialCheck(f.detectedType);
+  const canValidate = supportsCheck && state.settings.validationEnabled && !isValidating;
 
   function run(action: () => void) {
     action();
@@ -275,7 +279,11 @@ export function RowActionsModal() {
             <ActionRow
               icon="shield"
               label="Run credential check"
-              hint={isValidating ? 'Check in progress' : 'Not available for this finding'}
+              hint={
+                isValidating
+                  ? 'Check in progress'
+                  : 'Credential check not supported for this type'
+              }
               disabled
             />
           )}

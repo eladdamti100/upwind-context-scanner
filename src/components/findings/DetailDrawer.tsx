@@ -7,6 +7,7 @@ import { FINDINGS } from '../../data';
 import { effPriority } from '../../lib/priority';
 import { priStyle, valStyle } from '../../lib/classify';
 import { buildBreakdown } from '../../lib/scoring';
+import { supportsCredentialCheck } from '../../lib/validation';
 import { explanationTitle, recommendedActions } from '../../lib/explain';
 import { useStore } from '../../state/StoreContext';
 import { Icon } from '../common/Icon';
@@ -439,7 +440,7 @@ export function DetailDrawer() {
         {/* ── 7. Action buttons ─────────────────────────────────────────── */}
         <Section style={{ borderBottom: 'none', paddingBottom: 24 }}>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {vs.canValidate && state.settings.validationEnabled && (
+            {supportsCredentialCheck(sel.detectedType) && state.settings.validationEnabled && (
               <button
                 onClick={() => dispatch({ type: 'OPEN_VAL_MODAL', id: sel.id })}
                 style={{
