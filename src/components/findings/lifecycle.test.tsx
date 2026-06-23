@@ -11,6 +11,7 @@ function openFirstDetail() {
 
 test('opens LifecycleDialog from drawer and shows "Manage finding" with a "Resolved" option', async () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   // Open the drawer via the eye icon
   openFirstDetail();
@@ -28,6 +29,7 @@ test('opens LifecycleDialog from drawer and shows "Manage finding" with a "Resol
 
 test('clicking "Resolved" closes the LifecycleDialog', async () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   // Open the drawer via the eye icon
   openFirstDetail();

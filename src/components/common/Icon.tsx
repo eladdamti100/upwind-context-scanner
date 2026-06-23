@@ -37,7 +37,8 @@ export type IconName =
   | 'lock'
   | 'flag'
   | 'bar-chart'
-  | 'cloud';
+  | 'cloud'
+  | 'grid';
 
 const PATHS: Record<IconName, string> = {
   'search':
@@ -112,6 +113,8 @@ const PATHS: Record<IconName, string> = {
     'M3 3v18h18M8 17v-5M13 17V8M18 17v-9',
   'cloud':
     'M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z',
+  'grid':
+    'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z',
 };
 
 export function Icon({

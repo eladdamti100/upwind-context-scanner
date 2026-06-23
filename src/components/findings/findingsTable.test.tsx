@@ -5,12 +5,14 @@ import { FINDINGS } from '../../data';
 
 test('FindingsTable renders column headers', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   expect(screen.getByText('Remediation priority')).toBeInTheDocument();
   expect(screen.getByText('% Confidence')).toBeInTheDocument();
 });
 
 test('header info icons reveal their tooltips', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   // % Confidence
   fireEvent.click(screen.getByLabelText('What is Confidence?'));
@@ -23,6 +25,7 @@ test('header info icons reveal their tooltips', () => {
 
 test('row three-dot opens the centered Finding actions modal', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   const moreButtons = screen.getAllByTitle('More actions');
   expect(moreButtons.length).toBeGreaterThan(0);
   fireEvent.click(moreButtons[0]);
@@ -37,6 +40,7 @@ test('row three-dot opens the centered Finding actions modal', () => {
 
 test('the Finding actions modal closes via its close button', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   fireEvent.click(screen.getAllByTitle('More actions')[0]);
   expect(screen.getByText('Finding actions')).toBeInTheDocument();
 
@@ -46,6 +50,7 @@ test('the Finding actions modal closes via its close button', () => {
 
 test('column picker locks required columns (no checkbox) and toggles optional ones', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   // Open the column picker.
   fireEvent.click(screen.getByTitle('Columns'));
@@ -62,12 +67,14 @@ test('column picker locks required columns (no checkbox) and toggles optional on
 
 test('FindingsTable renders at least one row', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   // getAllByRole('row') includes the header row; must have more than 1
   expect(screen.getAllByRole('row').length).toBeGreaterThan(1);
 });
 
 test('FindingsTable shows result count containing total findings length', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   const total = FINDINGS.length;
   // Top toolbar: "of N context-aware findings" (unique phrasing)
   const countText = screen.getByText(new RegExp(`of ${total} context-aware findings`));
@@ -76,6 +83,7 @@ test('FindingsTable shows result count containing total findings length', () => 
 
 test('pagination shows 10 rows, page count, range, and navigates', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   const total = FINDINGS.length;
   const totalPages = Math.ceil(total / 10);
 
@@ -104,6 +112,7 @@ test('pagination shows 10 rows, page count, range, and navigates', () => {
 
 test('searching resets to page 1 and updates the range total', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   const totalPages = Math.ceil(FINDINGS.length / 10);
 
   // Move off page 1 first.

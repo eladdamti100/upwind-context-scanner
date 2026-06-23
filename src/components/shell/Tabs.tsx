@@ -4,6 +4,7 @@ import { Icon } from '../common/Icon';
 import type { IconName } from '../common/Icon';
 
 const TAB_LABELS: { key: TabKey; label: string; icon: IconName }[] = [
+  { key: 'overview', label: 'Overview', icon: 'grid' },
   { key: 'findings', label: 'Exposed Sensitive Data', icon: 'shield' },
   { key: 'classifications', label: 'Data classifications', icon: 'layers' },
   { key: 'map', label: 'Exposure map', icon: 'map' },

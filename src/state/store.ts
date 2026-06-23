@@ -6,7 +6,7 @@ import type { Action } from './actions';
 // Sub-state shapes
 // ---------------------------------------------------------------------------
 
-export type TabKey = 'findings' | 'classifications' | 'map';
+export type TabKey = 'overview' | 'findings' | 'classifications' | 'map';
 
 export interface ColumnState {
   id: string;
@@ -100,7 +100,7 @@ function cloneCols(cols: ColumnState[]): ColumnState[] {
 // ---------------------------------------------------------------------------
 
 export const initialState: AppState = {
-  tab: 'findings',
+  tab: 'overview',
   search: '',
   filters: [],
   sortKey: 'risk',

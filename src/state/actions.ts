@@ -9,7 +9,7 @@ export type { Sensitivity, Vertical, ValidationStatus, FindingStatus, SnoozeInfo
 // ---------------------------------------------------------------------------
 
 export type Action =
-  | { type: 'SET_TAB'; tab: 'findings' | 'classifications' | 'map' }
+  | { type: 'SET_TAB'; tab: 'overview' | 'findings' | 'classifications' | 'map' }
   | { type: 'SET_SEARCH'; search: string }
   | { type: 'ADD_FILTER'; filter: Filter }
   | { type: 'REMOVE_FILTER'; index: number }

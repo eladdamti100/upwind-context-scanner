@@ -43,8 +43,12 @@ test('no raw secrets are ever rendered — only masked values', async () => {
 
   const textSnapshots: string[] = [];
 
-  // ── 1. Findings tab (default) ──────────────────────────────────────────
-  // Ensure the table has rendered before snapshotting (at least one row)
+  // ── 0. Overview tab (default landing) ──────────────────────────────────
+  await screen.findByTestId('overview-view');
+  textSnapshots.push(document.body.textContent ?? '');
+
+  // ── 1. Findings tab ────────────────────────────────────────────────────
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   await screen.findByText('Remediation priority'); // header always present
   textSnapshots.push(document.body.textContent ?? '');
 

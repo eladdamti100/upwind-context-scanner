@@ -20,6 +20,7 @@ import { SeverityBadge } from '../common/SeverityBadge';
 import { Popover } from '../common/Popover';
 import { InfoTooltip } from '../common/InfoTooltip';
 import { CircularScore } from '../common/CircularScore';
+import { CloudBadge } from '../common/CloudBadge';
 
 // ---------------------------------------------------------------------------
 // Small shared helpers
@@ -141,38 +142,6 @@ const CENTERED_COLS = new Set([
   'cloud',
 ]);
 
-// Cloud-provider badge styling. Brand colors (not theme tokens) so each
-// provider reads at a glance; the name lives in the tooltip / aria-label.
-const CLOUD_BADGE: Record<string, string> = {
-  AWS: '#ED7100',
-  Azure: '#0089D6',
-  GCP: '#1A73E8',
-  GitHub: '#24292F',
-  'Multi-cloud': '#64748B',
-};
-
-function CloudBadge({ provider }: { provider: string }) {
-  const bg = CLOUD_BADGE[provider] ?? 'var(--text-tertiary)';
-  return (
-    <span
-      role="img"
-      title={provider}
-      aria-label={`Cloud provider: ${provider}`}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 22,
-        height: 22,
-        borderRadius: '50%',
-        background: bg,
-        flexShrink: 0,
-      }}
-    >
-      <Icon name="cloud" size={12} stroke="#fff" />
-    </span>
-  );
-}
 
 // ---------------------------------------------------------------------------
 // TableToolbar

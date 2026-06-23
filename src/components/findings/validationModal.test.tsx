@@ -31,6 +31,7 @@ function openRunnableCheck() {
 test('running a credential check from the row menu updates the chip', async () => {
   vi.useFakeTimers();
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   const runItem = openRunnableCheck();
   expect(runItem).not.toBeNull();
@@ -58,6 +59,7 @@ test('running a credential check from the row menu updates the chip', async () =
 
 test('Cancel closes the credential-check modal without running it', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   const runItem = openRunnableCheck();
   expect(runItem).not.toBeNull();

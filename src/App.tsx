@@ -4,6 +4,7 @@ import { TopBar } from './components/shell/TopBar';
 import { PageHeader } from './components/shell/PageHeader';
 import { Tabs } from './components/shell/Tabs';
 import { Toast } from './components/common/Toast';
+import { OverviewView } from './components/overview/OverviewView';
 import { FindingsView } from './components/findings/FindingsView';
 import { DetailDrawer } from './components/findings/DetailDrawer';
 import { RowActionsModal } from './components/findings/RowActionsModal';
@@ -62,6 +63,9 @@ function AppShell() {
           padding: '16px 20px 40px',
         }}
       >
+        {state.tab === 'overview' && (
+          <OverviewView />
+        )}
         {state.tab === 'findings' && (
           <FindingsView />
         )}

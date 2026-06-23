@@ -16,8 +16,8 @@ function dispatch(state: AppState, action: Action): AppState {
 // ---------------------------------------------------------------------------
 
 describe('initialState defaults', () => {
-  test('tab is "findings"', () => {
-    expect(initialState.tab).toBe('findings');
+  test('tab is "overview"', () => {
+    expect(initialState.tab).toBe('overview');
   });
 
   test('sensitivity is "balanced"', () => {

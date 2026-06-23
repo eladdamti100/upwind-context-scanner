@@ -7,6 +7,7 @@ afterEach(() => vi.useRealTimers());
 
 test('toast appears on action and auto-dismisses after ~3s', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   // "Save view" on the findings toolbar synchronously shows a toast.
   fireEvent.click(screen.getByText('Save view'));

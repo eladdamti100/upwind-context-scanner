@@ -37,7 +37,8 @@ test('demo flow: findings → drawer → settings → exposure map', async () =>
   render(<App />);
 
   // ── 1. Findings tab ──────────────────────────────────────────────────────
-  // The default tab is "findings". At least one data row must be present.
+  // App opens on Overview; navigate to the findings table first.
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
   const rows = document.querySelectorAll('tbody tr');
   expect(rows.length).toBeGreaterThan(0);
 

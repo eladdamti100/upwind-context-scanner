@@ -21,6 +21,7 @@ function getDrawer(): HTMLElement {
 
 test('clicking a data row does NOT open the drawer', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   const row = getFirstDataRow();
   expect(row).not.toBeNull();
@@ -32,6 +33,7 @@ test('clicking a data row does NOT open the drawer', () => {
 
 test('the eye icon opens the drawer with score breakdown and a recommended action', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   openFirstDetail();
 
@@ -44,6 +46,7 @@ test('the eye icon opens the drawer with score breakdown and a recommended actio
 
 test('the detail panel never renders a secret value — not even masked', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   openFirstDetail();
 
@@ -61,6 +64,7 @@ test('the detail panel never renders a secret value — not even masked', () => 
 
 test('closing the drawer hides the score breakdown', () => {
   render(<App />);
+  fireEvent.click(screen.getByText('Exposed Sensitive Data'));
 
   openFirstDetail();
 
