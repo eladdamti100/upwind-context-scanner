@@ -121,10 +121,11 @@ const COL_SORT_MAP: Record<string, string> = {
 // slack, keeping the other columns tight instead of letting them stretch.
 // Columns not listed size to their content.
 const COL_WIDTH: Record<string, string> = {
-  actions: '76px',      // Actions — narrow, leads the row
+  actions: '72px',      // Actions — narrow, leads the row
   risk: '130px',        // % Confidence — header + icons + centered ring
   priority: '184px',    // Remediation priority — header + info + badge
   validation: '152px',  // Credential Check
+  cloud: '80px',        // Cloud — centered provider badge
   file: '100%',         // File name | path — flexible, absorbs remaining width
 };
 
@@ -137,7 +138,41 @@ const CENTERED_COLS = new Set([
   'classification',
   'validation',
   'environment',
+  'cloud',
 ]);
+
+// Cloud-provider badge styling. Brand colors (not theme tokens) so each
+// provider reads at a glance; the name lives in the tooltip / aria-label.
+const CLOUD_BADGE: Record<string, string> = {
+  AWS: '#ED7100',
+  Azure: '#0089D6',
+  GCP: '#1A73E8',
+  GitHub: '#24292F',
+  'Multi-cloud': '#64748B',
+};
+
+function CloudBadge({ provider }: { provider: string }) {
+  const bg = CLOUD_BADGE[provider] ?? 'var(--text-tertiary)';
+  return (
+    <span
+      role="img"
+      title={provider}
+      aria-label={`Cloud provider: ${provider}`}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 22,
+        height: 22,
+        borderRadius: '50%',
+        background: bg,
+        flexShrink: 0,
+      }}
+    >
+      <Icon name="cloud" size={12} stroke="#fff" />
+    </span>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // TableToolbar
@@ -652,6 +687,7 @@ export function FindingsTable() {
                   return (
                     <th
                       key={col.id}
+                      aria-label={col.id === 'actions' ? 'Row actions' : undefined}
                       onClick={sortable ? () => handleHeaderClick(col.id) : undefined}
                       style={{
                         padding: '0 14px',
@@ -672,7 +708,7 @@ export function FindingsTable() {
                       }}
                     >
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        {col.label}
+                        {col.id !== 'actions' && col.label}
                         {HEADER_INFO[col.id] && (
                           <InfoTooltip
                             text={HEADER_INFO[col.id].text}
@@ -865,7 +901,7 @@ export function FindingsTable() {
                         case 'cloud':
                           return (
                             <td key={col.id} style={railTdStyle}>
-                              {f.cloud}
+                              <CloudBadge provider={f.cloud} />
                             </td>
                           );
 
@@ -972,6 +1008,7 @@ export function FindingsTable() {
                             >
                               <span style={{ display: 'inline-flex', gap: 4 }}>
                                 <button
+                                  aria-label="Open finding details"
                                   onClick={e => {
                                     e.stopPropagation();
                                     dispatch({ type: 'OPEN_DETAIL', id: f.id });
@@ -991,6 +1028,7 @@ export function FindingsTable() {
                                   <Icon name="eye" size={14} />
                                 </button>
                                 <button
+                                  aria-label="Open finding actions"
                                   onClick={e => {
                                     e.stopPropagation();
                                     dispatch({ type: 'OPEN_ACTIONS', id: f.id });
