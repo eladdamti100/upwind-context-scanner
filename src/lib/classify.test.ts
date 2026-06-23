@@ -163,7 +163,7 @@ test('valStyle not-validated canValidate is true', () => {
   expect(valStyle('not-validated').canValidate).toBe(true);
 });
 test('valStyle not-validated label', () => {
-  expect(valStyle('not-validated').label).toBe('Not validated');
+  expect(valStyle('not-validated').label).toBe('Not checked');
 });
 test('valStyle not-validated fg', () => {
   expect(valStyle('not-validated').fg).toBe('var(--text-tertiary)');
@@ -175,7 +175,7 @@ test('valStyle validated-active canValidate is false', () => {
   expect(valStyle('validated-active').canValidate).toBe(false);
 });
 test('valStyle validated-active label', () => {
-  expect(valStyle('validated-active').label).toBe('Validated active');
+  expect(valStyle('validated-active').label).toBe('Active credential');
 });
 test('valStyle validated-active fg is critical', () => {
   expect(valStyle('validated-active').fg).toBe('var(--severity-critical)');
@@ -184,7 +184,7 @@ test('valStyle validated-active bg is critical-bg', () => {
   expect(valStyle('validated-active').bg).toBe('var(--severity-critical-bg)');
 });
 test('valStyle validated-inactive label', () => {
-  expect(valStyle('validated-inactive').label).toBe('Validated inactive');
+  expect(valStyle('validated-inactive').label).toBe('Inactive');
 });
 test('valStyle validated-inactive canValidate is false', () => {
   expect(valStyle('validated-inactive').canValidate).toBe(false);
@@ -196,13 +196,13 @@ test('valStyle validated-inactive bg is safe-bg', () => {
   expect(valStyle('validated-inactive').bg).toBe('var(--severity-safe-bg)');
 });
 test('valStyle validation-failed label', () => {
-  expect(valStyle('validation-failed').label).toBe('Validation failed');
+  expect(valStyle('validation-failed').label).toBe('Check failed');
 });
 test('valStyle validation-failed canValidate is true', () => {
   expect(valStyle('validation-failed').canValidate).toBe(true);
 });
 test('valStyle validation-permission-required label', () => {
-  expect(valStyle('validation-permission-required').label).toBe('Permission required');
+  expect(valStyle('validation-permission-required').label).toBe('Needs permission');
 });
 test('valStyle validation-permission-required canValidate is false', () => {
   expect(valStyle('validation-permission-required').canValidate).toBe(false);

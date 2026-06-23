@@ -12,7 +12,7 @@ const FILTER_OPTIONS: FilterOption[] = [
   { label: 'Priority: High', filter: { key: 'priority', val: 'high', label: 'Priority is High' } },
   { label: 'Environment: Production', filter: { key: 'env', val: 'Production', label: 'Environment is Production' } },
   { label: 'Cloud: AWS', filter: { key: 'cloud', val: 'AWS', label: 'Cloud is AWS' } },
-  { label: 'Validation: Validated active', filter: { key: 'validation', val: 'validated-active', label: 'Validation is Validated active' } },
+  { label: 'Credential check: Active credential', filter: { key: 'validation', val: 'validated-active', label: 'Credential check is Active credential' } },
   { label: 'Exposure: Public', filter: { key: 'exposure', val: 'Public', label: 'Exposure is Public' } },
 ];
 

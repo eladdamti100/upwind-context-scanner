@@ -74,7 +74,7 @@ const DEFAULT_COLS: ColumnState[] = [
   { id: 'priority',       label: 'Remediation priority', vis: true,  required: true },
   { id: 'secretType',     label: 'Secret type',          vis: true,  required: true },
   { id: 'classification', label: 'Classification',       vis: true,  required: true },
-  { id: 'validation',     label: 'Validation status',    vis: true,  required: true },
+  { id: 'validation',     label: 'Credential Check',     vis: true,  required: true },
   { id: 'file',           label: 'File name | path',     vis: true,  required: true },
   // Optional columns — user-configurable (hidden by default to keep it clean).
   { id: 'owner',          label: 'Owner',                vis: false },

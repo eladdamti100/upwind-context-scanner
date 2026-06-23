@@ -1,4 +1,6 @@
-// validationModal.test.tsx — integration tests for ValidationModal via App
+// validationModal.test.tsx — credential-check flow via the row actions menu.
+// The inline table button was removed; the check is launched from the
+// three-dot row menu ("Run credential check") which opens ValidationModal.
 
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { test, expect, vi, afterEach } from 'vitest';
@@ -8,45 +10,52 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-test('clicking "Run validation" on the first available Validate button updates the chip', async () => {
-  vi.useFakeTimers();
+// Open row menus until one exposes an enabled "Run credential check" item.
+function openRunnableCheck() {
+  const moreButtons = screen.getAllByTitle('More actions');
+  for (const btn of moreButtons) {
+    fireEvent.click(btn);
+    const item = screen.queryByText('Run credential check'); // exact — skips "(unavailable)"
+    if (item) return item;
+  }
+  return null;
+}
 
+test('running a credential check from the row menu updates the chip', async () => {
+  vi.useFakeTimers();
   render(<App />);
 
-  // Open the validation modal via the first available "Validate" button
-  const validateButtons = screen.getAllByText('Validate');
-  expect(validateButtons.length).toBeGreaterThan(0);
+  const runItem = openRunnableCheck();
+  expect(runItem).not.toBeNull();
 
-  fireEvent.click(validateButtons[0]);
+  // Menu item opens the modal
+  fireEvent.click(runItem!);
+  const runBtn = screen.getByRole('button', { name: 'Run credential check' });
+  expect(runBtn).toBeInTheDocument();
 
-  // The modal should open
-  expect(screen.getByRole('dialog', { name: 'Validate credential' })).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: /run validation/i })).toBeInTheDocument();
+  // Run it — modal closes immediately (START_VALIDATION clears valModalId)
+  fireEvent.click(runBtn);
+  expect(screen.queryByRole('button', { name: 'Run credential check' })).not.toBeInTheDocument();
 
-  // Click "Run validation"
-  fireEvent.click(screen.getByRole('button', { name: /run validation/i }));
-
-  // Modal closes immediately (START_VALIDATION clears valModalId)
-  expect(screen.queryByRole('dialog', { name: 'Validate credential' })).not.toBeInTheDocument();
-
-  // Advance timers past VALIDATION_DELAY_MS (1500ms)
+  // Advance past VALIDATION_DELAY_MS (1500ms) — check resolves
   await act(async () => {
     vi.advanceTimersByTime(1600);
   });
 
-  // After validation completes, the chip should show a validated state
-  expect(screen.getAllByText(/Validated (active|inactive)/).length).toBeGreaterThan(0);
+  // A resolved credential-check chip is shown
+  expect(screen.getAllByText(/Active credential|Inactive/).length).toBeGreaterThan(0);
 });
 
-test('Cancel button closes the validation modal without running validation', () => {
+test('Cancel closes the credential-check modal without running it', () => {
   render(<App />);
 
-  const validateButtons = screen.getAllByText('Validate');
-  fireEvent.click(validateButtons[0]);
+  const runItem = openRunnableCheck();
+  expect(runItem).not.toBeNull();
+  fireEvent.click(runItem!);
 
-  expect(screen.getByRole('dialog', { name: 'Validate credential' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Run credential check' })).toBeInTheDocument();
 
   fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
 
-  expect(screen.queryByRole('dialog', { name: 'Validate credential' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Run credential check' })).not.toBeInTheDocument();
 });

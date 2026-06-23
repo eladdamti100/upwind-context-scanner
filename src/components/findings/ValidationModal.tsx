@@ -69,7 +69,7 @@ export function ValidationModal() {
             stroke="var(--severity-medium)"
           />
           <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>
-            Validate credential
+            Run credential check
           </span>
         </div>
 
@@ -107,7 +107,7 @@ export function ValidationModal() {
             Cancel
           </button>
 
-          {/* Run validation primary button */}
+          {/* Run credential check primary button */}
           <button
             onClick={runValidation}
             style={{
@@ -121,7 +121,7 @@ export function ValidationModal() {
               fontWeight: 500,
             }}
           >
-            Run validation
+            Run credential check
           </button>
         </div>
       </div>

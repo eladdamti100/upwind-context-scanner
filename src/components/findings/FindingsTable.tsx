@@ -145,9 +145,9 @@ function RowActionsMenu({ finding, canValidate }: { finding: Finding; canValidat
       <div style={{ padding: '4px 2px' }} onClick={e => e.stopPropagation()}>
         <RowMenuItem label="Open details" onClick={() => { dispatch({ type: 'OPEN_DETAIL', id: finding.id }); close(); }} />
         {canValidate ? (
-          <RowMenuItem label="Run validation" onClick={() => { dispatch({ type: 'OPEN_VAL_MODAL', id: finding.id }); close(); }} />
+          <RowMenuItem label="Run credential check" onClick={() => { dispatch({ type: 'OPEN_VAL_MODAL', id: finding.id }); close(); }} />
         ) : (
-          <RowMenuItem label="Run validation (unavailable)" disabled />
+          <RowMenuItem label="Run credential check (unavailable)" disabled />
         )}
         <RowMenuItem label="Change lifecycle status" onClick={() => { dispatch({ type: 'OPEN_LIFECYCLE', id: finding.id }); close(); }} />
         <RowMenuItem label="Snooze finding" onClick={() => { dispatch({ type: 'OPEN_LIFECYCLE', id: finding.id }); close(); }} />
@@ -167,6 +167,15 @@ const CONFIDENCE_TOOLTIP =
   'Confidence Level estimates how likely this finding is to be a real secret or sensitive data, based on regex confidence, context features, deterministic rules, and the model signal.';
 const PRIORITY_TOOLTIP =
   'Remediation Priority indicates how urgently this finding should be handled, based on confidence, access, exposure, secret type severity, and activity.';
+const CREDENTIAL_CHECK_TOOLTIP =
+  'Checks whether the detected credential is still active. Active credentials increase remediation priority.';
+
+// Header columns that get an info tooltip, keyed by column id.
+const HEADER_INFO: Record<string, { text: string; label: string }> = {
+  risk: { text: CONFIDENCE_TOOLTIP, label: 'What is Confidence Level?' },
+  priority: { text: PRIORITY_TOOLTIP, label: 'What is Remediation Priority?' },
+  validation: { text: CREDENTIAL_CHECK_TOOLTIP, label: 'What is Credential Check?' },
+};
 
 const SORT_OPTIONS: { key: string; label: string }[] = [
   { key: 'risk', label: 'Risk score' },
@@ -625,10 +634,10 @@ export function FindingsTable() {
                     >
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         {col.label}
-                        {(col.id === 'risk' || col.id === 'priority') && (
+                        {HEADER_INFO[col.id] && (
                           <InfoTooltip
-                            text={col.id === 'risk' ? CONFIDENCE_TOOLTIP : PRIORITY_TOOLTIP}
-                            label={col.id === 'risk' ? 'What is Confidence Level?' : 'What is Remediation Priority?'}
+                            text={HEADER_INFO[col.id].text}
+                            label={HEADER_INFO[col.id].label}
                           />
                         )}
                         {isActive && (
@@ -900,7 +909,7 @@ export function FindingsTable() {
                                       fontStyle: 'italic',
                                     }}
                                   >
-                                    Validating…
+                                    Checking…
                                   </span>
                                 ) : (
                                   <Chip
@@ -909,28 +918,6 @@ export function FindingsTable() {
                                     bg={vs.bg}
                                   />
                                 )}
-                                {vs.canValidate &&
-                                  state.settings.validationEnabled &&
-                                  !isValidating && (
-                                    <button
-                                      onClick={e => {
-                                        e.stopPropagation();
-                                        dispatch({ type: 'OPEN_VAL_MODAL', id: f.id });
-                                      }}
-                                      style={{
-                                        fontSize: 11,
-                                        padding: '2px 8px',
-                                        borderRadius: 4,
-                                        border: '1px solid var(--action-primary)',
-                                        background: 'transparent',
-                                        color: 'var(--action-primary)',
-                                        cursor: 'pointer',
-                                        whiteSpace: 'nowrap',
-                                      }}
-                                    >
-                                      Validate
-                                    </button>
-                                  )}
                               </span>
                             </td>
                           );

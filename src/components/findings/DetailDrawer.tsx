@@ -219,7 +219,7 @@ export function DetailDrawer() {
                   flexShrink: 0,
                 }}
               />
-              {isValidating ? 'Validating…' : vs.label}
+              {isValidating ? 'Checking…' : vs.label}
             </span>
 
             {/* Cloud chip (if present) */}
@@ -620,7 +620,7 @@ export function DetailDrawer() {
                 onMouseEnter={e => (e.currentTarget.style.background = 'var(--action-primary-hover)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'var(--action-primary)')}
               >
-                Validate
+                Run credential check
               </button>
             )}
 
