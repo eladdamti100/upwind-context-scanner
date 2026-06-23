@@ -95,11 +95,13 @@ export function ClassTable() {
                   'FP reduction',
                   'Created by',
                   'Status',
-                ].map(col => (
+                ].map((col, i) => (
                   <th
                     key={col}
                     style={{
-                      padding: '8px 12px',
+                      // Extra left gutter on the first column so it lines up
+                      // cleanly with the icon chips below.
+                      padding: i === 0 ? '8px 12px 8px 16px' : '8px 12px',
                       textAlign: 'left',
                       fontSize: 11.5,
                       fontWeight: 600,
@@ -133,17 +135,18 @@ export function ClassTable() {
                     }}
                   >
                     {/* Name */}
-                    <td style={{ padding: '14px 12px', whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <td style={{ padding: '14px 12px 14px 16px', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div
                           style={{
                             display: 'inline-flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            width: 26,
-                            height: 26,
-                            borderRadius: 6,
-                            background: 'var(--uw-green-06)',
+                            width: 28,
+                            height: 28,
+                            borderRadius: 7,
+                            background: 'var(--severity-safe-bg)',
+                            overflow: 'visible',
                             flexShrink: 0,
                           }}
                         >
