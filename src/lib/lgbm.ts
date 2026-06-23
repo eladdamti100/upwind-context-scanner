@@ -356,11 +356,18 @@ export type FetchLike = (
   init: { method: string; headers: Record<string, string>; body: string; signal?: AbortSignal },
 ) => Promise<{ ok: boolean; status: number; json: () => Promise<unknown>; text: () => Promise<string> }>;
 
+const DEFAULT_SLM_TIMEOUT_MS = 20000;
+
 export function createLocalSlmClassifier(config: LocalSlmConfig, fetchFn?: FetchLike): SemanticClassifier {
   return {
     name: `local-slm:${config.model}`,
     async classify(input: SlmClassifierInput): Promise<SlmClassifierResult> {
       const doFetch = fetchFn ?? (globalThis.fetch as unknown as FetchLike);
+      // Bound every call so a slow/hung endpoint can't stall the batch — on
+      // timeout the AbortController fires, the fetch rejects, and we fall back.
+      const timeoutMs = config.timeoutMs ?? DEFAULT_SLM_TIMEOUT_MS;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
         if (typeof doFetch !== 'function') throw new Error('no fetch available');
         const headers: Record<string, string> = { 'content-type': 'application/json' };
@@ -377,6 +384,7 @@ export function createLocalSlmClassifier(config: LocalSlmConfig, fetchFn?: Fetch
               { role: 'user', content: buildUserPayload(input) },
             ],
           }),
+          signal: controller.signal,
         });
         if (!res.ok) throw new Error(`SLM endpoint returned ${res.status}`);
         const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
@@ -385,9 +393,12 @@ export function createLocalSlmClassifier(config: LocalSlmConfig, fetchFn?: Fetch
         const parsed = parseSlmResponse(content);
         return { ...parsed, model: config.model };
       } catch {
-        // Never crash the pipeline: fall back to the deterministic guardrail.
+        // Never crash the pipeline: fall back to the deterministic guardrail
+        // (covers timeout/abort, non-200, missing content, and parse failures).
         const fallback = await mockSemanticClassifier.classify(input);
         return { ...fallback, model: `${config.model}#fallback` };
+      } finally {
+        clearTimeout(timer);
       }
     },
   };
@@ -409,7 +420,16 @@ export function resolveSemanticClassifier(
   const endpoint = env.SLM_ENDPOINT;
   const model = env.SLM_MODEL;
   if (endpoint && model) {
-    return createLocalSlmClassifier({ endpoint, model, apiKey: env.SLM_API_KEY }, fetchFn);
+    const timeoutMs = env.SLM_TIMEOUT_MS ? Number(env.SLM_TIMEOUT_MS) : undefined;
+    return createLocalSlmClassifier(
+      {
+        endpoint,
+        model,
+        apiKey: env.SLM_API_KEY,
+        timeoutMs: timeoutMs && Number.isFinite(timeoutMs) ? timeoutMs : undefined,
+      },
+      fetchFn,
+    );
   }
   return mockSemanticClassifier;
 }

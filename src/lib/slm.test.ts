@@ -183,6 +183,20 @@ describe('createLocalSlmClassifier', () => {
     const r = await clf.classify(makeInput());
     expect(r.model).toBe('qwen2.5-coder:7b#fallback');
   });
+
+  test('times out via AbortController and falls back when the endpoint hangs', async () => {
+    // A transport that never resolves on its own — only the injected abort
+    // signal (fired by the connector's timeout) can settle it.
+    const hanging: FetchLike = (_url, init) =>
+      new Promise((_resolve, reject) => {
+        init.signal?.addEventListener('abort', () => reject(new Error('aborted')));
+      });
+    const clf = createLocalSlmClassifier({ ...config, timeoutMs: 10 }, hanging);
+    const r = await clf.classify(makeInput({ features: makeFeatures({ isPublicByDesign: true }) }));
+    expect(r.model).toBe('qwen2.5-coder:7b#fallback');
+    // Fallback still produces a valid taxonomy verdict.
+    expect(r.modelClassification).toBe('public_non_secret');
+  });
 });
 
 // ---------------------------------------------------------------------------

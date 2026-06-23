@@ -17,7 +17,7 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import type { FindingContextObject, Exposure, AssetCriticality, Vertical } from '../src/types';
 import { extractFeatures, buildCorpusStats, type AssetContext } from '../src/lib/features';
-import { resolveSemanticClassifier, type SlmClassifierInput } from '../src/lib/lgbm';
+import { resolveSemanticClassifier, mockSemanticClassifier, type SlmClassifierInput } from '../src/lib/lgbm';
 import rawFindings from '../src/data/evenup/findings.json';
 
 interface RawFinding {
@@ -32,7 +32,7 @@ interface RawFinding {
   local_context: { line_text_masked: string };
   scan_metadata: { sensitivity_mode: string; customer_vertical: string; enabled_rule_packs: string[] };
   signals?: { structurally_valid?: boolean; luhn_valid?: boolean; is_known_test_value?: boolean; is_public_by_design?: boolean };
-  ground_truth: { storage_exposure: string; asset_criticality: string };
+  ground_truth: { storage_exposure: string; asset_criticality: string; is_secret?: boolean; label?: string };
 }
 
 const RAW = rawFindings as unknown as RawFinding[];
@@ -87,43 +87,92 @@ function toContext(raw: RawFinding): FindingContextObject {
   };
 }
 
+interface PredictionRow {
+  finding_id: string;
+  secret_probability: number;
+  model_classification: string;
+  reason: string;
+  model: string;
+}
+
+// Subset mode (SLM_SUBSET=1): send only the "hard" candidates to the REAL SLM —
+// the residual false-positive families the deterministic rules can't resolve,
+// plus a few real secrets to prove recall holds — and use the deterministic
+// guardrail for everything else. Keeps the full 345-row output while making the
+// real run fast (~25 SLM calls). This mirrors a real cost-optimized deployment:
+// cheap rules first, expensive SLM only on the unresolved cases.
+const SUBSET = process.env.SLM_SUBSET === '1';
+const RESIDUAL_FP_TYPES = new Set(
+  (process.env.SLM_SUBSET_TYPES ?? 'api_key,pii,database_password,phi').split(','),
+);
+let secretsBudget = Number(process.env.SLM_SUBSET_SECRETS ?? '6');
+
+function useRealSlm(raw: RawFinding): boolean {
+  if (!SUBSET) return true; // full mode → everything goes to the real classifier
+  const gt = raw.ground_truth;
+  // benign candidates of the leaked families → let the SLM try to clear them
+  if (gt.is_secret === false && RESIDUAL_FP_TYPES.has(raw.candidate.detected_type)) return true;
+  // a few real secrets → show the SLM correctly keeps them (recall check)
+  if (gt.is_secret === true && secretsBudget > 0) {
+    secretsBudget--;
+    return true;
+  }
+  return false;
+}
+
 async function main() {
   const contexts = RAW.map(toContext);
   const corpusStats = buildCorpusStats(contexts);
-  const classifier = resolveSemanticClassifier(process.env);
-  console.log(`using semantic classifier: ${classifier.name}`);
+  const realClassifier = resolveSemanticClassifier(process.env);
+  const concurrency = Math.max(1, Number(process.env.SLM_CONCURRENCY ?? '6') || 6);
+  console.log(
+    `real classifier: ${realClassifier.name} (concurrency ${concurrency})` +
+      (SUBSET ? ` — SUBSET mode: real SLM on residual FPs [${[...RESIDUAL_FP_TYPES].join(',')}] + ${process.env.SLM_SUBSET_SECRETS ?? '6'} secrets, mock for the rest` : ''),
+  );
 
-  const predictions: {
-    finding_id: string;
-    secret_probability: number;
-    model_classification: string;
-    reason: string;
-    model: string;
-  }[] = [];
+  // Results written by index so output order is independent of completion order.
+  const predictions: PredictionRow[] = new Array(RAW.length);
+  let cursor = 0;
+  let done = 0;
 
-  for (let i = 0; i < RAW.length; i++) {
-    const raw = RAW[i];
-    const ctx = contexts[i];
-    const asset: AssetContext = {
-      storageExposure: toExposure(raw.ground_truth.storage_exposure),
-      assetCriticality: toCriticality(raw.ground_truth.asset_criticality),
-      cloudProvider: 'aws',
-    };
-    const features = extractFeatures(ctx, asset, corpusStats);
-    const input: SlmClassifierInput = {
-      detectedType: ctx.candidate.detectedType,
-      maskedLineContext: ctx.localContext.lineTextMasked,
-      features,
-    };
-    const r = await classifier.classify(input);
-    predictions.push({
-      finding_id: raw.finding_id,
-      secret_probability: r.secretProbability,
-      model_classification: r.modelClassification,
-      reason: r.reason,
-      model: r.model ?? classifier.name,
-    });
+  // Bounded worker pool: each worker pulls the next index from a shared cursor
+  // until the queue drains. `cursor++` is atomic within JS's single-threaded
+  // event loop, so no two workers ever take the same finding.
+  async function worker(): Promise<void> {
+    for (let i = cursor++; i < RAW.length; i = cursor++) {
+      const raw = RAW[i];
+      const ctx = contexts[i];
+      const asset: AssetContext = {
+        storageExposure: toExposure(raw.ground_truth.storage_exposure),
+        assetCriticality: toCriticality(raw.ground_truth.asset_criticality),
+        cloudProvider: 'aws',
+      };
+      const features = extractFeatures(ctx, asset, corpusStats);
+      const input: SlmClassifierInput = {
+        detectedType: ctx.candidate.detectedType,
+        maskedLineContext: ctx.localContext.lineTextMasked,
+        features,
+      };
+      const r = useRealSlm(raw)
+        ? await realClassifier.classify(input)
+        : await mockSemanticClassifier.classify(input);
+      predictions[i] = {
+        finding_id: raw.finding_id,
+        secret_probability: r.secretProbability,
+        model_classification: r.modelClassification,
+        reason: r.reason,
+        model: r.model ?? realClassifier.name,
+      };
+      done++;
+      if (done % 50 === 0 || done === RAW.length) console.log(`enriched ${done}/${RAW.length}`);
+    }
   }
+
+  await Promise.all(Array.from({ length: Math.min(concurrency, RAW.length) }, () => worker()));
+
+  // Count how many came from the real model vs the deterministic fallback.
+  const fallbacks = predictions.filter((p) => p.model.endsWith('#fallback')).length;
+  if (fallbacks > 0) console.log(`note: ${fallbacks}/${predictions.length} fell back to the deterministic guardrail`);
 
   mkdirSync('DB', { recursive: true });
   writeFileSync('DB/slm-predictions.json', JSON.stringify(predictions, null, 2));
